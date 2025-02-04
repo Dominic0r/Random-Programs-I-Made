@@ -206,7 +206,7 @@ df.setMaximumFractionDigits(0); // Ensures no decimal places
         // ev 2
         System.out.println("Supporters of Joseph Estrada have rallied to attempt to restore him to Malacañan");
         System.out.println("This is a serious threat that might inspire future uprisings. Let's make an example by cracking down hard.");
-        System.out.println("Responding harshly will just make us look back. Let's increase security and deploy a couple units to the scene, but only to keep order.");
+        System.out.println("Responding harshly will just make us look bad. Let's increase security and deploy a couple units to the scene, but only to keep order.");
         System.out.println("Let's allow them to protest, no additional security or anything. Just keep the cameras pointed at them.");
         switch(sc.nextInt()){
             case 1: victory -=1;
