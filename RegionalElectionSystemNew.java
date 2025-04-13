@@ -10,6 +10,15 @@ public class Main
     public static int seatUpCountdown = 0;// every two years
     public static int genElecCountdown = 6; // default is 60
     
+    public static int totLeft = 0, totRight=0;
+    
+    public static int currentRulingCoalition =0; // 1- left, 2- right
+    
+    static class Nation{
+        int militaryLoyalty;
+        int economy;
+    }
+    
     static class Region{
         int population;
         int seats;
@@ -39,6 +48,12 @@ public class Main
                 }else{
                     this.left -= ra.nextInt(10);
                 }
+            }
+            
+            if(this.left <25){
+                this.left = 25;
+            } else if(this.left >75){
+                this.left = 75;
             }
             
             this.right = 100-left;
@@ -85,12 +100,35 @@ public class Main
         }
     }
     
+    
+    
+    
+    
+    public static int[][] regdat= {
+        {150000,75000,90000,32000,14000},
+        {0,0,0,0,0}
+    };
+    
+    public static Region[] reg = new Region[5];
+    static{
+        reg[0] = new Region(regdat[0][0],regdat[1][0],"Aber Metro Area");
+     reg[1] = new Region(regdat[0][1],regdat[1][1],"Carpenter");
+     reg[2] = new Region(regdat[0][2],regdat[1][2],"New Bethlehem");
+     reg[3] = new Region(regdat[0][3],regdat[1][3],"De Maine");
+     reg[4] = new Region(regdat[0][4],regdat[1][4],"Enson");
+    }
+    
+    
+    
+    
+    
     static class Party{
         String name;
         int seats;
         int ideology; // 1- left, 2- right
         int support; // 0-100
         int age;
+        int[] wonInRegions = new int[5];
         
         public Party(String name, int support, int ideology){
             this.name = name;
@@ -98,6 +136,15 @@ public class Main
             this.ideology = ideology;
             this.support = support;
             this.age = 0;
+            for(int i=0; i<this.wonInRegions.length;i++){
+                this.wonInRegions[i] = 0;
+            }
+        }
+        
+        void clearWon(){
+            for(int i=0; i<this.wonInRegions.length;i++){
+                this.wonInRegions[i] = 0;
+            }
         }
         
         void upAge(){
@@ -134,11 +181,11 @@ public class Main
                 if(rng >15){
                     this.support += 3;
                 }else{
-                    this.support += 1;
+                    this.support += 2;
                 }
             }else{
                 if(rng>5){
-                    this.support-=1;
+                    this.support-=2;
                 }else{
                     this.support-=3;
                 }
@@ -172,6 +219,13 @@ public class Main
      
      public static void genParty(){
          int genIdo = ra.nextInt(2)+1;
+         if(ra.nextInt(5)>leftCoalition.size()){
+             genIdo = 1;
+         }
+         if(ra.nextInt(5)>rightCoalition.size()){
+             genIdo=2;
+         }
+         
          String genname = "";
          int gensupport = 15;
          if(genIdo==1){
@@ -181,24 +235,15 @@ public class Main
          }
          gensupport+= ra.nextInt(45);
          parties.add(new Party(genname, gensupport, genIdo));
+         
+         //System.out.println("Ideology (1- left |  2- right): "+ genIdo);
+         //sc.nextLine();
      }
      
      
      
     
-    public static int[][] regdat= {
-        {150000,75000,90000,32000,14000},
-        {0,0,0,0,0}
-    };
     
-    public static Region[] reg = new Region[5];
-    static{
-        reg[0] = new Region(regdat[0][0],regdat[1][0],"Aber Metro Area");
-     reg[1] = new Region(regdat[0][1],regdat[1][1],"Carpenter");
-     reg[2] = new Region(regdat[0][2],regdat[1][2],"New Bethlehem");
-     reg[3] = new Region(regdat[0][3],regdat[1][3],"De Maine");
-     reg[4] = new Region(regdat[0][4],regdat[1][4],"Enson");
-    }
     
     
     
@@ -279,13 +324,17 @@ public class Main
             genParty();
         }
         
+        
+        
         month++;
         genElecCountdown--;
         if(genElecCountdown ==0){
                 newTotalSeat();
                 giveseats();
                 genElec();
-                genElecCountdown =66;
+                getTotalLeft();
+                getTotalRight();
+                genElecCountdown =60;
             }
             
         if(month >11){
@@ -329,6 +378,11 @@ public class Main
    
    
    public static void genElec(){
+       for(Party p : parties){
+           p.clearWon();
+       }
+       
+       
        int rseat = 0, lefto =0, righto=0;
        
        int[] psup = new int[parties.size()];
@@ -343,8 +397,8 @@ public class Main
            
            
            rseat = reg[i].getSeat();
-           lefto = reg[i].getLeft();
-           righto = reg[i].getRight();
+           lefto = (reg[i].getLeft()+1)/leftCoalition.size();
+           righto = (reg[i].getRight()+1)/rightCoalition.size();
            
            idx = 0;
            for(Party p : parties){
@@ -364,8 +418,12 @@ public class Main
            for(int b=0; b<rseat; b++){
                wnr = -1;
                wvt = 0;    
+               //for(int x:pclone){ // for debug purposes
+               //    System.out.println(x);
+               //}
+               
                for(int x = 0; x<parties.size();x++){
-                   if(pclone[x] >wvt){
+                   if(pclone[x] >=wvt){
                        wnr = x;
                        wvt = pclone[x];
                    }
@@ -373,6 +431,7 @@ public class Main
                
                seatgain[wnr]++;
                pclone[wnr] = psup[wnr]/(seatgain[wnr]+1);
+               
            }
            
            idx = 0;
@@ -384,16 +443,47 @@ public class Main
        }
    }
     
+    public static void getTotalLeft(){
+        totLeft=0;
+        for(Party p : leftCoalition){
+            totLeft+=p.gSeat();
+        }
+    }
+    
+    public static void getTotalRight(){
+        totRight=0;
+        for(Party p : rightCoalition){
+            totRight+=p.gSeat();
+        }
+    }
+    
+    public static void findMajorityCoalition(){
+        int nextRuling = 0;
+        if(totLeft > totRight){
+            nextRuling = 1;
+        }else if(totRight > totLeft){
+            nextRuling = 2;
+        }else if(totLeft== totRight){
+            if(currentRulingCoalition == 1){
+                nextRuling=2;
+            }else{
+                nextRuling=1;
+            }
+        }
+        
+        currentRulingCoalition = nextRuling;
+    }
+    
     public static void allParties(){
         sortPartiesByIdeology();
-        System.out.println("Leftist Parties=====");
+        System.out.println("Leftist Parties===== " + totLeft+ " Seats");
         for(Party p : leftCoalition){
             if(p.gSeat() >1){
             System.out.println(p);
             System.out.println("Seats: " + p.gSeat());
             }
         }
-        System.out.println("\nRightist Parties=====");
+        System.out.println("\nRightist Parties===== "+ totRight + " Seats");
         for(Party p : rightCoalition){
             if(p.gSeat() >1){
             System.out.println(p);
