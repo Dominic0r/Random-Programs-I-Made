@@ -98,6 +98,10 @@ public class Main
         public int getRight(){
             return this.right;
         }
+        
+        public String getName(){
+            return this.name;
+        }
     }
     
     
@@ -130,6 +134,8 @@ public class Main
         int age;
         int[] wonInRegions = new int[5];
         
+        boolean isMajor;
+        
         public Party(String name, int support, int ideology){
             this.name = name;
             this.seats = 0;
@@ -139,6 +145,18 @@ public class Main
             for(int i=0; i<this.wonInRegions.length;i++){
                 this.wonInRegions[i] = 0;
             }
+            this.isMajor = false;
+        }
+        
+        void checkMajor(){
+            isMajor = false;
+            if(this.seats >= Math.round((totseats*15)/100)){
+                isMajor = true;
+            }
+        }
+        
+        public boolean getMajor(){
+            return this.isMajor;
         }
         
         void clearWon(){
@@ -149,6 +167,20 @@ public class Main
         
         void upAge(){
             this.age++;
+        }
+        
+        void addRegSeat(int gain, int region){
+            this.wonInRegions[region] = 0;
+            this.wonInRegions[region] = gain;
+        }
+        
+        void showRegWons(int region){
+            String[] ideoStr = {"Leftist","Rightist"};
+            System.out.println(this.name+ "("+ ideoStr[this.ideology-1]+ "): " + this.wonInRegions[region]+ " Seats");
+        }
+        
+        int getSpecificSeats(int region){
+            return this.wonInRegions[region];
         }
         
         int gAge(){
@@ -389,12 +421,18 @@ public class Main
        int[] pclone = new int[parties.size()];
        int[] seatgain = new int[parties.size()];
        
+       int[] regSeatGain = new int[parties.size()];
+       
        int wnr = -1, wvt = 0;
        
        int idx = 0;
        
+       
+       
        for(int i=0; i<reg.length; i++){
-           
+           for(int p=0; p<regSeatGain.length;p++){
+           regSeatGain[p] = 0;
+       }
            
            rseat = reg[i].getSeat();
            lefto = (reg[i].getLeft()+1)/leftCoalition.size();
@@ -402,6 +440,7 @@ public class Main
            
            idx = 0;
            for(Party p : parties){
+               p.checkMajor();
                p.seatClear();
                if(p.gIdeo() == 1){ // left
                    psup[idx] = (p.gSup()*lefto)*rseat;
@@ -409,6 +448,9 @@ public class Main
                    psup[idx] = (p.gSup()*righto)*rseat;
                }
                
+               if(p.getMajor()){
+                   psup[idx]= psup[idx]*10;
+               }
                
                idx++;
            }
@@ -430,6 +472,7 @@ public class Main
                }
                
                seatgain[wnr]++;
+               regSeatGain[wnr]++;
                pclone[wnr] = psup[wnr]/(seatgain[wnr]+1);
                
            }
@@ -437,6 +480,7 @@ public class Main
            idx = 0;
            for(Party p : parties){
                p.addSeat(seatgain[idx]);
+               p.addRegSeat(regSeatGain[idx], i);
                idx++;
            }
            
@@ -492,6 +536,28 @@ public class Main
         }
     }
     
+    public static void byRegion(){
+        for(int i=0; i<reg.length;i++){
+            System.out.println(reg[i].getName()+"#################");
+            System.out.println("Leftist Parties===== ");
+        for(Party p : leftCoalition){
+            if(p.getSpecificSeats(i)>0){
+            p.showRegWons(i);
+            }
+        }
+        System.out.println("\nRightist Parties===== ");
+        for(Party p : rightCoalition){
+            if(p.getSpecificSeats(i)>0){
+            p.showRegWons(i);
+            }
+        }
+            
+            
+            
+            System.out.println("\n");
+        }
+    }
+    
     
     
     public static String[] months = {"January","February","March","April","May","June","July","August","September","October","November","December"};
@@ -522,19 +588,29 @@ public class Main
 		System.out.println("\n==========");
 		System.out.println("1- Display Regions");
 		System.out.println("2- Display Parties");
+		System.out.println("3- Display Seats By Region");
 		//if(year == 2025){
-		uput = "";
-		    uput = sc.nextLine();
+		
 		//}
+		boolean loper = false;
+		do{
+		    uput = "";
+		    uput = sc.nextLine();
 		if(!uput.equals("")){
 		if(uput.equals("1")){
 		    dispAll();
 		    
 		}else if(uput.equals("2")){
 		    allParties();
+		}else if(uput.equals("3")){
+		    byRegion();
 		}
-		sc.nextLine();
+		
+		}else{
+		    loper = true;
 		}
+		
+		}while(!loper);
 		Thread.sleep(100);
 		monthly();
 		System.out.print("\033[H\033[2J");  
