@@ -211,15 +211,15 @@ public class Main
             int rng = ra.nextInt(20);
             if(rng>10){
                 if(rng >15){
-                    this.support += 3;
-                }else{
                     this.support += 2;
+                }else{
+                    this.support += 1;
                 }
             }else{
                 if(rng>5){
-                    this.support-=2;
+                    this.support-=1;
                 }else{
-                    this.support-=3;
+                    this.support-=2;
                 }
             }
             
@@ -339,7 +339,9 @@ public class Main
     
     public static void polUp(){
         for(Region r: reg){
+            if(ra.nextInt(10)>5){
             r.updatePolitics();
+            }
         }
     }
    
@@ -347,7 +349,9 @@ public class Main
         for(Region r : reg){r.changePopulation();r.updatePolitics();}
         getTotalPop();
         for(Party p : parties){
+            if(ra.nextInt(10)>5){
             p.upSupport();
+            }
             p.upAge();
         }
         
