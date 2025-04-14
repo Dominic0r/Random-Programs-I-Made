@@ -23,15 +23,16 @@ public class Main
         int population;
         int seats;
         String name;
+        boolean leftShift;
         int left =0, right = 0;
         
         Region(int pop, int seat, String n){
             this.population = pop;
             this.seats = seat;
             this.name = n;
-            this.left = 25 + ra.nextInt(30);
+            this.left = 25 + ra.nextInt(51);
             this.right = 100-left;
-            
+            this.leftShift = false;
         }
         
         void updatePolitics(){
@@ -50,10 +51,20 @@ public class Main
                 }
             }
             
+            if(this.leftShift){
+                this.left+=ra.nextInt(10);
+            }
+            
+            
             if(this.left <25){
                 this.left = 25;
+                this.leftShift = true;
             } else if(this.left >75){
                 this.left = 75;
+            }
+            
+            if(this.left >50){
+                this.leftShift = false;
             }
             
             this.right = 100-left;
@@ -80,7 +91,9 @@ public class Main
         void displayDat(){
             System.out.println(this.name);
             System.out.println("Seats:"+this.seats);
-            System.out.println("Ppopulation: "+this.population);
+            System.out.println("Population: "+this.population);
+            System.out.println("Leftists: "+this.left);
+            System.out.println("Rightists: "+this.right);
         }
         
         public int getPop(){
@@ -211,16 +224,20 @@ public class Main
             int rng = ra.nextInt(20);
             if(rng>10){
                 if(rng >15){
-                    this.support += 2;
-                }else{
                     this.support += 1;
+                }else{
+                    this.support += 0;
                 }
             }else{
                 if(rng>5){
-                    this.support-=1;
+                    this.support-=0;
                 }else{
-                    this.support-=2;
+                    this.support-=1;
                 }
+            }
+            
+            if(this.seats>totseats/2 && this.support > 50){
+                this.support-=1;
             }
             
             if(this.support<1){
@@ -250,13 +267,24 @@ public class Main
      public static ArrayList<Party> rightCoalition = new ArrayList<>();
      
      public static void genParty(){
-         int genIdo = ra.nextInt(2)+1;
-         if(ra.nextInt(5)>leftCoalition.size()){
-             genIdo = 1;
-         }
-         if(ra.nextInt(5)>rightCoalition.size()){
-             genIdo=2;
-         }
+             int leftCount = (int)parties.stream().filter(p -> p.gIdeo() == 1).count();
+      int rightCount = (int)parties.stream().filter(p -> p.gIdeo() == 2).count();
+      
+      
+      int numOfMajorLeft = (int)parties.stream().filter(p -> p.getMajor()&& p.gIdeo() == 1).count();
+       int numOfMajorRight = (int)parties.stream().filter(p -> p.getMajor()&& p.gIdeo() == 2).count();
+      
+     int genIdo = (leftCount < rightCount) ? 1 : 2;
+
+      if(leftCount == rightCount){
+           genIdo = ra.nextInt(2)+1;
+        }
+        
+        if (genIdo == 1 && numOfMajorLeft > 0 && ra.nextInt(3) < 2) {
+    genIdo = 2;
+} else if (genIdo == 2 && numOfMajorRight > 0 && ra.nextInt(3) < 2) {
+    genIdo = 1;
+}
          
          String genname = "";
          int gensupport = 15;
@@ -349,14 +377,19 @@ public class Main
         for(Region r : reg){r.changePopulation();r.updatePolitics();}
         getTotalPop();
         for(Party p : parties){
-            if(ra.nextInt(10)>5){
+            
             p.upSupport();
-            }
+            
             p.upAge();
         }
         
         remParty();
-        if(ra.nextInt(10)>parties.size()){
+        
+        int numOfMajorLeft = (int)parties.stream().filter(p -> p.getMajor()&& p.gIdeo() == 1).count();
+       int numOfMajorRight = (int)parties.stream().filter(p -> p.getMajor()&& p.gIdeo() == 2).count();
+       
+       
+        if(ra.nextInt(10)>parties.size() && ra.nextInt(3)>numOfMajorRight && ra.nextInt(3)>numOfMajorLeft){
             genParty();
         }
         
@@ -414,6 +447,8 @@ public class Main
    
    
    public static void genElec(){
+       int numOfMajorLeft = (int)parties.stream().filter(p -> p.getMajor()&& p.gIdeo() == 1).count();
+       int numOfMajorRight = (int)parties.stream().filter(p -> p.getMajor()&& p.gIdeo() == 2).count();
        for(Party p : parties){
            p.clearWon();
        }
@@ -439,8 +474,8 @@ public class Main
        }
            
            rseat = reg[i].getSeat();
-           lefto = (reg[i].getLeft()+1)/leftCoalition.size();
-           righto = (reg[i].getRight()+1)/rightCoalition.size();
+           lefto = (reg[i].getLeft()+1)/(leftCoalition.size()+1);
+           righto = (reg[i].getRight()+1)/(rightCoalition.size()+1);
            
            idx = 0;
            for(Party p : parties){
@@ -448,12 +483,38 @@ public class Main
                p.seatClear();
                if(p.gIdeo() == 1){ // left
                    psup[idx] = (p.gSup()*lefto)*rseat;
+                   
+                   
                } else{ // right
                    psup[idx] = (p.gSup()*righto)*rseat;
                }
                
-               if(p.getMajor()){
-                   psup[idx]= psup[idx]*10;
+               if(year !=1948){
+               //System.out.println(numOfMajorLeft);
+               //System.out.println(numOfMajorRight);
+               //sc.nextLine();
+               }
+               
+               if(numOfMajorLeft >0 && numOfMajorRight >0){
+                   if(p.getMajor()){
+                   psup[idx]+= psup[idx]/2;
+               }
+               }else{
+               
+               }
+               
+               if(totLeft >totRight){
+                   if(p.gIdeo() == 2){
+                       psup[idx] += psup[idx]/2;
+                   }
+               }else{
+                   if(p.gIdeo() == 1){
+                       psup[idx] += psup[idx]/2;
+                   }
+               }
+               
+               if(numOfMajorLeft>0 && numOfMajorRight>0){
+               psup[idx] /= (p.gIdeo() == 1) ? numOfMajorLeft:numOfMajorRight;
                }
                
                idx++;
@@ -523,17 +584,19 @@ public class Main
     }
     
     public static void allParties(){
+        getTotalRight();
+        getTotalLeft();
         sortPartiesByIdeology();
         System.out.println("Leftist Parties===== " + totLeft+ " Seats");
         for(Party p : leftCoalition){
-            if(p.gSeat() >1){
+            if(p.gSeat() >0){
             System.out.println(p);
             System.out.println("Seats: " + p.gSeat());
             }
         }
         System.out.println("\nRightist Parties===== "+ totRight + " Seats");
         for(Party p : rightCoalition){
-            if(p.gSeat() >1){
+            if(p.gSeat() >0){
             System.out.println(p);
             System.out.println("Seats: " + p.gSeat());
             }
