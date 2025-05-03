@@ -47,12 +47,22 @@ public class Main
         public void display(){
             
             if(this.price >=100){
-                System.out.println(this.name+ "   | "+ this.price+ "   | "+ this.owned);
+                System.out.print(this.name+ "   | "+ this.price+ "   | ");
             }else if(this.price >=10 &&this.price <100){
-                System.out.println(this.name+ "   | "+ this.price+ "    | "+ this.owned);
+                System.out.print(this.name+ "   | "+ this.price+ "    | ");
             }else if(this.price <10){
-                System.out.println(this.name+ "   | "+ this.price+ "     | "+ this.owned);
+                System.out.print(this.name+ "   | "+ this.price+ "     | ");
             }
+            
+            if(this.owned>=100){
+                System.out.print(this.owned + "   | ");
+            }else if(this.owned >=10 && this.owned < 100){
+                System.out.print(this.owned + "    | ");
+            }else if(this.owned < 10){
+                System.out.print(this.owned + "     | ");
+            }
+            
+            System.out.println(this.owned*this.price);
             
         }
     }
@@ -121,14 +131,22 @@ public class Main
 		boolean valInp = false;
 		String uput = "";
 		do{
-		System.out.println("STOCK | PRICE | OWNED");
+		System.out.println("STOCK | PRICE | OWNED | ASSETS");
 		for(Stock s : stocks){
 		    s.display();
 		}
 		
-		
+		do{
+		if(dayIndex != 0 && dayIndex != 6){
+		    System.out.println("BUY");
+		    System.out.println("SELL");
+		    System.out.println();
+		}
+		System.out.println("");
 		uput = sc.nextLine();
 		
+		
+		}while(valInp);
 		}while(game);
 	}
 }
