@@ -1,0 +1,75 @@
+body {
+  font-family: 'Georgia', serif;
+  background-color: #1e1e1e;
+  color: #f4f4f4;
+  padding: 20px;
+}
+
+#game-container {
+  max-width: 600px;
+  margin: auto;
+}
+
+#choices {
+  text-align: center;       /* Centers inline elements like buttons/divs inside */
+  margin-top: 20px;
+}
+
+.choice {
+  display: inline-block;    /* Makes button size fit content */
+  margin: 8px;              /* Space between buttons */
+  padding: 10px 20px;
+  background-color: #444;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.choice:hover {
+  background-color: #666;     /* Lighter on hover */
+}
+
+#feedback-box {
+  background-color: #222;
+  color: white;
+  padding: 12px;
+  border: 2px solid #555;
+  border-radius: 6px;
+  max-width: 400px;
+  margin: 20px auto;
+  text-align: center;
+  display: none;
+}
+
+#feedback-box.show {
+  display: block;
+}
+
+.hidden {
+  display: none;
+}
+
+#continue-btn {
+  margin-top: 10px;
+  padding: 6px 12px;
+  background-color: #444;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+
+#character-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#character-image {
+	
+  width: 150px;
+  height: auto;
+  border-radius: 8px;
+  border: 2px solid #555;
+}
