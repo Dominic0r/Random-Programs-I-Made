@@ -69,7 +69,7 @@ const story = {
 	  text: "You sit there in your office, alone once more. You look at the calendar and think about how long the national period of mourning will be.",
 	  
 	  choices:[
-	  {text: "Of course, we will give a week of national mourning, and have state media only broadcast propaganda for the same time period. It's befitting of a man of his excellence", feedback: "As you wish, an entire week is dedicated to the deceased Eternal Leader. Behind the scenes you prepare to take the reins as the country's next chief executive", next: "Ques7", effect ()=> gameState.loyalists++},
+	  {text: "Of course, we will give a week of national mourning, and have state media only broadcast propaganda for the same time period. It's befitting of a man of his excellence", feedback: "As you wish, an entire week is dedicated to the deceased Eternal Leader. Behind the scenes you prepare to take the reins as the country's next chief executive", next: "Ques7", effect: ()=> gameState.loyalists++},
 	  
 	  {text: "A week should suffice. His death is a national tragedy but there's no reason to completely shut down the nation.", feedback: "For an entire week, the Philippine nation mourns the loss of its President, its Helmsman.", next: "Ques7"},
 	  
@@ -77,9 +77,6 @@ const story = {
 	  ]
   },
   
-  Ques7:{
-	  text: 
-  }
   
   
   
