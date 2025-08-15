@@ -309,11 +309,13 @@ public static final String WHITE = "\u001B[37m";
         System.out.println("Your population increased by "+newpops);
         population+= newpops;
         
+        int delaylength = 25;
+        
         if(ra.nextBoolean() && disasters<maxdisasters){ // drought
             int destroyedLand = ra.nextInt((land/divisor)+1);
             //System.out.println("A drought has destroyed "+ destroyedLand+ " acres of arable land");
             
-            slowPrint(droughtQuotes[ra.nextInt(droughtQuotes.length)], 50,YELLOW);
+            slowPrint(droughtQuotes[ra.nextInt(droughtQuotes.length)], delaylength,YELLOW);
             //System.out.println(droughtQuotes[ra.nextInt(droughtQuotes.length)]);
             land -= destroyedLand;
             disasters++;
@@ -325,7 +327,7 @@ public static final String WHITE = "\u001B[37m";
         if(ra.nextBoolean() && disasters<maxdisasters){ // plague
             int dead = ra.nextInt((population/divisor)+1);
             //System.out.println("A plague has killed "+ dead+ " people in your land");
-            slowPrint(plagueQuotes[ra.nextInt(plagueQuotes.length)], 50,PURPLE);
+            slowPrint(plagueQuotes[ra.nextInt(plagueQuotes.length)], delaylength,PURPLE);
             population -= dead;
             if(dead> healthy){
                 malnourished -= dead-healthy;
@@ -357,7 +359,7 @@ public static final String WHITE = "\u001B[37m";
                 
                 //System.out.println("Raiders have ravaged your kingdom!");
                 //System.out.println(droughtQuotes[ra.nextInt(raiderQuotes.length)]);
-                slowPrint(raiderQuotes[ra.nextInt(raiderQuotes.length)], 50,RED);
+                slowPrint(raiderQuotes[ra.nextInt(raiderQuotes.length)], delaylength,RED);
             } else{
                 System.out.println("Some raiders tried and failed to invade your kingdom!");
                 army -= raiders;
@@ -372,7 +374,7 @@ public static final String WHITE = "\u001B[37m";
             int stolen = ra.nextInt((money/divisor)+1);
             //System.out.println("A corrupt member of your government has stolen "+ stolen+ " PZH");
             //System.out.println(droughtQuotes[ra.nextInt(corruptionQuotes.length)]);
-            slowPrint(corruptionQuotes[ra.nextInt(corruptionQuotes.length)], 50,CYAN);
+            slowPrint(corruptionQuotes[ra.nextInt(corruptionQuotes.length)], delaylength,CYAN);
             money -= stolen;
             disasters++;
             maxdisasters--;
@@ -385,7 +387,7 @@ public static final String WHITE = "\u001B[37m";
             int lost = ra.nextInt((loyalty/divisor)+1);
             //System.out.println("A scandal has errupted in your government!");
             //System.out.println(droughtQuotes[ra.nextInt(scandalQuotes.length)]);
-            slowPrint(scandalQuotes[ra.nextInt(scandalQuotes.length)], 50,BLUE);
+            slowPrint(scandalQuotes[ra.nextInt(scandalQuotes.length)], delaylength,BLUE);
             loyalty -= lost;
             disasters++;
             maxdisasters--;
@@ -423,7 +425,7 @@ public static final String WHITE = "\u001B[37m";
             int lost = ra.nextInt((grain/divisor)+1);
             //System.out.println("Rats have eaten "+ lost + " bushels of grain!");
             //System.out.println(droughtQuotes[ra.nextInt(ratsQuotes.length)]);
-            slowPrint(ratsQuotes[ra.nextInt(ratsQuotes.length)], 50,GREEN);
+            slowPrint(ratsQuotes[ra.nextInt(ratsQuotes.length)], delaylength,GREEN);
             newGrain -= lost;
             disasters++;
             maxdisasters--;
