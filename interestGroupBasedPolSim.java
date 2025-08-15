@@ -1,8 +1,14 @@
 import java.util.*;
 
-public class interestGroupBasedPolSim
+public class Main
 {
     public static Random ra = new Random();
+    
+    public static int year = 1950;
+    public static int moNum =0;
+    public static String[] months = {"January","February","March","April","May","June","July","August","September","October","November","December"};
+    
+    public static int elecCount = 6;
     
     public static class Group{
         int minPolicy;
@@ -620,16 +626,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             }
         }
         rulingParty = maxParty;
-        System.out.println("\n\nRuling Party: "+ maxParty.getName());
-        System.out.println("The Governing Coalition: ");
-        for(Party par: government){
-                System.out.println(par.getName());
-            }
-            
-        System.out.println("\nThe Opposition Coalition: ");
-        for(Party par: opposition){
-                System.out.println(par.getName());
-            }
+        
     }
     
     public static void checkAlienation(){
@@ -791,6 +788,23 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         toRemove.clear();
     }
     
+    public static void monthly(){
+        moNum++;
+        if(moNum == 12){
+            moNum = 0;
+            year++;
+        }
+        
+        elecCount--;
+        
+        if(elecCount==0){
+            election();          // (4) Calculates votes and assigns seats based on group support
+        checkSeats();        // (5) Removes parties that did poorly in the election
+        findBiggestParty();    // (6) Uses final seat counts to build government and opposition
+        
+        elecCount = 5*12;
+        }
+    }
     
 	public static void main(String[] args) throws Exception{
 	    Scanner sc = new Scanner(System.in);
@@ -802,11 +816,23 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		arrangeGroups();     // (1) Assigns groups to parties based on current party policies
         checkAlienation();   // (2) Identifies unrepresented groups and may create new parties
         checkNoGroups();     // (3) Cleans up parties with no support groups (needed after new parties may be created)
-        election();          // (4) Calculates votes and assigns seats based on group support
-        checkSeats();        // (5) Removes parties that did poorly in the election
-        findBiggestParty();    // (6) Uses final seat counts to build government and opposition
-
+        monthly();
 		
+		System.out.println(months[moNum]+ " - "+ year);
+		
+		if(rulingParty != null){
+		System.out.println("\n\nRuling Party: "+ rulingParty.getName());
+        System.out.println("The Governing Coalition: ");
+        for(Party par: government){
+                System.out.println(par.getName());
+            }
+            
+        System.out.println("\nThe Opposition Coalition: ");
+        for(Party par: opposition){
+                System.out.println(par.getName());
+            }
+		
+		}
 		
 		
 		for(Party par: allParties){  
