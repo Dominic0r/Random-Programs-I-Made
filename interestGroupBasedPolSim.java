@@ -143,6 +143,20 @@ public class Main
         
     }
     
+    
+    public static class archiveParty{
+        int startdate,enddate;
+        String name;
+        
+        public archiveParty(String name, int startdate, int enddate){
+            this.name = name;
+            this.startdate = startdate;
+            this.enddate = enddate;
+        }
+    }
+    
+    public static List<Group> previousRulingParties == new ArrayList<>();
+    
     public static List<Group> allGroups = new ArrayList<>();
     public static void generateGroups(){
         allGroups.add(new Group(1, 15, "Traditionalists", 35));         // 0 – culturally rigid, fading influence
@@ -797,7 +811,9 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     public static int getGovNumSup(){
         int totsup = 0;
         for(Party par : government){
-            totsup += par.getSeats();
+            for(Group gro : par.supportGroups){
+                totsup += gro.getPoints();
+            }
         }
         return totsup;
     }
