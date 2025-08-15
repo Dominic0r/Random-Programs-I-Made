@@ -680,6 +680,8 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }
         
         
+        
+        
     }
     
     public static void createNewParty(Group gro, int avg){
@@ -717,8 +719,9 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         Group maxGroup = null;
         int avg =0;
         for(Party par: allParties){
-            maxnum = 0;
+            maxnum = -100;
             maxGroup = null;
+            
             
             for(Group gro: par.supportGroups){
                 if(gro.getPoints()> maxnum){
@@ -726,12 +729,15 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
                     maxGroup = gro;
                 }
             }
+            
+            if(maxGroup != null){
             avg = (maxGroup.getMin()+maxGroup.getMax())/2;
             
             if(par.getPolicy()> avg){
                 par.changePolicy((par.getPolicy()-avg)/5);
             }else{
                 par.changePolicy((avg-par.getPolicy())/5);
+            }
             }
         }
         
@@ -788,22 +794,40 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         toRemove.clear();
     }
     
+    public static int getGovNumSup(){
+        int totsup = 0;
+        for(Party par : government){
+            totsup += par.getSeats();
+        }
+        return totsup;
+    }
+    
     public static void monthly(){
         moNum++;
         if(moNum == 12){
             moNum = 0;
             year++;
         }
-        
+        boolean rpartyhasnogroups = false;
         elecCount--;
+        if(rulingParty!=null){
+        Scanner sc = new Scanner(System.in);
+        System.out.println(rulingParty.supportGroups.size());
         
-        if(elecCount==0){
+        rpartyhasnogroups = rulingParty.supportGroups.size() == 0;
+        }
+        
+        if(elecCount==0 || getGovNumSup() <35 || rpartyhasnogroups){
+            
+        
+            
             election();          // (4) Calculates votes and assigns seats based on group support
         checkSeats();        // (5) Removes parties that did poorly in the election
         findBiggestParty();    // (6) Uses final seat counts to build government and opposition
         
         elecCount = 5*12;
         }
+        
     }
     
 	public static void main(String[] args) throws Exception{
