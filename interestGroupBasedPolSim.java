@@ -10,7 +10,7 @@ public class Main
     
     public static int elecCount = 6;
     
-    int startdate = 0;
+    public static int startdate = 0;
     
     public static class Group{
         int minPolicy;
@@ -157,7 +157,7 @@ public class Main
         }
     }
     
-    public static List<Party> previousRulingParties == new ArrayList<>();
+    public static List<archiveParty> previousRulingParties = new ArrayList<>();
     
     public static List<Group> allGroups = new ArrayList<>();
     public static void generateGroups(){
@@ -643,7 +643,9 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }
         
         if(rulingParty != maxParty){
+            if(rulingParty !=null){
             addToArchive();
+            }
             startdate = year;
             
         }
@@ -856,7 +858,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     
     
     public static void addToArchive(){
-        previousRulingParties.add(new Party(rulingParty.getName(),startdate,year));
+        previousRulingParties.add(new archiveParty(rulingParty.getName(),startdate,year));
     }
 	public static void main(String[] args) throws Exception{
 	    Scanner sc = new Scanner(System.in);
