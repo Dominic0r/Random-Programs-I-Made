@@ -155,7 +155,7 @@ public class Main
         }
     }
     
-    public static List<Group> previousRulingParties == new ArrayList<>();
+    public static List<Party> previousRulingParties == new ArrayList<>();
     
     public static List<Group> allGroups = new ArrayList<>();
     public static void generateGroups(){
@@ -846,6 +846,10 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         
     }
     
+    
+    public static void addToArchive(){
+        previousRulingParties.add(new Party)
+    }
 	public static void main(String[] args) throws Exception{
 	    Scanner sc = new Scanner(System.in);
 		generateGroups();
