@@ -4,7 +4,7 @@ public class Main
 {
     public static Random ra = new Random();
     
-    public static int year = 1950;
+    public static int year = 1925;
     public static int moNum =0;
     public static String[] months = {"January","February","March","April","May","June","July","August","September","October","November","December"};
     
@@ -809,7 +809,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     public static void checkNoGroups(){
         List<Party> toRemove = new ArrayList<>();
         for(Party par : allParties){
-            if(par.supportGroups.size() == 0){
+            if(par.supportGroups.size() == 0 && par.getSeats() == 0){
                 toRemove.add(par);
             }
         }
