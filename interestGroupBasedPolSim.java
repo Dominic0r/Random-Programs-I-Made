@@ -901,7 +901,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		
 		
 		for(Party par: allParties){  
-		    System.out.println("\n\n"+par.getName()+ " - "+ par.getIdeology());
+		    System.out.println("\n\n"+par.getName()+ " - "+ par.getIdeology() + " - "+ par.getSeats()+ "% of Parliament");
 		    for(Group gro : par.supportGroups){
 		        System.out.print(" - "+gro.getName());
 		    }
