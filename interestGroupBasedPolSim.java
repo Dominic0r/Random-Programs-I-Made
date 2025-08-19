@@ -809,7 +809,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     public static void checkNoGroups(){
         List<Party> toRemove = new ArrayList<>();
         for(Party par : allParties){
-            if(par.supportGroups == null){
+            if(par.supportGroups.size() == 0){
                 toRemove.add(par);
             }
         }
@@ -839,7 +839,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         election();          // (4) Calculates votes and assigns seats based on group support
         checkSeats();        // (5) Removes parties that did poorly in the election
         findBiggestParty();    // (6) Uses final seat counts to build government and opposition
-        
+        elecCount = 5*12;
     }
     
     public static void monthly(){
@@ -848,6 +848,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             moNum = 0;
             year++;
         }
+        checkNoGroups();
         boolean rpartyhasnogroups = false;
         elecCount--;
         if(rulingParty!=null){
@@ -861,8 +862,6 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             
         triggerElection();
             
-            
-        elecCount = 5*12;
         }
         
     }
@@ -878,6 +877,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		
 		
 		while(true){
+		    
 		arrangeGroups();     // (1) Assigns groups to parties based on current party policies
         checkAlienation();   // (2) Identifies unrepresented groups and may create new parties
         checkNoGroups();     // (3) Cleans up parties with no support groups (needed after new parties may be created)
