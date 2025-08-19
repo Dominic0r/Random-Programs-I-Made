@@ -815,7 +815,14 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }
         
         allParties.removeAll(toRemove);
+        if(rulingParty !=null){
+            if(toRemove.contains(rulingParty)){
+                triggerElection();
+            }
+        }
         toRemove.clear();
+        
+        
     }
     
     public static int getGovNumSup(){
@@ -826,6 +833,13 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             }
         }
         return totsup;
+    }
+    
+    public static void triggerElection(){
+        election();          // (4) Calculates votes and assigns seats based on group support
+        checkSeats();        // (5) Removes parties that did poorly in the election
+        findBiggestParty();    // (6) Uses final seat counts to build government and opposition
+        
     }
     
     public static void monthly(){
@@ -845,12 +859,9 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         
         if(elecCount==0 || getGovNumSup() <35 || rpartyhasnogroups){
             
-        
+        triggerElection();
             
-            election();          // (4) Calculates votes and assigns seats based on group support
-        checkSeats();        // (5) Removes parties that did poorly in the election
-        findBiggestParty();    // (6) Uses final seat counts to build government and opposition
-        
+            
         elecCount = 5*12;
         }
         
