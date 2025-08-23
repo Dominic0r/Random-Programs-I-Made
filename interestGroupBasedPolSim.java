@@ -449,8 +449,6 @@ allGroups.get(12).addPartyName("New Flame Front");
                 points -= (year - startdate)/3;
                 if(snapElec){
                     if(ra.nextBoolean()){
-                        
-                    }else{
                         points -= (points*25)/100;
                     }
                 }
