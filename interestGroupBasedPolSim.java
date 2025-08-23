@@ -12,6 +12,10 @@ public class Main
     
     public static int startdate = 0;
     
+    public static boolean snapElec = false;
+    
+    public static int cooldown = 10;
+    
     public static class Group{
         int minPolicy;
         int maxPolicy;
@@ -441,6 +445,17 @@ allGroups.get(12).addPartyName("New Flame Front");
                 points+= contrib;
             }
             
+            if(government.contains(par)){
+                points -= (year - startdate)/5;
+                if(snapElec){
+                    if(ra.nextBoolean()){
+                        points += (points*25)/100;
+                    }else{
+                        points -= (points*25)/100;
+                    }
+                }
+            }
+            
             partyScore.put(par, points*100);
         }
         partyScoreOrig.putAll(partyScore);
@@ -862,10 +877,13 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         rpartyhasnogroups = rulingParty.supportGroups.size() == 0;
         }
         
+        cooldown--;
+        
         boolean hasTrig = false;
         if(elecCount==0 || getGovNumSup() <35 || rpartyhasnogroups){
         triggerElection();
             hasTrig = true;
+            cooldown-- = 10;
         }
         
         int govSeats = 0;
@@ -873,9 +891,24 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             govSeats += par.getSeats();
         }
         
+        if(rulingParty!=null && !hasTrig){
+            if(rulingParty.getSeats() < govSeats/2){
+                if(ra.nextInt(govSeats) < rulingParty.getSeats() && cooldown <=0){
+                    snapElec = true;
+                    triggerElection();
+                    snapElec = false;
+                    hasTrig = true;
+                    cooldown = 10;
+                }
+            }
+        }
+        
         if(!hasTrig && govSeats < 50){
-            if(ra.nextInt((100-govSeats)+1) > govSeats){
+            if(ra.nextInt((100-govSeats)+1) > govSeats && cooldown <=0){
+                snapElec = true;
                 triggerElection();
+                snapElec = false;
+                cooldown = 10;
             }
         }
         
