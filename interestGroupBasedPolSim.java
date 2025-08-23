@@ -878,12 +878,13 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }
         
         cooldown--;
+        int cdownnum = 24;
         
         boolean hasTrig = false;
         if(elecCount==0 || getGovNumSup() <35 || rpartyhasnogroups){
         triggerElection();
             hasTrig = true;
-            cooldown = 10;
+            cooldown = cdownnum;
         }
         
         int govSeats = 0;
@@ -898,7 +899,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
                     triggerElection();
                     snapElec = false;
                     hasTrig = true;
-                    cooldown = 10;
+                    cooldown = cdownnum;
                 }
             }
         }
@@ -908,7 +909,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
                 snapElec = true;
                 triggerElection();
                 snapElec = false;
-                cooldown = 10;
+                cooldown = cdownnum;
             }
         }
         
