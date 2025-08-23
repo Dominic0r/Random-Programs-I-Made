@@ -446,10 +446,10 @@ allGroups.get(12).addPartyName("New Flame Front");
             }
             
             if(government.contains(par)){
-                points -= (year - startdate)/5;
+                points -= (year - startdate)/3;
                 if(snapElec){
                     if(ra.nextBoolean()){
-                        points += (points*25)/100;
+                        
                     }else{
                         points -= (points*25)/100;
                     }
@@ -885,6 +885,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         triggerElection();
             hasTrig = true;
             cooldown = cdownnum;
+            snapElec = false;
         }
         
         int govSeats = 0;
@@ -892,24 +893,23 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             govSeats += par.getSeats();
         }
         
-        if(rulingParty!=null && !hasTrig){
+        if(rulingParty!=null && !hasTrig && !snapElec){
             if(rulingParty.getSeats() < govSeats/2){
                 if(ra.nextInt(govSeats) < rulingParty.getSeats() && cooldown <=0){
                     snapElec = true;
-                    triggerElection();
-                    snapElec = false;
-                    hasTrig = true;
-                    cooldown = cdownnum;
+                    if(elecCount > 3){
+                        elecCount  =3;
+                    }
                 }
             }
         }
         
-        if(!hasTrig && govSeats < 50){
+        if(!hasTrig && govSeats < 50 && !snapElec){
             if(ra.nextInt((100-govSeats)+1) > govSeats && cooldown <=0){
                 snapElec = true;
-                triggerElection();
-                snapElec = false;
-                cooldown = cdownnum;
+                if(elecCount >3){
+                    elecCount = 3;
+                }
             }
         }
         
