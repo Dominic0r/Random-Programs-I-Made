@@ -155,6 +155,10 @@ public class Main
             this.startdate = startdate;
             this.enddate = enddate;
         }
+        
+        public void display(){
+            System.out.println(this.name + " ("+ this.startdate+ " - "+ this.enddate+ ")");
+        }
     }
     
     public static List<archiveParty> previousRulingParties = new ArrayList<>();
@@ -853,15 +857,26 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         elecCount--;
         if(rulingParty!=null){
         Scanner sc = new Scanner(System.in);
-        System.out.println(rulingParty.supportGroups.size());
+        //System.out.println(rulingParty.supportGroups.size());
         
         rpartyhasnogroups = rulingParty.supportGroups.size() == 0;
         }
         
+        boolean hasTrig = false;
         if(elecCount==0 || getGovNumSup() <35 || rpartyhasnogroups){
-            
         triggerElection();
-            
+            hasTrig = true;
+        }
+        
+        int govSeats = 0;
+        for(Party par :government){
+            govSeats += par.getSeats();
+        }
+        
+        if(!hasTrig && govSeats < 50){
+            if(ra.nextInt((100-govSeats)+1) > govSeats){
+                triggerElection();
+            }
         }
         
     }
@@ -869,6 +884,12 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     
     public static void addToArchive(){
         previousRulingParties.add(new archiveParty(rulingParty.getName(),startdate,year));
+    }
+    
+    public static void displayArchive(){
+        for(archiveParty par : previousRulingParties){
+            par.display();
+        }
     }
 	public static void main(String[] args) throws Exception{
 	    Scanner sc = new Scanner(System.in);
@@ -914,7 +935,12 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		}*/
 		
 		System.out.println("\n");
-		sc.nextLine();
+		
+		String put = sc.nextLine();
+		if(put.equalsIgnoreCase("archive")){
+		    displayArchive();
+		    sc.nextLine();
+		}
 		System.out.print("\033[H\033[2J"); System.out.flush();
 		demographicShifts();
 		partyShifts();
