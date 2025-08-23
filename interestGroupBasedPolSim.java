@@ -883,7 +883,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         if(elecCount==0 || getGovNumSup() <35 || rpartyhasnogroups){
         triggerElection();
             hasTrig = true;
-            cooldown-- = 10;
+            cooldown = 10;
         }
         
         int govSeats = 0;
