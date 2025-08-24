@@ -10,7 +10,7 @@ public class Main
     
     public static int elecCount = 6;
     
-    public static int startdate = 0;
+    public static int startdate = year;
     
     public static boolean snapElec = false;
     
@@ -23,6 +23,8 @@ public class Main
         boolean isAlienated;
         String name;
         
+        Person leader;
+        
         List<String>partyNames = new ArrayList<>();
         
         public Group(int minPolicy, int maxPolicy, String name, int givePoints){
@@ -31,10 +33,28 @@ public class Main
             this.name = name;
             this.isAlienated = false;
             this.givePoints = givePoints;
+            
+            this.leader = new Person(ra.nextInt(50)+25, getRandomName(), (minPolicy+maxPolicy)/2);
+            
         }
         
         public int getMin(){
             return this.minPolicy;
+        }
+        
+        
+        public void checkLeaderAge(){
+            if(leader.getAge() > 65){
+                if(ra.nextInt(30)+65 < leader.getAge()){
+                    oldPerson = this.leader;
+                    changedLead = true;
+                    this.leader = new Person(ra.nextInt(50)+25, getRandomName(), (minPolicy+maxPolicy)/2);
+                }
+            }
+        }
+        
+        public Person getLeader(){
+            return this.leader;
         }
         
         public int getMax(){
@@ -81,12 +101,45 @@ public class Main
         int seats;
         String name;
         
+        Person leader;
         List<Group> supportGroups = new ArrayList<>();
         
         public Party(int policy, String name){
             this.policy = policy;
             this.name = name;
             this.seats = 0;
+        }
+        
+        public void determineLeader(){
+            if(supportGroups!= null){
+            int wpoint = -1;
+            Group wingroup = null;
+            
+            oldPerson = leader;
+            for(Group gro : supportGroups){
+                if(gro.getPoints() > wpoint){
+                    wpoint = gro.getPoints();
+                    wingroup = gro;
+                }
+            }
+            if(wingroup != null){
+                leader = wingroup.getLeader();
+                
+            }else{
+                leader = new Person(ra.nextInt(50)+25, getRandomName(), policy);
+            }
+            
+            } else{
+                leader = new Person(ra.nextInt(50)+25, getRandomName(), policy);
+            }
+            
+            if(leader !=oldPerson && oldPerson != null){
+                changedLead = true;
+            }
+        }
+        
+        public Person getLeader(){
+            return this.leader;
         }
         
         public void addToSupport(Group addGroup){
@@ -149,19 +202,51 @@ public class Main
         
     }
     
+    public static class Person {
+        int age;
+        String name;
+        int ideology;
+        
+        public Person(int age, String name, int ideology){
+            this.age = age;
+            this.name = name;
+            this.ideology = ideology;
+        }
+        
+        public void ageUp(){
+            this.age++;
+        }
+        
+        public int getIdeology(){
+            return this.ideology;
+        }
+        
+        public String getName(){
+            return this.name;
+        }
+        
+        public int getAge(){
+            return this.age;
+        }
+    }
+    
+    public static List<Person> allPersons = new ArrayList<>();
+    
     
     public static class archiveParty{
         int startdate,enddate;
         String name;
+        String leaderName;
         
-        public archiveParty(String name, int startdate, int enddate){
+        public archiveParty(String name, int startdate, int enddate, String leaderName){
             this.name = name;
             this.startdate = startdate;
             this.enddate = enddate;
+            this.leaderName = leaderName;
         }
         
         public void display(){
-            System.out.println(this.name + " ("+ this.startdate+ " - "+ this.enddate+ ")");
+            System.out.println(this.leaderName + " | "+ this.name + " ("+ this.startdate+ " - "+ this.enddate+ ")");
         }
     }
     
@@ -362,6 +447,70 @@ allGroups.get(12).addPartyName("New Flame Front");
     public static Party rulingParty = null;
     
     
+    
+    
+    
+    public static String getRandomName() {
+        String[] maleFirstNames = {
+            "James", "John", "Robert", "Michael", "William", "David", "Richard", "Joseph",
+            "Thomas", "Charles", "Christopher", "Daniel", "Matthew", "Anthony", "Mark", "Donald",
+            "Steven", "Paul", "Andrew", "Joshua", "Kenneth", "Kevin", "Brian", "George",
+            "Edward", "Ronald", "Timothy", "Jason", "Jeffrey", "Ryan", "Jacob", "Nicholas",
+            "Eric", "Stephen", "Larry", "Justin", "Scott", "Brandon", "Benjamin", "Samuel",
+            "Gregory", "Alexander", "Patrick", "Frank", "Raymond", "Jack", "Dennis", "Jerry",
+            "Tyler", "Aaron", "Jose", "Adam", "Nathan", "Henry", "Zachary", "Peter",
+            "Kyle", "Walter", "Ethan", "Jeremy", "Harold", "Keith", "Christian", "Roger",
+            "Noah", "Gerald", "Carl", "Terry", "Sean", "Austin", "Arthur", "Lawrence",
+            "Jesse", "Dylan", "Bryan", "Joe", "Jordan", "Billy", "Bruce", "Albert",
+            "Willie", "Gabriel", "Logan", "Alan"
+        };
+
+        String[] femaleFirstNames = {
+            "Mary", "Patricia", "Jennifer", "Linda", "Elizabeth", "Barbara", "Susan", "Jessica",
+            "Sarah", "Karen", "Nancy", "Lisa", "Betty", "Margaret", "Sandra", "Ashley",
+            "Kimberly", "Emily", "Donna", "Michelle", "Dorothy", "Carol", "Amanda", "Melissa",
+            "Deborah", "Stephanie", "Rebecca", "Sharon", "Laura", "Cynthia", "Kathleen", "Amy",
+            "Angela", "Shirley", "Emma", "Brenda", "Pamela", "Nicole", "Helen", "Samantha",
+            "Katherine", "Christine", "Debra", "Rachel", "Catherine", "Carolyn", "Janet", "Ruth",
+            "Maria", "Heather", "Diana", "Julie", "Joyce", "Victoria", "Olivia", "Frances",
+            "Ann", "Martha", "Jacqueline", "Gloria", "Teresa", "Doris", "Sara", "Janice",
+            "Julia", "Marie", "Grace", "Judy", "Theresa", "Beverly", "Denise", "Marilyn",
+            "Amber", "Danielle", "Rose", "Brittany", "Diana", "Madison", "Tiffany", "Alexis",
+            "Sophia", "Charlotte", "Hannah", "Abigail", "Megan", "Chloe", "Victoria", "Natalie",
+            "Evelyn", "Isabella", "Ella", "Avery"
+        };
+
+        String[] lastNames = {
+            "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis",
+            "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas",
+            "Taylor", "Moore", "Jackson", "Martin", "Lee", "Perez", "Thompson", "White",
+            "Harris", "Sanchez", "Clark", "Ramirez", "Lewis", "Robinson", "Walker", "Young",
+            "Allen", "King", "Wright", "Scott", "Torres", "Nguyen", "Hill", "Flores",
+            "Green", "Adams", "Nelson", "Baker", "Hall", "Rivera", "Campbell", "Mitchell",
+            "Carter", "Roberts", "Gomez", "Phillips", "Evans", "Turner", "Diaz", "Parker",
+            "Cruz", "Edwards", "Collins", "Reyes", "Stewart", "Morris", "Morales", "Murphy",
+            "Cook", "Rogers", "Gutierrez", "Ortiz", "Morgan", "Cooper", "Peterson", "Bailey",
+            "Reed", "Kelly", "Howard", "Ramos", "Kim", "Cox", "Ward", "Richardson",
+            "Watson", "Brooks", "Chavez", "Wood", "James", "Bennett", "Gray", "Mendoza",
+            "Ruiz", "Hughes", "Price", "Alvarez", "Castillo", "Sanders", "Patel", "Myers",
+            "Long", "Ross", "Foster", "Jimenez"
+        };
+
+        boolean male = ra.nextInt(100) < 80;
+
+        String firstName = male
+                ? maleFirstNames[ra.nextInt(maleFirstNames.length)]
+                : femaleFirstNames[ra.nextInt(femaleFirstNames.length)];
+
+        String lastName = lastNames[ra.nextInt(lastNames.length)];
+
+        return firstName + " " + lastName;
+    }
+
+    
+    
+    
+    
     public static void arrangeGroups(){
         int min=0,max=0;
         int avg =0;
@@ -430,6 +579,8 @@ allGroups.get(12).addPartyName("New Flame Front");
         }
     }
     
+    public static int leaderStartDate = startdate;
+    
     public static void election(){
         HashMap<Party,Integer> partyScore = new HashMap<>();
         HashMap<Party,Integer> partyScoreOrig = new HashMap<>();
@@ -452,6 +603,11 @@ allGroups.get(12).addPartyName("New Flame Front");
                         points -= (points*25)/100;
                     }
                 }
+                if(year-startdate >= 15){
+                    int deductby=  (points * (year-startdate))/100;
+                    points -= (points * deductby)/100;
+                }
+                
             }
             
             partyScore.put(par, points*100);
@@ -664,7 +820,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             addToArchive();
             }
             startdate = year;
-            
+            leaderStartDate = year;
         }
         rulingParty = maxParty;
         
@@ -857,13 +1013,60 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         checkSeats();        // (5) Removes parties that did poorly in the election
         findBiggestParty();    // (6) Uses final seat counts to build government and opposition
         elecCount = 5*12;
+        
+        
+        for(Party par: allParties){
+            oldPerson = null;
+            changedLead = false;
+            par.determineLeader();
+            if(rulingParty!= null){
+            if(changedLead && rulingParty== par && oldPerson != null  ){
+                previousRulingParties.add(new archiveParty(rulingParty.getName(),leaderStartDate,year, oldPerson.getName()));
+                leaderStartDate=  year;
+            }
+            }
+        }
+        
     }
     
+    public static boolean changedLead = false;
+    
+    public static Person oldPerson = null;
+    
+    public static int leadercDown = 0;
+    
     public static void monthly(){
+        
+        leadercDown --;
+        if(leadercDown <0){
+        for(Group gro : allGroups){
+            oldPerson = null;
+            changedLead = false;
+            gro.checkLeaderAge();
+            if(rulingParty != null){
+            if(changedLead && rulingParty.getLeader() == gro.getLeader() && oldPerson != null  ){
+                previousRulingParties.add(new archiveParty(rulingParty.getName(),leaderStartDate,year, oldPerson.getName()));
+                leaderStartDate=  year;
+            }
+            }
+        }
+        
+        
+        leadercDown = 12;
+        }
+        
+        
         moNum++;
         if(moNum == 12){
             moNum = 0;
             year++;
+            
+            for(Group gro : allGroups){
+            gro.getLeader().ageUp();
+        }
+            
+            
+            
         }
         checkNoGroups();
         boolean rpartyhasnogroups = false;
@@ -915,7 +1118,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     
     
     public static void addToArchive(){
-        previousRulingParties.add(new archiveParty(rulingParty.getName(),startdate,year));
+        previousRulingParties.add(new archiveParty(rulingParty.getName(),leaderStartDate,year, rulingParty.getLeader().getName()));
     }
     
     public static void displayArchive(){
@@ -940,6 +1143,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		
 		if(rulingParty != null){
 		System.out.println("\n\nRuling Party: "+ rulingParty.getName());
+		System.out.println("Prime Minister: " + rulingParty.getLeader().getName());
         System.out.println("The Governing Coalition: ");
         for(Party par: government){
                 System.out.println(par.getName());
@@ -955,6 +1159,11 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		
 		for(Party par: allParties){  
 		    System.out.println("\n\n"+par.getName()+ " - "+ par.getIdeology() + " - "+ par.getSeats()+ "% of Parliament");
+		    if(par.getLeader()!=null){
+		    System.out.println("Leader: "+ par.getLeader().getName());
+		    }else{
+		        System.out.println("Leader: No Leader");
+		    }
 		    for(Group gro : par.supportGroups){
 		        System.out.print(" - "+gro.getName());
 		    }
@@ -969,6 +1178,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		System.out.println("\n");
 		
 		String put = sc.nextLine();
+		//String put = "debugmode"; // for debug
 		if(put.equalsIgnoreCase("archive")){
 		    displayArchive();
 		    sc.nextLine();
