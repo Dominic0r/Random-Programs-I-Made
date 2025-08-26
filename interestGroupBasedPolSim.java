@@ -458,7 +458,7 @@ allGroups.get(12).addPartyName("New Flame Front");
     
     public static Party rulingParty = null;
     
-    
+    public static int approvalRating = 50;
     
     
     
@@ -609,7 +609,7 @@ allGroups.get(12).addPartyName("New Flame Front");
                 points+= contrib;
             }
             
-            if(government.contains(par)){
+            /*if(government.contains(par)){
                 points -= (year - startdate)/3;
                 if(snapElec){
                     if(ra.nextBoolean()){
@@ -621,6 +621,13 @@ allGroups.get(12).addPartyName("New Flame Front");
                     points -= (points * deductby)/100;
                 }
                 
+            }*/
+            
+            int inverseApp = 100 - approvalRating;
+            if(government.contains(par)){
+                points += (points*approvalRating)/100;
+            }else{
+                points += (points*inverseApp)/100;
             }
             
             if(par.isMajor()){
@@ -652,12 +659,14 @@ allGroups.get(12).addPartyName("New Flame Front");
 
             }
         }
-        
+        int newval = 0;
         //double one with most support to simulate FPTP representation
-        int newval = partyScore.get(maxParty)+(partyScore.get(maxParty)/4);
+        
+        newval = partyScore.get(maxParty)+(partyScore.get(maxParty)/4);
         partyScore.put(maxParty,newval);
         partyScoreOrig.put(maxParty,newval);
         //int newval=0;
+        
         
         for(Party party : allParties){
             partySeats.put(party,0);
@@ -823,6 +832,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             
             maxnum = 0;
             maxParty = null;
+            
             for(Party par : government){
                 if(par.getSeats()>maxnum){
                     maxnum = par.getSeats();
@@ -847,6 +857,8 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             }
             startdate = year;
             leaderStartDate = year;
+            
+            approvalRating +=  maxParty.getSeats()/2;
         }
         rulingParty = maxParty;
         
@@ -1070,8 +1082,30 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }
     }
     
-    public static void monthly(){
+    public static void updateApproval(){
+        approvalRating -= (year-startdate)/10;
         
+        approvalRating -= auth/10;
+        
+        
+        
+        if(getGovNumSup()<50){
+            approvalRating -= 50 - getGovNumSup();
+        }
+        
+        approvalRating += ra.nextInt(2);
+        
+        if(approvalRating <1){
+            approvalRating = 1;
+        }
+        
+        if(approvalRating > 99){
+            approvalRating = 99;
+        }
+    }
+    
+    public static void monthly(){
+        updateApproval();
         leadercDown --;
         if(leadercDown <0){
         for(Group gro : allGroups){
@@ -1176,6 +1210,16 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     
     public static void updateAuth(){
         auth -= 10- (year-startdate);
+        if(year- leaderStartDate < 5){
+            auth -= 1;
+        }
+        
+        if(rulingParty.getPolicy() < 20 || rulingParty.getPolicy() > 80){
+            auth += 1;
+        }else{
+            auth -=1;
+        }
+        
         if(auth <0){
             auth =0;
         }
@@ -1216,6 +1260,9 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         checkAlienation();   // (2) Identifies unrepresented groups and may create new parties
         checkNoGroups();     // (3) Cleans up parties with no support groups (needed after new parties may be created)
         monthly();
+        
+        System.out.println("DEBUG APPROVAL: "+ approvalRating);
+        System.out.println("DEBUG AUTH: "+ auth);
 		
 		System.out.println(months[moNum]+ " - "+ year);
 		System.out.print("Next election in ");
@@ -1238,7 +1285,9 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		}
 		if(rulingParty != null){
 		System.out.println("\nRuling Party: "+ rulingParty.getName());
-		System.out.println("Prime Minister: " + rulingParty.getLeader().getName());
+		if(rulingParty.getLeader() != null){
+		    System.out.println("Prime Minister: " + rulingParty.getLeader().getName());
+		}
         System.out.println("\nThe Governing Coalition: ");
         for(Party par: government){
                 System.out.println(par.getName());
