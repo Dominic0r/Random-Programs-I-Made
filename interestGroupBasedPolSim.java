@@ -628,7 +628,8 @@ allGroups.get(12).addPartyName("New Flame Front");
             }
             
             if(par == rulingParty && !isFair){
-                points *=10;
+                int increaseby = auth/10;
+                points *=increaseby;
             }
             
             partyScore.put(par, points*100);
@@ -839,6 +840,10 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         if(rulingParty != maxParty){
             if(rulingParty !=null){
             addToArchive();
+            }
+            auth /=2;
+            if(!isFair){
+                isFair = true;
             }
             startdate = year;
             leaderStartDate = year;
@@ -1085,11 +1090,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         leadercDown = 12;
         }
         
-        if(rulingParty != null){
-        updateAuth();
-        checkIsFair();
-        delayElec();
-        }
+        
         moNum++;
         if(moNum == 12){
             moNum = 0;
@@ -1100,6 +1101,12 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }
             
             
+            
+            if(rulingParty != null){
+        updateAuth();
+        checkIsFair();
+        delayElec();
+        }
             
         }
         checkNoGroups();
