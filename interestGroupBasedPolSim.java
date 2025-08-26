@@ -16,6 +16,8 @@ public class Main
     
     public static int cooldown = 10;
     
+    
+    
     public static class Group{
         int minPolicy;
         int maxPolicy;
@@ -100,6 +102,7 @@ public class Main
         int policy;
         int seats;
         String name;
+        boolean isMajor;
         
         Person leader;
         List<Group> supportGroups = new ArrayList<>();
@@ -136,6 +139,14 @@ public class Main
             if(leader !=oldPerson && oldPerson != null){
                 changedLead = true;
             }
+        }
+        
+        public boolean isMajor(){
+            return this.isMajor;
+        }
+        
+        public void setIsMajor(boolean newMaj){
+            this.isMajor = newMaj;
         }
         
         public Person getLeader(){
@@ -582,6 +593,7 @@ allGroups.get(12).addPartyName("New Flame Front");
     public static int leaderStartDate = startdate;
     
     public static void election(){
+        checkMajors();
         HashMap<Party,Integer> partyScore = new HashMap<>();
         HashMap<Party,Integer> partyScoreOrig = new HashMap<>();
         HashMap<Party,Integer> partySeats = new HashMap<>();
@@ -608,6 +620,10 @@ allGroups.get(12).addPartyName("New Flame Front");
                     points -= (points * deductby)/100;
                 }
                 
+            }
+            
+            if(par.isMajor()){
+                points += points/2;
             }
             
             partyScore.put(par, points*100);
@@ -1126,6 +1142,14 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             par.display();
         }
     }
+    
+    public static void checkMajors(){
+        for (Party par: allParties){
+            par.setIsMajor(par.getSeats()> 20);
+        }
+    }
+    
+    
 	public static void main(String[] args) throws Exception{
 	    Scanner sc = new Scanner(System.in);
 		generateGroups();
@@ -1140,11 +1164,16 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         monthly();
 		
 		System.out.println(months[moNum]+ " - "+ year);
-		
+		System.out.print("Next election in ");
+		if(elecCount > 12){
+		    System.out.println((elecCount/12)+ " years");
+		}else{
+		    System.out.println(elecCount+ " months");
+		}
 		if(rulingParty != null){
-		System.out.println("\n\nRuling Party: "+ rulingParty.getName());
+		System.out.println("\nRuling Party: "+ rulingParty.getName());
 		System.out.println("Prime Minister: " + rulingParty.getLeader().getName());
-        System.out.println("The Governing Coalition: ");
+        System.out.println("\nThe Governing Coalition: ");
         for(Party par: government){
                 System.out.println(par.getName());
             }
