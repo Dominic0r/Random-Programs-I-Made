@@ -627,6 +627,10 @@ allGroups.get(12).addPartyName("New Flame Front");
                 points += points/2;
             }
             
+            if(par == rulingParty && !isFair){
+                points *=10;
+            }
+            
             partyScore.put(par, points*100);
         }
         partyScoreOrig.putAll(partyScore);
@@ -1032,6 +1036,18 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         elecCount = 5*12;
         
         
+        
+        
+    }
+    
+    public static boolean changedLead = false;
+    
+    public static Person oldPerson = null;
+    
+    public static int leadercDown = 0;
+    
+    
+    public static void partyLeaderCheck(){
         for(Party par: allParties){
             oldPerson = null;
             changedLead = false;
@@ -1042,15 +1058,12 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
                 leaderStartDate=  year;
             }
             }
+            
+            if(changedLead){
+                auth /=2;
+            }
         }
-        
     }
-    
-    public static boolean changedLead = false;
-    
-    public static Person oldPerson = null;
-    
-    public static int leadercDown = 0;
     
     public static void monthly(){
         
@@ -1068,7 +1081,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             }
         }
         
-        
+        partyLeaderCheck();
         leadercDown = 12;
         }
         
@@ -1155,7 +1168,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     }
     
     public static void updateAuth(){
-        auth -= 5- (year-startdate);
+        auth -= 10- (year-startdate);
         if(auth <0){
             auth =0;
         }
@@ -1177,7 +1190,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     }
     
     public static void delayElec(){
-        if(elecCount <= 6 && ra.nextInt(50)+50< auth && rulingParty.getSeats() > 60){
+        if(elecCount <= 6 && ra.nextInt(50)+50< auth && rulingParty.getSeats() > 80){
             int ranfac = ra.nextInt(3)+1;
             elecCount += 12*ranfac;
         }
