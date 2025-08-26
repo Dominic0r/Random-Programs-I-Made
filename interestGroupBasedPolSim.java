@@ -16,7 +16,8 @@ public class Main
     
     public static int cooldown = 10;
     
-    
+    public static int auth = 0; // authoritarianism
+    public static boolean isFair = true;
     
     public static class Group{
         int minPolicy;
@@ -1071,7 +1072,11 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         leadercDown = 12;
         }
         
-        
+        if(rulingParty != null){
+        updateAuth();
+        checkIsFair();
+        delayElec();
+        }
         moNum++;
         if(moNum == 12){
             moNum = 0;
@@ -1149,6 +1154,35 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }
     }
     
+    public static void updateAuth(){
+        auth -= 5- (year-startdate);
+        if(auth <0){
+            auth =0;
+        }
+        if(auth > 100){
+            auth = 100;
+        }
+    }
+    
+    public static void checkIsFair(){
+        if(isFair){
+            if(ra.nextInt(35)+50 < auth){
+                isFair = false;
+            }
+        } else{
+            if(ra.nextInt(35)> auth){
+                isFair = true;
+            }
+        }
+    }
+    
+    public static void delayElec(){
+        if(elecCount <= 6 && ra.nextInt(50)+50< auth && rulingParty.getSeats() > 60){
+            int ranfac = ra.nextInt(3)+1;
+            elecCount += 12*ranfac;
+        }
+    }
+    
     
 	public static void main(String[] args) throws Exception{
 	    Scanner sc = new Scanner(System.in);
@@ -1166,9 +1200,21 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		System.out.println(months[moNum]+ " - "+ year);
 		System.out.print("Next election in ");
 		if(elecCount > 12){
-		    System.out.println((elecCount/12)+ " years");
+		    
+		    System.out.print(elecCount/12);
+		    if(elecCount/12 >1){
+		        System.out.println(" years");
+		    }else{
+		        System.out.println(" year");
+		    }
+		    
 		}else{
-		    System.out.println(elecCount+ " months");
+		    System.out.print(elecCount);
+		    if(elecCount > 1){
+		        System.out.println(" months");
+		    }else{
+		        System.out.println(" month");
+		    }
 		}
 		if(rulingParty != null){
 		System.out.println("\nRuling Party: "+ rulingParty.getName());
