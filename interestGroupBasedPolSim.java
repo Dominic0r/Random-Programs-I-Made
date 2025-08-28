@@ -834,8 +834,28 @@ allGroups.get(12).addPartyName("New Flame Front");
         
         allCoalitions.remove(toRemove);
         toRemove.clear();
+        Party oldPar = null;
+        if(rulingCoalition != null){
+            oldPar = rulingCoalition.getLeader();
+        }
         
         rulingCoalition = maxCoa;
+        
+        if(rulingCoalition.getLeader() != oldPar){
+            if(oldPar !=null){
+            addToArchive();
+            }
+            auth /=2;
+            if(!isFair){
+                isFair = true;
+            }
+            startdate = year;
+            leaderStartDate = year;
+            
+            approvalRating +=  rulingCoalition.getLeader() .getSeats()/2;
+        }
+        
+        
         rulingParty = rulingCoalition.getLeader();
         
         
@@ -1321,10 +1341,10 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             auth -= 1;
         }
         
-        if(rulingParty.getPolicy() < 20 || rulingParty.getPolicy() > 80){
+        if(rulingParty.getPolicy() < 15 || rulingParty.getPolicy() > 85){
             auth += 1;
         }else{
-            auth -=1;
+            auth -=10;
         }
         
         if(auth <0){
