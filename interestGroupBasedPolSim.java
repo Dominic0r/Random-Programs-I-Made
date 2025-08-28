@@ -264,6 +264,50 @@ public class Main
     
     public static List<archiveParty> previousRulingParties = new ArrayList<>();
     
+    
+    public static class Coalition{
+        ArrayList<Party> members = new ArrayList<>();
+        Party leader;
+        
+        public Coalition(Party leader){
+            this.leader = leader;
+            members.add(leader);
+        }
+        
+        public void addToMemberList(Party toAdd){
+            members.add(toAdd);
+        }
+        
+        public int getTotalSeats(){
+            int total = 0;
+            for(Party par : members){
+                total += par.getSeats();
+            }
+            
+            return total;
+        }
+        
+        public int getNumOfMembers(){
+            return members.size();
+        }
+        
+        public Party getLeader(){
+            return this.leader;
+        }
+        
+        
+        public void displayMembers(){
+            for(Party par : members){
+                System.out.println(par.getName());
+            }
+        }
+        
+        public boolean hasParty(Party testpar){
+            return members.contains(testpar);
+        }
+    }
+    
+    
     public static List<Group> allGroups = new ArrayList<>();
     public static void generateGroups(){
         allGroups.add(new Group(1, 15, "Traditionalists", 35));         // 0 – culturally rigid, fading influence
@@ -725,12 +769,99 @@ allGroups.get(12).addPartyName("New Flame Front");
         }
         
         
-        formCoalitions(maxParty, maxnum);
+        formCoalitions();
+    }
+    
+    public static Coalition rulingCoalition;
+    public static ArrayList<Coalition> allCoalitions = new ArrayList<>();
+    
+    public static ArrayList<Party> independentParties = new ArrayList<>();
+    
+    public static void formCoalitions(){
+        allCoalitions.clear();
+        
+        for(Party par : allParties){
+            if(par.getSeats() >=100/(allParties.size()+1)){
+                
+                allCoalitions.add(new Coalition(par));
+                
+            }
+        }
+        
+        int coaPoint = 0;
+        int threshold;
+        int pragmatism;
+        Party curCoaRuling;
+        
+        for(Coalition coa : allCoalitions){
+            coaPoint = 0;
+            curCoaRuling = coa.getLeader();
+            threshold = curCoaRuling.getSeats();
+            pragmatism = 50-threshold;
+            
+            
+            for(Party par: allParties){
+                if(par != curCoaRuling){
+                    coaPoint += pragmatism - Math.abs(par.getPolicy()-curCoaRuling.getPolicy());
+                
+                
+                    if(coaPoint >= threshold){
+                        coa.addToMemberList(par);
+                    }
+                }
+            }
+            
+        }
+        
+        int maxnum=-1;
+        Coalition maxCoa = null;
+        
+        ArrayList<Coalition> toRemove = new ArrayList<>();
+        for(Coalition coa : allCoalitions){
+            if(coa.getTotalSeats() >= maxnum){
+                maxnum = coa.getTotalSeats();
+                maxCoa = coa;
+            }
+            
+            
+        }
+        
+        for(Coalition coa : allCoalitions){
+            if(coa.getNumOfMembers() == 1 && coa != maxCoa){
+                toRemove.add(coa);
+            }
+        }
+        
+        allCoalitions.remove(toRemove);
+        toRemove.clear();
+        
+        rulingCoalition = maxCoa;
+        rulingParty = rulingCoalition.getLeader();
+        
+        
+        independentParties.clear();
+        boolean isInd = true;
+        
+            for(Party par : allParties){
+                isInd = true;
+                for(Coalition coa : allCoalitions){
+                    if(coa.hasParty(par)){
+                        isInd = false;
+                    }
+                }
+                if(isInd){
+                    independentParties.add(par);
+                }
+            }
+        
+        
+        
+        
     }
     
     
     
-    public static void formCoalitions(Party maxParty, int maxnum){
+    /*public static void formCoalitions(Party maxParty, int maxnum){
         government.clear();
         opposition.clear();
         
@@ -780,33 +911,6 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 }
             
             
-            
-            
-            
-            
-            
-            /*Party closestPartner = null;
-            int cParVal = 10000;
-            if(!potentialCoalitionPartners.isEmpty()){
-            do{
-                
-                    for(Party par: potentialCoalitionPartners.keySet()){
-                        if(potentialCoalitionPartners.get(par) <cParVal){
-                            closestPartner = par;
-                            cParVal = potentialCoalitionPartners.get(par);
-                        }
-                    }
-                    
-                    government.add(closestPartner);
-                    totSeats+= closestPartner.getSeats();
-                    potentialCoalitionPartners.remove(closestPartner);
-                    cParVal = 10000;
-                   if(totSeats>=50 && !potentialCoalitionPartners.isEmpty()){
-                       opposition.addAll(potentialCoalitionPartners.keySet());
-                       potentialCoalitionPartners.clear();
-                   }
-            }while(totSeats<50);
-            }*/
             
             
         
@@ -862,7 +966,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }
         rulingParty = maxParty;
         
-    }
+    }*/
     
     public static void checkAlienation(){
         int min,max,avg;
@@ -1028,6 +1132,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         allParties.removeAll(toRemove);
         if(rulingParty !=null){
             if(toRemove.contains(rulingParty)){
+                //System.out.println("SCENARIO 2");
                 triggerElection();
             }
         }
@@ -1037,13 +1142,12 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     }
     
     public static int getGovNumSup(){
-        int totsup = 0;
-        for(Party par : government){
-            for(Group gro : par.supportGroups){
-                totsup += gro.getPoints();
-            }
+        if(rulingCoalition!=null){
+            return rulingCoalition.getTotalSeats();
+        }else{
+            return 100;
         }
-        return totsup;
+        
     }
     
     public static void triggerElection(){
@@ -1158,19 +1262,20 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         
         boolean hasTrig = false;
         if(elecCount==0 || getGovNumSup() <35 || rpartyhasnogroups){
+            //System.out.println("SCENARIO 1");
         triggerElection();
+        
             hasTrig = true;
             cooldown = cdownnum;
             snapElec = false;
         }
         
-        int govSeats = 0;
-        for(Party par :government){
-            govSeats += par.getSeats();
-        }
+        int govSeats = getGovNumSup();
         
         if(rulingParty!=null && !hasTrig && !snapElec){
+            
             if(rulingParty.getSeats() < govSeats/2){
+                System.out.println("SCENARIO 1");
                 if(ra.nextInt(govSeats) < rulingParty.getSeats() && cooldown <=0){
                     snapElec = true;
                     if(elecCount > 3){
@@ -1181,7 +1286,9 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }
         
         if(!hasTrig && govSeats < 50 && !snapElec){
+            
             if(ra.nextInt((100-govSeats)+1) > govSeats && cooldown <=0){
+                System.out.println("SCENARIO 2");
                 snapElec = true;
                 if(elecCount >3){
                     elecCount = 3;
@@ -1261,8 +1368,8 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         checkNoGroups();     // (3) Cleans up parties with no support groups (needed after new parties may be created)
         monthly();
         
-        System.out.println("DEBUG APPROVAL: "+ approvalRating);
-        System.out.println("DEBUG AUTH: "+ auth);
+        //System.out.println("DEBUG APPROVAL: "+ approvalRating);
+        //System.out.println("DEBUG AUTH: "+ auth);
 		
 		System.out.println(months[moNum]+ " - "+ year);
 		System.out.print("Next election in ");
@@ -1285,10 +1392,12 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		}
 		if(rulingParty != null){
 		System.out.println("\nRuling Party: "+ rulingParty.getName());
+		
 		if(rulingParty.getLeader() != null){
 		    System.out.println("Prime Minister: " + rulingParty.getLeader().getName());
 		}
-        System.out.println("\nThe Governing Coalition: ");
+		}
+        /*System.out.println("\nThe Governing Coalition: ");
         for(Party par: government){
                 System.out.println(par.getName());
             }
@@ -1298,6 +1407,24 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
                 System.out.println(par.getName());
             }
 		
+		}*/
+		
+		if(rulingCoalition != null){
+		System.out.println("The Governing Coalition: ");
+		rulingCoalition.displayMembers();
+		}
+		System.out.println("\nOther Coaltions:");
+		for(Coalition coa : allCoalitions){
+		    if(coa!= rulingCoalition){
+		        
+		        coa.displayMembers();
+		        System.out.println("====================");
+		    }
+		    
+		}
+		System.out.println("\nParties not in Coalition: :");
+		for(Party par: independentParties){
+		    System.out.println(par.getName());
 		}
 		
 		
