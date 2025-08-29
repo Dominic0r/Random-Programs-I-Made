@@ -376,7 +376,7 @@ allGroups.get(3).addPartyName("Nation Secure Bloc");
 allGroups.get(4).addPartyName("Entrepreneurs' Party");
 allGroups.get(4).addPartyName("Independent Work Alliance");
 allGroups.get(4).addPartyName("Local Prosperity Party");
-allGroups.get(4).addPartyName("People's Commerce Front");
+allGroups.get(4).addPartyName("Peoples Commerce Front");
 allGroups.get(4).addPartyName("Small Enterprise Coalition");
 allGroups.get(4).addPartyName("Owners and Workers Party");
 allGroups.get(4).addPartyName("Community Business Bloc");
@@ -421,16 +421,16 @@ allGroups.get(7).addPartyName("Progressive Union");
 allGroups.get(7).addPartyName("Center for Reform");
 
 // 8 - Labor Unions
-allGroups.get(8).addPartyName("Workers' Alliance");
+allGroups.get(8).addPartyName("Workers Alliance");
 allGroups.get(8).addPartyName("Labor Solidarity Party");
-allGroups.get(8).addPartyName("People's Rights Front");
+allGroups.get(8).addPartyName("Peoples Rights Front");
 allGroups.get(8).addPartyName("Union Front Party");
 allGroups.get(8).addPartyName("Working Families Bloc");
 allGroups.get(8).addPartyName("Justice for Labor Party");
 allGroups.get(8).addPartyName("Strong Hands Movement");
 allGroups.get(8).addPartyName("Labor Voice Union");
 allGroups.get(8).addPartyName("Fair Work Party");
-allGroups.get(8).addPartyName("People's Strength Coalition");
+allGroups.get(8).addPartyName("Peoples Strength Coalition");
 
 // 9 - Progressives
 allGroups.get(9).addPartyName("Forward Equality Party");
@@ -449,7 +449,7 @@ allGroups.get(10).addPartyName("Green Party");
 allGroups.get(10).addPartyName("Planet First Coalition");
 allGroups.get(10).addPartyName("EcoFuture Bloc");
 allGroups.get(10).addPartyName("Clean Earth Alliance");
-allGroups.get(10).addPartyName("Nature's Voice Party");
+allGroups.get(10).addPartyName("Natures Voice Party");
 allGroups.get(10).addPartyName("Zero Emissions Front");
 allGroups.get(10).addPartyName("Living Earth Party");
 allGroups.get(10).addPartyName("Global Greens Union");
@@ -457,16 +457,16 @@ allGroups.get(10).addPartyName("Sustainable Society Party");
 allGroups.get(10).addPartyName("Earthguard Movement");
 
 // 11 - Socialists
-allGroups.get(11).addPartyName("People's Socialist Party");
+allGroups.get(11).addPartyName("Peoples Socialist Party");
 allGroups.get(11).addPartyName("Red Flag Union");
-allGroups.get(11).addPartyName("United Workers' Party");
+allGroups.get(11).addPartyName("United Workers Party");
 allGroups.get(11).addPartyName("Class Struggle Front");
 allGroups.get(11).addPartyName("Social Equality Bloc");
 allGroups.get(11).addPartyName("Revolutionary Justice Party");
 allGroups.get(11).addPartyName("Democratic Labor Party");
 allGroups.get(11).addPartyName("New Left Front");
 allGroups.get(11).addPartyName("Common Struggle Union");
-allGroups.get(11).addPartyName("People's Power Coalition");
+allGroups.get(11).addPartyName("People Power Coalition");
 
 // 12 - Radical Youth
 allGroups.get(12).addPartyName("Youth Liberation Front");
@@ -803,7 +803,13 @@ allGroups.get(12).addPartyName("New Flame Front");
             for(Party par: allParties){
                 if(par != curCoaRuling){
                     coaPoint += pragmatism - Math.abs(par.getPolicy()-curCoaRuling.getPolicy());
-                
+                    if(curCoaRuling.getSeats() >40){
+                        coaPoint+=5;
+                    }else if(curCoaRuling.getSeats() >30 && curCoaRuling.getSeats() <= 40){
+                        coaPoint+=10;
+                    }else{
+                        coaPoint+=15;
+                    }
                 
                     if(coaPoint >= threshold){
                         coa.addToMemberList(par);
