@@ -769,7 +769,7 @@ allGroups.get(12).addPartyName("New Flame Front");
         }
         
         
-        formCoalitions();
+        formCoalitions(maxParty);
     }
     
     public static Coalition rulingCoalition;
@@ -777,11 +777,11 @@ allGroups.get(12).addPartyName("New Flame Front");
     
     public static ArrayList<Party> independentParties = new ArrayList<>();
     
-    public static void formCoalitions(){
+    public static void formCoalitions(Party largePar){
         allCoalitions.clear();
-        
+        int thresh = 20;
         for(Party par : allParties){
-            if(par.getSeats() >=100/(allParties.size()+1)){
+            if(par.getSeats() >=thresh){
                 
                 allCoalitions.add(new Coalition(par));
                 
@@ -796,20 +796,26 @@ allGroups.get(12).addPartyName("New Flame Front");
         for(Coalition coa : allCoalitions){
             coaPoint = 0;
             curCoaRuling = coa.getLeader();
-            threshold = curCoaRuling.getSeats();
-            pragmatism = 50-threshold;
-            
+            threshold = 45;
+            pragmatism = 50-curCoaRuling.getSeats();
+            if(curCoaRuling.getSeats()>51){
+                threshold = 70;
+            }
             
             for(Party par: allParties){
-                if(par != curCoaRuling){
+                if(par != curCoaRuling && par!= largePar){
                     coaPoint += pragmatism - Math.abs(par.getPolicy()-curCoaRuling.getPolicy());
+                    
+                    
                     if(curCoaRuling.getSeats() >40){
-                        coaPoint+=5;
+                        coaPoint+=3;
                     }else if(curCoaRuling.getSeats() >30 && curCoaRuling.getSeats() <= 40){
-                        coaPoint+=10;
+                        coaPoint+=5;
                     }else{
-                        coaPoint+=15;
+                        coaPoint+=10;
                     }
+                    
+                    
                 
                     if(coaPoint >= threshold){
                         coa.addToMemberList(par);
@@ -1350,7 +1356,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         if(rulingParty.getPolicy() < 15 || rulingParty.getPolicy() > 85){
             auth += 1;
         }else{
-            auth -=10;
+            auth -=50;
         }
         
         if(auth <0){
