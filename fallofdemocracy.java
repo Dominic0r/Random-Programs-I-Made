@@ -1,17 +1,21 @@
+
 import java.util.*;
 
 public class Main
 {
     public static Random ra = new Random();
+    public static Scanner sc = new Scanner(System.in);
     static class Party{
         int seats;
         int support;
+        int ideology;
         boolean IsRadical;
         String name;
         
-        public Party(String name, boolean IsRadical){
+        public Party(String name, boolean IsRadical, int ideology){
             this.name = name;
             this.IsRadical = IsRadical;
+            this.ideology = ideology;
         }
         
         public void setSeats(int newSeats){
@@ -40,19 +44,19 @@ public class Main
     public static Party Fasc;
     
     static{
-        Communists = new Party("Communist Party", true);
+        Communists = new Party("Communist Party", true,0);
         Communists.addSupport(5);
         
-        SocDems = new Party("Social Democratic Party", false);
+        SocDems = new Party("Social Democratic Party", false,1);
         SocDems.addSupport(25);
         
-        Liberals = new Party("Liberal Party", false);
+        Liberals = new Party("Liberal Party", false,3);
         Liberals.addSupport(35);
         
-        Cons = new Party("Conservative Party", false);
-        Cons.addSupport(30);
+        Cons = new Party("Conservative Party", false,5);
+        Cons.addSupport(25);
         
-        Fasc = new Party("Fascist Party", true);
+        Fasc = new Party("Fascist Party", true,6);
         Fasc.addSupport(5);
         
         allParties.add(Communists);
@@ -63,12 +67,12 @@ public class Main
     }
     
     
-    public static int year = 1928, quarter = 1;
+    public static int year = 1925, quarter = 1;
     
     public static void election(){
         int total = 0;
         for(Party par : allParties){
-            if(radicalism > 50){
+            /*if(radicalism > 50){
                 if(par.IsRadical){
                     par.support += (radicalism - 50)/10;
                 }
@@ -76,7 +80,7 @@ public class Main
                 if(!par.IsRadical){
                     par.support +=(50-radicalism)/10;
                 }
-            }
+            }*/
             total += par.support;
         }
         
@@ -84,6 +88,7 @@ public class Main
         for(Party par : allParties){
             par.setSeats((par.support*100)/total);
         }
+        snapUnderway = false;
     }
     
     public static void checkBounds(){
@@ -117,6 +122,7 @@ public class Main
     public static int govSeats=0;
     
     public static void formCoalition(){
+        
         for(Party par: allParties){
             if(par.seats > 50){
                 partiesInGov = 1;
@@ -157,6 +163,7 @@ public class Main
             hasRadicals = false;
             govIdeology = 4;
             govSeats = Cons.seats + Liberals.seats;
+            stability = (govSeats/2) + (30/partiesInGov)+ 20;
             return;
         }
         
@@ -166,6 +173,7 @@ public class Main
             hasRadicals = false;
             govIdeology = 2;
             govSeats = SocDems.seats + Liberals.seats;
+            stability = (govSeats/2) + (30/partiesInGov)+ 20;
             return;
         }
         
@@ -175,6 +183,7 @@ public class Main
             hasRadicals = false;
             govIdeology = 3;
             govSeats = Cons.seats + Liberals.seats + SocDems.seats;
+            stability = (govSeats/2) + (30/partiesInGov)+ 20;
             return;
         }
         
@@ -184,6 +193,7 @@ public class Main
             hasRadicals = true;
             govIdeology = 5;
             govSeats = Cons.seats + Fasc.seats;
+            stability = (govSeats/2) + (30/partiesInGov);
             return;
         }
         
@@ -193,29 +203,219 @@ public class Main
             hasRadicals = true;
             govIdeology = 1;
             govSeats = Communists.seats + SocDems.seats;
+            stability = (govSeats/2) + (30/partiesInGov);
             return;
         }
+        
+        //toleration governments
+        if(Cons.seats + Fasc.seats + Liberals.seats > 50){
+            govName = "Rightist Government + Liberal Toleration";
+            partiesInGov = 2;
+            hasRadicals = false;
+            govIdeology = 4;
+            govSeats = Cons.seats + Fasc.seats;
+            stability = (govSeats/2) + (30/partiesInGov);
+            return;
+        }
+        
+        if(Communists.seats + SocDems.seats+ Liberals.seats > 50){
+            govName = "Leftist Government + Liberal Toleration";
+            partiesInGov = 2;
+            hasRadicals = false;
+            govIdeology = 2;
+            govSeats = Communists.seats + SocDems.seats;
+            stability = (govSeats/2) + (30/partiesInGov);
+            return;
+        }
+        
         
         radicalism += 10;
         stability -= 10;
         checkBounds();
-        election();
+        
     }
     
-    public static void updateSUpport(){
+    public static void updateSupport(){
         int toAdd = 0;
+        
         for(Party par: allParties){
-            toAdd += 
+            toAdd = 0;
+            if(par.IsRadical){
+                toAdd += (crisis - 50)/10;
+                toAdd += (50- stability)/10;
+                toAdd += radicalism/10;
+                
+            }else{
+                toAdd += (50-crisis)/10;
+                toAdd += (stability - 50)/10;
+                toAdd -= radicalism/10;
+            }
+            
+            toAdd += par.seats/10;
+            
+            toAdd += (6-Math.abs(par.ideology - govIdeology));
+            toAdd += ra.nextInt(10);
+            
+            if(hasRadicals && par.ideology != govIdeology && par.IsRadical){
+                toAdd /=10;
+            }
+            
+            par.addSupport(toAdd);
+            
+            if(par.support< 0){
+                par.support = 0;
+            }
+            
+            
         }
     }
     
+    public static void updateTime(){
+        quarter++;
+        if(quarter == 13){
+            quarter = 1;
+            year++;
+        }
+    }
+    
+    public static int electionCdown = 48;
+    
+    public static void countDown(){
+        electionCdown--;
+        if(electionCdown == 0){
+            electionCdown = 48;
+            election();
+            formCoalition();
+        }
+    }
+    
+    public static void updateMisc(){
+        if(crisis> 0){
+            
+            int factor = ra.nextInt(100);
+            if(factor> stability){
+                if(factor > stability+15){
+                    crisis += stability/35;
+                }else{
+                    
+                }
+            }else{
+                if(factor> stability-15){
+                    
+                }else{
+                    crisis -= stability/35;
+                }
+                
+            }
+            
+            if(crisis >100){
+                crisis = 100;
+            }
+            if(crisis < 0){
+                crisis = 0;
+            }
+        }
+        
+        if(crisis > 0){
+            radicalism += (crisis/30) - (stability/25);
+        }else{
+            radicalism -= stability/40;
+        }
+        
+        
+        if(radicalism >100){
+                radicalism = 100;
+            }
+            if(radicalism < 0){
+                radicalism = 0;
+            }
+            
+            
+    }
+    
+    public static void crackDown(){
+        if(partiesInGov == 1 && hasRadicals){
+            for(Party par : allParties){
+                if(par.ideology != govIdeology){
+                    par.support /=2;
+                }
+                if(par.support< 0){
+                par.support = 0;
+            }
+            }
+        }
+    }
+    public static boolean snapUnderway = false;
+    public static void checkSnap(){
+        if(partiesInGov>1){
+        if(ra.nextInt(100)> stability+ (stability/2) && !snapUnderway){
+            radicalism+= 10;
+            stability -= 10;
+            electionCdown = 6;
+            snapUnderway = true;
+        }
+        }
+    }
+    
+    public static void events(){
+        boolean hasHappened = false;
+        /*if(ra.nextBoolean() & !hasHappened){ // crisis worsens
+            hasHappened = true;
+            crisis += 5;
+        }
+        
+        if(ra.nextBoolean() & !hasHappened){ // crisis impoves
+            hasHappened = true;
+            crisis -= 5;
+        }*/
+        if(ra.nextBoolean() & !hasHappened){ // rally for democracy
+            hasHappened = true;
+            SocDems.addSupport(SocDems.support/2);
+            Liberals.addSupport(Liberals.support/2);
+            Cons.addSupport(Cons.support/2);
+        }
+        
+        if(ra.nextBoolean() & !hasHappened){ // Communist prtest
+            hasHappened = true;
+            Communists.addSupport(Communists.support/2);
+        }
+        
+        if(ra.nextBoolean() & !hasHappened){ // fascist protest
+            hasHappened = true;
+            Fasc.addSupport(Fasc.support/2);
+        }
+        
+        
+    }
+    
+    
+    
 	public static void main(String[] args) {
-		System.out.println(year+ " "+ quarter);
-		election();
+	    crisis = 100;
+	    election();
 		formCoalition();
+	    while(true){
+		System.out.println(year+ "/"+ quarter);
+		//checkSnap();
+		
+		countDown();
+		//events();
+		updateMisc();
+		updateSupport();
+		crackDown();
 		System.out.println("Governemnt in Power: "+ govName+ " - Seats: "+ govSeats+ "%");
+		System.out.println("===================================");
+		System.out.println("Government Stability: "+ stability);
+		System.out.println("Crisis Level: "+ crisis);
+		System.out.println("radicalism: "+ radicalism);
+		System.out.println("===================================");
+		
 		for(Party par: allParties){
 		    System.out.println(par);
 		}
+		
+		sc.nextLine();
+		updateTime();
+	    }
 	}
 }
