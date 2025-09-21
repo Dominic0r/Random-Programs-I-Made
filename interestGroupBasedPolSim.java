@@ -40,7 +40,7 @@ public class Main
             this.givePoints = givePoints;
             minpoints = givePoints- (givePoints/5);
             maxpoints = givePoints + (givePoints/5);
-            this.leader = new Person(ra.nextInt(50)+25, getRandomName(), (minPolicy+maxPolicy)/2);
+            this.leader = new Person(ra.nextInt(20)+45, getRandomName(), (minPolicy+maxPolicy)/2);
             
         }
         
@@ -54,7 +54,7 @@ public class Main
                 if(ra.nextInt(30)+65 < leader.getAge()){
                     oldPerson = this.leader;
                     changedLead = true;
-                    this.leader = new Person(ra.nextInt(50)+25, getRandomName(), (minPolicy+maxPolicy)/2);
+                    this.leader = new Person(ra.nextInt(20)+45, getRandomName(), (minPolicy+maxPolicy)/2);
                 }
             }
         }
@@ -87,13 +87,13 @@ public class Main
                 this.givePoints = 1;
             }
             
-            /*if(this.givePoints > maxpoints){
+            if(this.givePoints > maxpoints){
                 this.givePoints = maxpoints;
             }
             
             if(this.givePoints < minpoints){
                 this.givePoints = minpoints;
-            }*/
+            }
         }
         
         
@@ -141,11 +141,11 @@ public class Main
                 leader = wingroup.getLeader();
                 
             }else{
-                leader = new Person(ra.nextInt(50)+25, getRandomName(), policy);
+                leader = new Person(ra.nextInt(20)+45, getRandomName(), policy);
             }
             
             } else{
-                leader = new Person(ra.nextInt(50)+25, getRandomName(), policy);
+                leader = new Person(ra.nextInt(20)+45, getRandomName(), policy);
             }
             
             if(leader !=oldPerson && oldPerson != null){
@@ -830,6 +830,10 @@ allGroups.get(12).addPartyName("New Flame Front");
                     coaPoint+= pragmatism/2;
                     //coaPoint += pragmachange;
                     
+                    if(curCoaRuling.getSeats() < par.getSeats()){
+                        coaPoint /=2;
+                    }
+                    
                     if(coaPoint >= threshold){
                         coa.addToMemberList(par);
                     }
@@ -1050,7 +1054,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             }
             
             totGroupPoints = totGroupPoints/(allGroups.size()+1);
-            
+            //totGroupPoints /=2;
             if(resonancePoints == 0){
                     if(gro.getPoints() < totGroupPoints){
                         resonancePoints++;
@@ -1180,16 +1184,20 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             }
         }
         
-        allParties.removeAll(toRemove);
+        
         if(rulingParty !=null){
             if(toRemove.contains(rulingParty)){
                 //System.out.println("SCENARIO 2");
                 //triggerElection();
+                /*snapElec = true;
                 if(elecCount> 3){
                 elecCount = 3;
-                }
+                }*/
+                toRemove.remove(rulingParty);
             }
         }
+        
+        allParties.removeAll(toRemove);
         toRemove.clear();
         
         
@@ -1315,7 +1323,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         int cdownnum = 24;
         
         boolean hasTrig = false;
-        if(elecCount==0 || getGovNumSup() <35 || rpartyhasnogroups){
+        if(elecCount==0 || getGovNumSup() <35){
             //System.out.println("SCENARIO 1");
         triggerElection();
         
@@ -1325,6 +1333,8 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }
         
         int govSeats = getGovNumSup();
+        
+        
         
         if(rulingParty!=null && !hasTrig && !snapElec){
             
