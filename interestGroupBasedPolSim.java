@@ -24,6 +24,8 @@ public class Main
         int maxPolicy;
         int givePoints;
         boolean isAlienated;
+        int minpoints;
+        int maxpoints;
         String name;
         
         Person leader;
@@ -36,7 +38,8 @@ public class Main
             this.name = name;
             this.isAlienated = false;
             this.givePoints = givePoints;
-            
+            minpoints = givePoints- (givePoints/5);
+            maxpoints = givePoints + (givePoints/5);
             this.leader = new Person(ra.nextInt(50)+25, getRandomName(), (minPolicy+maxPolicy)/2);
             
         }
@@ -83,6 +86,14 @@ public class Main
             if(this.givePoints<1){
                 this.givePoints = 1;
             }
+            
+            /*if(this.givePoints > maxpoints){
+                this.givePoints = maxpoints;
+            }
+            
+            if(this.givePoints < minpoints){
+                this.givePoints = minpoints;
+            }*/
         }
         
         
@@ -779,7 +790,7 @@ allGroups.get(12).addPartyName("New Flame Front");
     
     public static void formCoalitions(Party largePar){
         allCoalitions.clear();
-        int thresh = 20;
+        int thresh = 25;
         for(Party par : allParties){
             if(par.getSeats() >=thresh){
                 
@@ -796,32 +807,40 @@ allGroups.get(12).addPartyName("New Flame Front");
         for(Coalition coa : allCoalitions){
             coaPoint = 0;
             curCoaRuling = coa.getLeader();
-            threshold = 45;
+            threshold = 50;
             pragmatism = 50-curCoaRuling.getSeats();
             if(curCoaRuling.getSeats()>51){
                 threshold = 70;
             }
-            
+            Scanner sc= new Scanner(System.in);
+            //System.out.println(curCoaRuling.getName());
+            int debugIdeologydif = 0;
+            int pragmachange = 0;
             for(Party par: allParties){
-                if(par != curCoaRuling && par!= largePar){
-                    coaPoint += pragmatism - Math.abs(par.getPolicy()-curCoaRuling.getPolicy());
+                coaPoint = 0;
+                if(par != curCoaRuling){
+                    //coaPoint += pragmatism;
+                    //coaPoint += 100 - Math.abs(par.getPolicy()-curCoaRuling.getPolicy());
+                    debugIdeologydif = 100 - Math.abs(par.getPolicy()-curCoaRuling.getPolicy());
                     
+                    //coaPoint += (50 -curCoaRuling.getSeats()) /2;
+                    pragmachange = (50 -curCoaRuling.getSeats()) /2;
                     
-                    if(curCoaRuling.getSeats() >40){
-                        coaPoint+=3;
-                    }else if(curCoaRuling.getSeats() >30 && curCoaRuling.getSeats() <= 40){
-                        coaPoint+=5;
-                    }else{
-                        coaPoint+=10;
-                    }
+                    coaPoint += debugIdeologydif/2;
+                    coaPoint+= pragmatism/2;
+                    //coaPoint += pragmachange;
                     
-                    
-                
                     if(coaPoint >= threshold){
                         coa.addToMemberList(par);
                     }
+                    /*System.out.println(par.getName() + ": "+ coaPoint);
+                    System.out.println("Ideology dif: "+ debugIdeologydif);
+                    System.out.println("pragmachange: "+ pragmachange);
+                    System.out.println("pragmatism: "+ pragmatism);*/
+                    
                 }
             }
+            //sc.nextLine();
             
         }
         
@@ -839,7 +858,7 @@ allGroups.get(12).addPartyName("New Flame Front");
         }
         
         for(Coalition coa : allCoalitions){
-            if(coa.getNumOfMembers() == 1 && coa != maxCoa){
+            if(coa.getNumOfMembers() <2 && coa != maxCoa){
                 toRemove.add(coa);
             }
         }
@@ -864,7 +883,7 @@ allGroups.get(12).addPartyName("New Flame Front");
             startdate = year;
             leaderStartDate = year;
             
-            approvalRating +=  rulingCoalition.getLeader() .getSeats()/2;
+            approvalRating =  rulingCoalition.getLeader().getSeats();
         }
         
         
@@ -1130,11 +1149,11 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
                 gro.changePoints(changeBy);
                 
                 
-                for(Group gor : allGroups){
+                /*for(Group gor : allGroups){
                     if(gor != gro){
                         gor.changePoints(nupoints);
                     }
-                }
+                }*/
                 
             }
         }
@@ -1165,7 +1184,10 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         if(rulingParty !=null){
             if(toRemove.contains(rulingParty)){
                 //System.out.println("SCENARIO 2");
-                triggerElection();
+                //triggerElection();
+                if(elecCount> 3){
+                elecCount = 3;
+                }
             }
         }
         toRemove.clear();
@@ -1219,7 +1241,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     }
     
     public static void updateApproval(){
-        approvalRating -= (year-startdate)/10;
+        approvalRating -= (year-startdate)/2;
         
         approvalRating -= auth/10;
         
@@ -1273,9 +1295,9 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             
             
             if(rulingParty != null){
-        updateAuth();
-        checkIsFair();
-        delayElec();
+        //updateAuth(); Authoritarian backsliding delayed for now
+        //checkIsFair();
+        //delayElec();
         }
             
         }
@@ -1307,8 +1329,9 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         if(rulingParty!=null && !hasTrig && !snapElec){
             
             if(rulingParty.getSeats() < govSeats/2){
-                System.out.println("SCENARIO 1");
-                if(ra.nextInt(govSeats) < rulingParty.getSeats() && cooldown <=0){
+                
+                if(ra.nextInt(govSeats) > rulingParty.getSeats()+ (rulingParty.getSeats()/2) && cooldown <=0){
+                    System.out.println("SCENARIO 1");
                     snapElec = true;
                     if(elecCount > 3){
                         elecCount  =3;
@@ -1319,7 +1342,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         
         if(!hasTrig && govSeats < 50 && !snapElec){
             
-            if(ra.nextInt((100-govSeats)+1) > govSeats && cooldown <=0){
+            if(ra.nextInt((100-govSeats)+1) > govSeats+ (govSeats/2) && cooldown <=0){
                 System.out.println("SCENARIO 2");
                 snapElec = true;
                 if(elecCount >3){
@@ -1454,7 +1477,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		    }
 		    
 		}
-		System.out.println("\nParties not in Coalition: :");
+		System.out.println("\nParties not in Coalition:");
 		for(Party par: independentParties){
 		    System.out.println(par.getName());
 		}
