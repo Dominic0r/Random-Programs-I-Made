@@ -51,7 +51,7 @@ public class Main
         
         public void checkLeaderAge(){
             if(leader.getAge() > 65){
-                if(ra.nextInt(30)+65 < leader.getAge()){
+                if(ra.nextInt(20)+75 < leader.getAge()){
                     oldPerson = this.leader;
                     changedLead = true;
                     this.leader = new Person(ra.nextInt(20)+45, getRandomName(), (minPolicy+maxPolicy)/2);
@@ -321,7 +321,7 @@ public class Main
     
     public static List<Group> allGroups = new ArrayList<>();
     public static void generateGroups(){
-        allGroups.add(new Group(1, 15, "Traditionalists", 35));         // 0 – culturally rigid, fading influence
+allGroups.add(new Group(1, 15, "Traditionalists", 35));         // 0 – culturally rigid, fading influence
 allGroups.add(new Group(10, 30, "Nationalists", 25));           // 1 – assertive, suspicious of global elites
 allGroups.add(new Group(25, 45, "Capitalists", 70));            // 2 – elite-backed, anti-populist
 allGroups.add(new Group(20, 35, "Law & Order Bloc", 50));       // 3 – pro-police, anti-chaos, neutral on economics
@@ -658,7 +658,7 @@ allGroups.get(12).addPartyName("New Flame Front");
             points = 0;
             for(Group gro : par.supportGroups){
                 int avg = (gro.getMax()+gro.getMin())/2;
-                int difference = Math.abs(avg-par.getPolicy());
+                int difference = (Math.abs(avg-par.getPolicy()))/5;
                 int contrib =gro.getPoints()/(difference+1);
                 
                 points+= contrib;
@@ -679,10 +679,19 @@ allGroups.get(12).addPartyName("New Flame Front");
             }*/
             
             int inverseApp = 100 - approvalRating;
-            if(government.contains(par)){
+            /*if(government.contains(par)){
                 points += (points*approvalRating)/100;
             }else{
                 points += (points*inverseApp)/100;
+            }*/
+            
+            
+            if(approvalRating<50 && rulingCoalition.members.contains(par)){
+                points /=2;
+            }
+            
+            if(snapElec&& rulingCoalition.members.contains(par)){
+                points /=2;
             }
             
             if(par.isMajor()){
@@ -693,6 +702,7 @@ allGroups.get(12).addPartyName("New Flame Front");
                 int increaseby = auth/10;
                 points *=increaseby;
             }
+            System.out.println(par.getName()+ " "+points*100);
             
             partyScore.put(par, points*100);
         }
@@ -887,9 +897,11 @@ allGroups.get(12).addPartyName("New Flame Front");
             startdate = year;
             leaderStartDate = year;
             
-            approvalRating =  rulingCoalition.getLeader().getSeats();
+            
         }
         
+        approvalRating = 0;
+        approvalRating =  rulingCoalition.getTotalSeats();
         
         rulingParty = rulingCoalition.getLeader();
         
@@ -1189,10 +1201,10 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             if(toRemove.contains(rulingParty)){
                 //System.out.println("SCENARIO 2");
                 //triggerElection();
-                /*snapElec = true;
+                snapElec = true;
                 if(elecCount> 3){
                 elecCount = 3;
-                }*/
+                }
                 toRemove.remove(rulingParty);
             }
         }
@@ -1249,15 +1261,15 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     }
     
     public static void updateApproval(){
-        approvalRating -= (year-startdate)/2;
+        approvalRating -= (year-startdate)/5;
         
         approvalRating -= auth/10;
         
         
         
-        if(getGovNumSup()<50){
+        /*if(getGovNumSup()<50){
             approvalRating -= 50 - getGovNumSup();
-        }
+        }*/
         
         approvalRating += ra.nextInt(2);
         
@@ -1433,7 +1445,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         checkNoGroups();     // (3) Cleans up parties with no support groups (needed after new parties may be created)
         monthly();
         
-        //System.out.println("DEBUG APPROVAL: "+ approvalRating);
+        System.out.println("DEBUG APPROVAL: "+ approvalRating);
         //System.out.println("DEBUG AUTH: "+ auth);
 		
 		System.out.println(months[moNum]+ " - "+ year);
@@ -1475,7 +1487,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		}*/
 		
 		if(rulingCoalition != null){
-		System.out.println("The Governing Coalition: ");
+		System.out.println("The Governing Coalition - "+ rulingCoalition.getTotalSeats()+ "% of Parliament");
 		rulingCoalition.displayMembers();
 		}
 		System.out.println("\nOther Coaltions:");
@@ -1483,6 +1495,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		    if(coa!= rulingCoalition){
 		        
 		        coa.displayMembers();
+		        System.out.println(coa.getTotalSeats()+ "% of Parliament");
 		        System.out.println("====================");
 		    }
 		    
@@ -1492,8 +1505,9 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		    System.out.println(par.getName());
 		}
 		
-		
+		int totsup = 0;
 		for(Party par: allParties){  
+		    totsup = 0;
 		    System.out.println("\n\n"+par.getName()+ " - "+ par.getIdeology() + " - "+ par.getSeats()+ "% of Parliament");
 		    if(par.getLeader()!=null){
 		    System.out.println("Leader: "+ par.getLeader().getName());
@@ -1502,7 +1516,10 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		    }
 		    for(Group gro : par.supportGroups){
 		        System.out.print(" - "+gro.getName());
+		        totsup += gro.getPoints();
 		    }
+		    //System.out.println("Support Points: "+ totsup);
+		    
 		}
 		
 		//for debug 
