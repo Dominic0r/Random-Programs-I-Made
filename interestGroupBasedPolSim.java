@@ -699,7 +699,7 @@ allGroups.get(12).addPartyName("New Flame Front");
             }
             
             if(par.isMajor()){
-                points += points/4;
+                //points += points/4;
             }
             
             if(par == rulingParty && !isFair){
