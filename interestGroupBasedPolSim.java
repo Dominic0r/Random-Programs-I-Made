@@ -615,6 +615,10 @@ allGroups.get(12).addPartyName("New Flame Front");
                 
                 partyScore.put(par,currentPoints);
                 
+                if(par.supportGroups.contains(gro)&& par.supportGroups.size() == 1){
+                    currentPoints+= 10000;
+                }
+                
             }
             
             // Check what party resonates most with this group
@@ -687,7 +691,7 @@ allGroups.get(12).addPartyName("New Flame Front");
             
             
             if(approvalRating<50 && rulingCoalition.members.contains(par)){
-                points /=2;
+                points += Math.abs((par.getPolicy() - rulingCoalition.getLeader().getPolicy()));
             }
             
             if(snapElec&& rulingCoalition.members.contains(par)){
@@ -695,14 +699,14 @@ allGroups.get(12).addPartyName("New Flame Front");
             }
             
             if(par.isMajor()){
-                points += points/2;
+                points += points/4;
             }
             
             if(par == rulingParty && !isFair){
                 int increaseby = auth/10;
                 points *=increaseby;
             }
-            System.out.println(par.getName()+ " "+points*100);
+            //System.out.println(par.getName()+ " "+points*100);
             
             partyScore.put(par, points*100);
         }
@@ -1048,6 +1052,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             
             resonancePoints = 0;
             for(Party par : allParties){
+                if(par.supportGroups.contains(gro)){
                 parpol = par.getPolicy();
                 
                 if(parpol>=min && parpol<= max){
@@ -1056,6 +1061,11 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
                 
                 if(Math.abs(parpol-avg)<threshold){
                 resonancePoints++;
+                }
+                
+                if(par.supportGroups.size() == 1){
+                    resonancePoints++;
+                }
                 }
                 
             }
@@ -1072,6 +1082,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
                         resonancePoints++;
                     }
                 }
+                
             
             if(gro.getAlienated()){
                 createNewParty(gro, avg);
