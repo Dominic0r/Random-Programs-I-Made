@@ -746,7 +746,11 @@ String[] lastNames = {
                 
                 
                 if(par.supportGroups.contains(gro)&& par.supportGroups.size() == 1){
-                    currentPoints+= 10000;
+                    if(par.getSeats() < 10){
+                        currentPoints /=2;
+                    }else{
+                        currentPoints+= 10000;
+                    }
                 }
                 partyScore.put(par,currentPoints);
                 
@@ -905,7 +909,7 @@ String[] lastNames = {
             }
             
             if(par.isMajor()){
-                //points += points/4;
+                points += points/4;
             }
             
             if(par == rulingParty && !isFair){
@@ -1319,20 +1323,25 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
                     resonancePoints++;
                 }
                 
-                if(par.getUnity() < 50){
+                if(par.getUnity() < ra.nextInt(75)){
                     resonancePoints--;
                 }
-                }
+                
                 int totGroupPoints = 0;
                 for(Group gp : par.supportGroups){
                     totGroupPoints+= gp.getPoints();
                 }
                 
-                if(resonancePoints == 0){
-                    if(gro.getPoints() < totGroupPoints/2){
-                        resonancePoints++;
-                    }
+                
+                if(gro.getPoints() < totGroupPoints/2){
+                    resonancePoints++;
                 }
+                
+                
+                }
+                
+                
+                
                 
             }
             
@@ -1996,8 +2005,9 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		System.out.println("\n");
 		String put = "";
 		
+		if(1 == 2){
 		put = sc.nextLine();
-		
+		}
 		//String put = "debugmode"; // for debug
 		if(put.equalsIgnoreCase("archive")){
 		    displayArchive();
