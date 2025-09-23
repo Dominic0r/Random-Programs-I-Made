@@ -418,9 +418,9 @@ allGroups.add(new Group(15, 35, "Rural Conservatives", 30));    // 5 – nostalg
 allGroups.add(new Group(35, 65, "Centrists / Moderates", 80)); // 6 – technocratic, middle-of-the-road
 allGroups.add(new Group(55, 75, "Liberal Reformers", 70));      // 7 – urbanites, reform-focused
 allGroups.add(new Group(60, 85, "Labor Unions", 60));           // 8 – class-driven, suspicious of elites
-allGroups.add(new Group(70, 90, "Progressives", 45));           //9 – identity-focused, decentralized
+allGroups.add(new Group(70, 90, "Progressives", 65));           //9 – identity-focused, decentralized
 allGroups.add(new Group(65, 95, "Environmentalists", 15));      //10 – passionate but divided
-allGroups.add(new Group(80, 100, "Socialists", 30));            //11 – radical but infighting-prone
+allGroups.add(new Group(80, 100, "Socialists", 40));            //11 – radical but infighting-prone
 allGroups.add(new Group(85, 100, "Radical Youth", 15));          //12 – chaotic, often uncooperative
 
 
@@ -892,7 +892,7 @@ String[] lastNames = {
     public static ArrayList<Coalition> coalitionsWithMajority = new ArrayList<>();
     
     public static ArrayList<Party> independentParties = new ArrayList<>();
-    
+    public static Person primeMinister = null;
     public static void formCoalitions(Party largePar){
         allCoalitions.clear();
         int thresh = 45 - (5*allParties.size());
@@ -1042,7 +1042,7 @@ String[] lastNames = {
         approvalRating =  rulingCoalition.getTotalSeats();
         
         rulingParty = rulingCoalition.getLeader();
-        
+        primeMinister = rulingCoalition.getLeader().getLeader();
         
         
         independentParties.clear();
@@ -1393,12 +1393,12 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             oldPerson = null;
             changedLead = false;
             par.determineLeader();
-            if(rulingParty!= null){
+            /*if(rulingParty!= null){
             if(changedLead && rulingParty== par && oldPerson != null  ){
                 previousRulingParties.add(new archiveParty(rulingParty.getName(),leaderStartDate,year, oldPerson.getName()));
                 leaderStartDate=  year;
             }
-            }
+            }*/
             
             if(changedLead){
                 auth /=2;
@@ -1529,10 +1529,12 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }*/
         
         if(!hasTrig && !snapElec&& rulingParty!=null){
-            if(ra.nextInt(60)> rulingCoalition.stability+ (rulingCoalition.stability/2)){
-                snapElec = true;
-                if(elecCount >3){
-                    elecCount = 3;
+            if(ra.nextInt(80)> rulingCoalition.stability+ (rulingCoalition.stability/2)){
+                
+                if(elecCount >12){
+                    System.out.println("SNAP ELECTION");
+                    snapElec = true;
+                    elecCount = 5;
                 }
             }
         }
@@ -1712,25 +1714,6 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         //System.out.println("DEBUG AUTH: "+ auth);
 		
 		System.out.println(months[moNum]+ " - "+ year);
-		System.out.print("Next Parliamentary election in ");
-		if(elecCount > 12){
-		    
-		    System.out.print(elecCount/12);
-		    if(elecCount/12 >1){
-		        System.out.println(" years");
-		    }else{
-		        System.out.println(" year");
-		    }
-		    
-		}else{
-		    System.out.print(elecCount);
-		    if(elecCount > 1){
-		        System.out.println(" months");
-		    }else{
-		        System.out.println(" month");
-		    }
-		}
-		
 		System.out.print("Next Presidential election in ");
 		if(presCdown > 12){
 		    
@@ -1750,15 +1733,37 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		    }
 		}
 		
+		System.out.print("Next Parliamentary election in ");
+		if(elecCount > 12){
+		    
+		    System.out.print(elecCount/12);
+		    if(elecCount/12 >1){
+		        System.out.println(" years");
+		    }else{
+		        System.out.println(" year");
+		    }
+		    
+		}else{
+		    System.out.print(elecCount);
+		    if(elecCount > 1){
+		        System.out.println(" months");
+		    }else{
+		        System.out.println(" month");
+		    }
+		}
+		
+		
 		if(president != null){
 		    System.out.println("President: "+ president.getName()+ " ("+ president.disIdeo()+ ")");
 		}
 		if(rulingParty != null){
+		    if(rulingParty.getLeader() != null){
+		    System.out.println("Prime Minister: " + primeMinister.getName()+ " ("+ primeMinister.disIdeo()+ ")");
+		    }
+		    
 		System.out.println("\nRuling Party: "+ rulingParty.getName());
 		
-		if(rulingParty.getLeader() != null){
-		    System.out.println("Prime Minister: " + rulingParty.getLeader().getName());
-		}
+		
 		}
         /*System.out.println("\nThe Governing Coalition: ");
         for(Party par: government){
