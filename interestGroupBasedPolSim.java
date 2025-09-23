@@ -1671,7 +1671,12 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 
         System.out.println("Round " + rounds);
         for (Person pe : voteCount.keySet()) {
-            System.out.println(pe.getName() + ": " + voteCount.get(pe) + " votes");
+            //System.out.println(pe.getName() + ": " + voteCount.get(pe) + " votes");
+            System.out.println(
+            pe.getName() +
+            " (Ideology: " + pe.disIdeo() + "): " +
+            voteCount.get(pe) + " votes"
+            );
         }
 
         int totalVotes = 0;
