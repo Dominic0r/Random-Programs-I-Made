@@ -401,160 +401,161 @@ allGroups.add(new Group(80, 100, "Socialists", 15));            //11 – radical
 allGroups.add(new Group(85, 100, "Radical Youth", 5));          //12 – chaotic, often uncooperative
 
 // 0 - Traditionalists
-allGroups.get(0).addPartyName("Faith and Family Party");
-allGroups.get(0).addPartyName("Moral Order Party");
-allGroups.get(0).addPartyName("Sacred Tradition Front");
-allGroups.get(0).addPartyName("Conscience Party");
-allGroups.get(0).addPartyName("Covenant Union");
-allGroups.get(0).addPartyName("Pillar of Values Movement");
 allGroups.get(0).addPartyName("Heritage Party");
-allGroups.get(0).addPartyName("National Virtue Coalition");
-allGroups.get(0).addPartyName("Guardian Party");
-allGroups.get(0).addPartyName("Traditional Path Front");
+allGroups.get(0).addPartyName("Values Party");
+allGroups.get(0).addPartyName("Legacy Union");
+allGroups.get(0).addPartyName("Tradition Party");
+allGroups.get(0).addPartyName("Stability Bloc");
+allGroups.get(0).addPartyName("Family Party");
+allGroups.get(0).addPartyName("Cultural Party");
+allGroups.get(0).addPartyName("Roots Party");
+allGroups.get(0).addPartyName("Order Party");
+allGroups.get(0).addPartyName("Foundation Party");
 
 // 1 - Nationalists
-allGroups.get(1).addPartyName("National Front");
-allGroups.get(1).addPartyName("Sovereign Nation Party");
-allGroups.get(1).addPartyName("Flagbearers' Union");
-allGroups.get(1).addPartyName("Homeland Voice Movement");
-allGroups.get(1).addPartyName("Great Nation Alliance");
-allGroups.get(1).addPartyName("Citizens' Front");
-allGroups.get(1).addPartyName("Homeland Defense Party");
-allGroups.get(1).addPartyName("Unity Nation Bloc");
-allGroups.get(1).addPartyName("National Renewal Party");
-allGroups.get(1).addPartyName("True Patriots' Union");
+allGroups.get(1).addPartyName("National Party");
+allGroups.get(1).addPartyName("Unity Party");
+allGroups.get(1).addPartyName("Homeland Party");
+allGroups.get(1).addPartyName("Sovereign Bloc");
+allGroups.get(1).addPartyName("Flag Party");
+allGroups.get(1).addPartyName("Nation Party");
+allGroups.get(1).addPartyName("Patriot Party");
+allGroups.get(1).addPartyName("Union Party");
+allGroups.get(1).addPartyName("Front Party");
+allGroups.get(1).addPartyName("Renewal Party");
 
 // 2 - Capitalists
-allGroups.get(2).addPartyName("Free Market Party");
-allGroups.get(2).addPartyName("Enterprise League");
-allGroups.get(2).addPartyName("Economic Liberty Coalition");
-allGroups.get(2).addPartyName("Growth First Party");
-allGroups.get(2).addPartyName("Opportunity Union");
-allGroups.get(2).addPartyName("Business Forward Bloc");
-allGroups.get(2).addPartyName("Commerce Alliance");
-allGroups.get(2).addPartyName("Modern Economy Front");
-allGroups.get(2).addPartyName("Prosperity Party");
-allGroups.get(2).addPartyName("Innovation and Trade Party");
+allGroups.get(2).addPartyName("Growth Party");
+allGroups.get(2).addPartyName("Freedom Party");
+allGroups.get(2).addPartyName("Market Party");
+allGroups.get(2).addPartyName("Progress Party");
+allGroups.get(2).addPartyName("Opportunity Party");
+allGroups.get(2).addPartyName("Enterprise Party");
+allGroups.get(2).addPartyName("Commerce Party");
+allGroups.get(2).addPartyName("Future Party");
+allGroups.get(2).addPartyName("Wealth Party");
+allGroups.get(2).addPartyName("Development Party");
 
 // 3 - Law & Order Bloc
-allGroups.get(3).addPartyName("Order and Justice Party");
-allGroups.get(3).addPartyName("Peace and Stability Union");
-allGroups.get(3).addPartyName("Security First Party");
-allGroups.get(3).addPartyName("Lawkeepers' Front");
+allGroups.get(3).addPartyName("Justice Party");
+allGroups.get(3).addPartyName("Order Party");
+allGroups.get(3).addPartyName("Security Party");
+allGroups.get(3).addPartyName("Peace Party");
 allGroups.get(3).addPartyName("Shield Party");
-allGroups.get(3).addPartyName("Justice and Honor Movement");
-allGroups.get(3).addPartyName("Civic Discipline Coalition");
-allGroups.get(3).addPartyName("Safe Streets Party");
-allGroups.get(3).addPartyName("Law and Duty Alliance");
-allGroups.get(3).addPartyName("Nation Secure Bloc");
+allGroups.get(3).addPartyName("Duty Party");
+allGroups.get(3).addPartyName("Law Party");
+allGroups.get(3).addPartyName("Safe Party");
+allGroups.get(3).addPartyName("Civic Party");
+allGroups.get(3).addPartyName("Guard Party");
 
 // 4 - Small Business Owners
-allGroups.get(4).addPartyName("Entrepreneurs' Party");
-allGroups.get(4).addPartyName("Independent Work Alliance");
-allGroups.get(4).addPartyName("Local Prosperity Party");
-allGroups.get(4).addPartyName("Peoples Commerce Front");
-allGroups.get(4).addPartyName("Small Enterprise Coalition");
-allGroups.get(4).addPartyName("Owners and Workers Party");
-allGroups.get(4).addPartyName("Community Business Bloc");
-allGroups.get(4).addPartyName("Merchant League");
-allGroups.get(4).addPartyName("Self-Reliance Movement");
-allGroups.get(4).addPartyName("Marketplace Party");
+allGroups.get(4).addPartyName("Local Party");
+allGroups.get(4).addPartyName("People’s Party");
+allGroups.get(4).addPartyName("Independent Party");
+allGroups.get(4).addPartyName("Community Party");
+allGroups.get(4).addPartyName("Work Party");
+allGroups.get(4).addPartyName("Owners Party");
+allGroups.get(4).addPartyName("Merchant Party");
+allGroups.get(4).addPartyName("Trade Party");
+allGroups.get(4).addPartyName("Self-Reliance Party");
+allGroups.get(4).addPartyName("Business Party");
 
 // 5 - Rural Conservatives
-allGroups.get(5).addPartyName("Rural Voice Party");
-allGroups.get(5).addPartyName("Farm and Faith Coalition");
-allGroups.get(5).addPartyName("Fields and Families Party");
-allGroups.get(5).addPartyName("Agrarian Union");
-allGroups.get(5).addPartyName("Backcountry Party");
-allGroups.get(5).addPartyName("Soil and Spirit Front");
-allGroups.get(5).addPartyName("Homestead Movement");
-allGroups.get(5).addPartyName("Green Hills Party");
-allGroups.get(5).addPartyName("Folkland Bloc");
-allGroups.get(5).addPartyName("Countryside Alliance");
+allGroups.get(5).addPartyName("Rural Party");
+allGroups.get(5).addPartyName("Agrarian Party");
+allGroups.get(5).addPartyName("Countryside Party");
+allGroups.get(5).addPartyName("Homestead Party");
+allGroups.get(5).addPartyName("Farmers Party");
+allGroups.get(5).addPartyName("Lands Party");
+allGroups.get(5).addPartyName("Hills Party");
+allGroups.get(5).addPartyName("Folk Party");
+allGroups.get(5).addPartyName("Village Party");
+allGroups.get(5).addPartyName("Fields Party");
 
 // 6 - Centrists / Moderates
-allGroups.get(6).addPartyName("Common Ground Party");
-allGroups.get(6).addPartyName("Unity Movement");
-allGroups.get(6).addPartyName("National Consensus Party");
-allGroups.get(6).addPartyName("Balanced Future Bloc");
-allGroups.get(6).addPartyName("People’s Middle Way");
-allGroups.get(6).addPartyName("Moderate Alliance");
-allGroups.get(6).addPartyName("Civic Bridge Party");
-allGroups.get(6).addPartyName("Forward Together Front");
-allGroups.get(6).addPartyName("Coalition for Progress");
-allGroups.get(6).addPartyName("Stability and Reform Party");
+allGroups.get(6).addPartyName("Center Party");
+allGroups.get(6).addPartyName("Middle Party");
+allGroups.get(6).addPartyName("Balance Party");
+allGroups.get(6).addPartyName("Consensus Party");
+allGroups.get(6).addPartyName("Unity Party");
+allGroups.get(6).addPartyName("Bridge Party");
+allGroups.get(6).addPartyName("Together Party");
+allGroups.get(6).addPartyName("Coalition Party");
+allGroups.get(6).addPartyName("Stability Party");
+allGroups.get(6).addPartyName("Civic Party");
 
 // 7 - Liberal Reformers
 allGroups.get(7).addPartyName("Reform Party");
-allGroups.get(7).addPartyName("Civic Renewal Front");
-allGroups.get(7).addPartyName("Open Society Party");
-allGroups.get(7).addPartyName("Freedom and Rights Coalition");
-allGroups.get(7).addPartyName("Hope and Change Movement");
-allGroups.get(7).addPartyName("New Light Party");
-allGroups.get(7).addPartyName("Modern Unity Bloc");
-allGroups.get(7).addPartyName("Future Civic Party");
-allGroups.get(7).addPartyName("Progressive Union");
-allGroups.get(7).addPartyName("Center for Reform");
+allGroups.get(7).addPartyName("Renewal Party");
+allGroups.get(7).addPartyName("Freedom Party");
+allGroups.get(7).addPartyName("Rights Party");
+allGroups.get(7).addPartyName("Hope Party");
+allGroups.get(7).addPartyName("Light Party");
+allGroups.get(7).addPartyName("Unity Party");
+allGroups.get(7).addPartyName("Future Party");
+allGroups.get(7).addPartyName("Progressive Party");
+allGroups.get(7).addPartyName("Change Party");
 
 // 8 - Labor Unions
-allGroups.get(8).addPartyName("Workers Alliance");
-allGroups.get(8).addPartyName("Labor Solidarity Party");
-allGroups.get(8).addPartyName("Peoples Rights Front");
-allGroups.get(8).addPartyName("Union Front Party");
-allGroups.get(8).addPartyName("Working Families Bloc");
-allGroups.get(8).addPartyName("Justice for Labor Party");
-allGroups.get(8).addPartyName("Strong Hands Movement");
-allGroups.get(8).addPartyName("Labor Voice Union");
+allGroups.get(8).addPartyName("Workers Party");
+allGroups.get(8).addPartyName("Labor Party");
+allGroups.get(8).addPartyName("Union Party");
+allGroups.get(8).addPartyName("Families Party");
+allGroups.get(8).addPartyName("Hands Party");
+allGroups.get(8).addPartyName("Strength Party");
 allGroups.get(8).addPartyName("Fair Work Party");
-allGroups.get(8).addPartyName("Peoples Strength Coalition");
+allGroups.get(8).addPartyName("Voice Party");
+allGroups.get(8).addPartyName("Rights Party");
+allGroups.get(8).addPartyName("Solidarity Party");
 
 // 9 - Progressives
-allGroups.get(9).addPartyName("Forward Equality Party");
-allGroups.get(9).addPartyName("Change Now Coalition");
-allGroups.get(9).addPartyName("Rainbow Front");
-allGroups.get(9).addPartyName("Social Justice Party");
-allGroups.get(9).addPartyName("Tomorrow Movement");
-allGroups.get(9).addPartyName("Equality Bloc");
-allGroups.get(9).addPartyName("Bright Future Party");
-allGroups.get(9).addPartyName("Inclusive Society Party");
-allGroups.get(9).addPartyName("Unity for Progress");
-allGroups.get(9).addPartyName("New Rights Party");
+allGroups.get(9).addPartyName("Equality Party");
+allGroups.get(9).addPartyName("Change Party");
+allGroups.get(9).addPartyName("Justice Party");
+allGroups.get(9).addPartyName("Tomorrow Party");
+allGroups.get(9).addPartyName("Future Party");
+allGroups.get(9).addPartyName("Bright Party");
+allGroups.get(9).addPartyName("Unity Party");
+allGroups.get(9).addPartyName("New Party");
+allGroups.get(9).addPartyName("Inclusive Party");
+allGroups.get(9).addPartyName("People’s Party");
 
 // 10 - Environmentalists
 allGroups.get(10).addPartyName("Green Party");
-allGroups.get(10).addPartyName("Planet First Coalition");
-allGroups.get(10).addPartyName("EcoFuture Bloc");
-allGroups.get(10).addPartyName("Clean Earth Alliance");
-allGroups.get(10).addPartyName("Natures Voice Party");
-allGroups.get(10).addPartyName("Zero Emissions Front");
-allGroups.get(10).addPartyName("Living Earth Party");
-allGroups.get(10).addPartyName("Global Greens Union");
-allGroups.get(10).addPartyName("Sustainable Society Party");
-allGroups.get(10).addPartyName("Earthguard Movement");
+allGroups.get(10).addPartyName("Earth Party");
+allGroups.get(10).addPartyName("Future Party");
+allGroups.get(10).addPartyName("Clean Party");
+allGroups.get(10).addPartyName("Nature Party");
+allGroups.get(10).addPartyName("Eco Party");
+allGroups.get(10).addPartyName("Planet Party");
+allGroups.get(10).addPartyName("Living Party");
+allGroups.get(10).addPartyName("Sustainable Party");
+allGroups.get(10).addPartyName("Earth Party");
 
 // 11 - Socialists
-allGroups.get(11).addPartyName("Peoples Socialist Party");
-allGroups.get(11).addPartyName("Red Flag Union");
-allGroups.get(11).addPartyName("United Workers Party");
-allGroups.get(11).addPartyName("Class Struggle Front");
-allGroups.get(11).addPartyName("Social Equality Bloc");
-allGroups.get(11).addPartyName("Revolutionary Justice Party");
-allGroups.get(11).addPartyName("Democratic Labor Party");
-allGroups.get(11).addPartyName("New Left Front");
-allGroups.get(11).addPartyName("Common Struggle Union");
-allGroups.get(11).addPartyName("People Power Coalition");
+allGroups.get(11).addPartyName("Social Party");
+allGroups.get(11).addPartyName("Workers Party");
+allGroups.get(11).addPartyName("Equality Party");
+allGroups.get(11).addPartyName("Justice Party");
+allGroups.get(11).addPartyName("Red Party");
+allGroups.get(11).addPartyName("Labor Party");
+allGroups.get(11).addPartyName("People’s Party");
+allGroups.get(11).addPartyName("Left Party");
+allGroups.get(11).addPartyName("Common Party");
+allGroups.get(11).addPartyName("Union Party");
 
 // 12 - Radical Youth
-allGroups.get(12).addPartyName("Youth Liberation Front");
-allGroups.get(12).addPartyName("Revolt and Rise Party");
-allGroups.get(12).addPartyName("Next Gen Coalition");
-allGroups.get(12).addPartyName("Awakened Voices Party");
-allGroups.get(12).addPartyName("Radical Future Bloc");
-allGroups.get(12).addPartyName("Voices of Change");
-allGroups.get(12).addPartyName("Break the Chains Party");
-allGroups.get(12).addPartyName("The Spark Movement");
-allGroups.get(12).addPartyName("Reimagine Party");
-allGroups.get(12).addPartyName("New Flame Front");
+allGroups.get(12).addPartyName("Youth Party");
+allGroups.get(12).addPartyName("Next Party");
+allGroups.get(12).addPartyName("Voices Party");
+allGroups.get(12).addPartyName("Future Party");
+allGroups.get(12).addPartyName("Change Party");
+allGroups.get(12).addPartyName("Rise Party");
+allGroups.get(12).addPartyName("New Party");
+allGroups.get(12).addPartyName("Spark Party");
+allGroups.get(12).addPartyName("Flame Party");
+allGroups.get(12).addPartyName("Revolt Party");
+
 
 
 
@@ -584,51 +585,50 @@ allGroups.get(12).addPartyName("New Flame Front");
     
     public static String getRandomName() {
         String[] maleFirstNames = {
-            "James", "John", "Robert", "Michael", "William", "David", "Richard", "Joseph",
-            "Thomas", "Charles", "Christopher", "Daniel", "Matthew", "Anthony", "Mark", "Donald",
-            "Steven", "Paul", "Andrew", "Joshua", "Kenneth", "Kevin", "Brian", "George",
-            "Edward", "Ronald", "Timothy", "Jason", "Jeffrey", "Ryan", "Jacob", "Nicholas",
-            "Eric", "Stephen", "Larry", "Justin", "Scott", "Brandon", "Benjamin", "Samuel",
-            "Gregory", "Alexander", "Patrick", "Frank", "Raymond", "Jack", "Dennis", "Jerry",
-            "Tyler", "Aaron", "Jose", "Adam", "Nathan", "Henry", "Zachary", "Peter",
-            "Kyle", "Walter", "Ethan", "Jeremy", "Harold", "Keith", "Christian", "Roger",
-            "Noah", "Gerald", "Carl", "Terry", "Sean", "Austin", "Arthur", "Lawrence",
-            "Jesse", "Dylan", "Bryan", "Joe", "Jordan", "Billy", "Bruce", "Albert",
-            "Willie", "Gabriel", "Logan", "Alan"
-        };
+    "James", "George", "Henry", "Arthur", "Edward", "William", "Charles", "Thomas",
+    "Alexander", "Alfred", "Frederick", "Richard", "Hugh", "Nicholas", "Matthew", "Peter",
+    "Anthony", "Christopher", "Simon", "David", "Michael", "Francis", "Martin", "John",
+    "Robert", "Andrew", "Stephen", "Patrick", "Samuel", "Joseph", "Benjamin", "Philip",
+    "Jonathan", "Oliver", "Daniel", "Luke", "Mark", "Laurence", "Graham", "Nigel",
+    "Colin", "Trevor", "Malcolm", "Gareth", "Clive", "Stuart", "Jeremy", "Miles",
+    "Rupert", "Julian", "Dominic", "Sebastian", "Hugh", "Ian", "Douglas", "Kenneth",
+    "Reginald", "Geoffrey", "Clifford", "Roland", "Harold", "Lawrence", "Gerald", "Cecil",
+    "Rowan", "Adrian", "Spencer", "Lionel", "Edmund", "Alistair", "Giles", "Ewan",
+    "Angus", "Hamish", "Crispin", "Neville", "Ralph", "Cedric", "Hector", "Basil",
+    "Godfrey", "Maurice", "Percival", "Wilfred", "Stanley", "Archibald", "Reg", "Len"
+};
 
-        String[] femaleFirstNames = {
-            "Mary", "Patricia", "Jennifer", "Linda", "Elizabeth", "Barbara", "Susan", "Jessica",
-            "Sarah", "Karen", "Nancy", "Lisa", "Betty", "Margaret", "Sandra", "Ashley",
-            "Kimberly", "Emily", "Donna", "Michelle", "Dorothy", "Carol", "Amanda", "Melissa",
-            "Deborah", "Stephanie", "Rebecca", "Sharon", "Laura", "Cynthia", "Kathleen", "Amy",
-            "Angela", "Shirley", "Emma", "Brenda", "Pamela", "Nicole", "Helen", "Samantha",
-            "Katherine", "Christine", "Debra", "Rachel", "Catherine", "Carolyn", "Janet", "Ruth",
-            "Maria", "Heather", "Diana", "Julie", "Joyce", "Victoria", "Olivia", "Frances",
-            "Ann", "Martha", "Jacqueline", "Gloria", "Teresa", "Doris", "Sara", "Janice",
-            "Julia", "Marie", "Grace", "Judy", "Theresa", "Beverly", "Denise", "Marilyn",
-            "Amber", "Danielle", "Rose", "Brittany", "Diana", "Madison", "Tiffany", "Alexis",
-            "Sophia", "Charlotte", "Hannah", "Abigail", "Megan", "Chloe", "Victoria", "Natalie",
-            "Evelyn", "Isabella", "Ella", "Avery"
-        };
+String[] femaleFirstNames = {
+    "Elizabeth", "Mary", "Anne", "Margaret", "Catherine", "Jane", "Victoria", "Charlotte",
+    "Alexandra", "Eleanor", "Matilda", "Alice", "Beatrice", "Florence", "Edith", "Harriet",
+    "Sarah", "Emma", "Olivia", "Lucy", "Isabella", "Sophia", "Amelia", "Emily",
+    "Grace", "Hannah", "Abigail", "Clara", "Frances", "Rachel", "Joan", "Agnes",
+    "Martha", "Ruth", "Helen", "Irene", "Diana", "Julia", "Caroline", "Georgina",
+    "Henrietta", "Rosalind", "Philippa", "Victoria", "Rebecca", "Susannah", "Madeleine", "Sylvia",
+    "Patricia", "Pauline", "Barbara", "Dorothy", "Janet", "Christine", "Deborah", "Pamela",
+    "Jennifer", "Denise", "Jacqueline", "Sandra", "Theresa", "Louise", "Bridget", "Fiona",
+    "Moira", "Sheila", "Gillian", "Hazel", "Iris", "Violet", "Phoebe", "Arabella",
+    "Imogen", "Poppy", "Maisie", "Millie", "Esme", "Freya", "Evelyn", "Agatha",
+    "Clarissa", "Winifred", "Constance", "Marjorie", "Ethel", "Edwina", "Cecily", "Beatrix"
+};
 
-        String[] lastNames = {
-            "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis",
-            "Rodriguez", "Martinez", "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas",
-            "Taylor", "Moore", "Jackson", "Martin", "Lee", "Perez", "Thompson", "White",
-            "Harris", "Sanchez", "Clark", "Ramirez", "Lewis", "Robinson", "Walker", "Young",
-            "Allen", "King", "Wright", "Scott", "Torres", "Nguyen", "Hill", "Flores",
-            "Green", "Adams", "Nelson", "Baker", "Hall", "Rivera", "Campbell", "Mitchell",
-            "Carter", "Roberts", "Gomez", "Phillips", "Evans", "Turner", "Diaz", "Parker",
-            "Cruz", "Edwards", "Collins", "Reyes", "Stewart", "Morris", "Morales", "Murphy",
-            "Cook", "Rogers", "Gutierrez", "Ortiz", "Morgan", "Cooper", "Peterson", "Bailey",
-            "Reed", "Kelly", "Howard", "Ramos", "Kim", "Cox", "Ward", "Richardson",
-            "Watson", "Brooks", "Chavez", "Wood", "James", "Bennett", "Gray", "Mendoza",
-            "Ruiz", "Hughes", "Price", "Alvarez", "Castillo", "Sanders", "Patel", "Myers",
-            "Long", "Ross", "Foster", "Jimenez"
-        };
+String[] lastNames = {
+    "Smith", "Jones", "Taylor", "Brown", "Williams", "Wilson", "Evans", "Thomas",
+    "Roberts", "Johnson", "Lewis", "Walker", "Robinson", "Wood", "Thompson", "White",
+    "Watson", "Jackson", "Wright", "Green", "Harris", "Cooper", "King", "Lee",
+    "Edwards", "Clark", "Morris", "Moore", "Ward", "Turner", "Carter", "Phillips",
+    "Mitchell", "Anderson", "Allen", "Scott", "Hill", "Adams", "Baker", "Nelson",
+    "Hall", "Shaw", "Miller", "Hughes", "Parker", "Collins", "Reynolds", "Griffiths",
+    "Morgan", "Price", "Richards", "Palmer", "Foster", "Pearce", "West", "Knight",
+    "Atkinson", "Holmes", "Barrett", "Lawson", "Saunders", "Hardy", "Osborne", "Wheeler",
+    "Chapman", "Fletcher", "Barnes", "Spencer", "Elliott", "Lloyd", "Rogers", "Matthews",
+    "Harvey", "Nash", "Bishop", "Payne", "Howe", "Butler", "Cross", "Kent",
+    "Cartwright", "Hancock", "Pritchard", "Underwood", "Hollingsworth", "Fairfax", "Mortimer", "Beaumont",
+    "Chamberlain", "Montague", "Hawkins", "Radcliffe", "Barton", "Hurst", "Clarke", "Drummond"
+};
 
-        boolean male = ra.nextInt(100) < 80;
+
+        boolean male = ra.nextInt(100) < 90;
 
         String firstName = male
                 ? maleFirstNames[ra.nextInt(maleFirstNames.length)]
