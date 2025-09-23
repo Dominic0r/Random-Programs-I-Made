@@ -708,7 +708,7 @@ String[] lastNames = {
     
     
     
-    public static void arrangeGroups(){
+    public static void arrangeGroupsOld(){
         int min=0,max=0;
         int avg =0;
         
@@ -737,17 +737,18 @@ String[] lastNames = {
                 parpol = par.getPolicy();
                 if(parpol>=min && parpol <= max){
                     currentPoints+=100;
-                }else{
-                    currentPoints += 50;
                 }
                 
-                currentPoints /= (Math.abs(parpol-avg))+1;
                 
-                partyScore.put(par,currentPoints);
+                
+                currentPoints -= Math.abs(parpol-avg)+1;
+                currentPoints -= (100-par.unity)/5;
+                
                 
                 if(par.supportGroups.contains(gro)&& par.supportGroups.size() == 1){
                     currentPoints+= 10000;
                 }
+                partyScore.put(par,currentPoints);
                 
             }
             
@@ -779,6 +780,80 @@ String[] lastNames = {
             
         }
     }
+    
+    public static void arrangeGroups() {
+    int min, max, avg;
+    int parpol;
+    int currentPoints;
+    int threshold = 10; // % improvement required to switch
+
+    for (Party par : allParties) {
+        par.supportGroups.clear();
+    }
+
+    for (Group gro : allGroups) {
+        Map<Party, Integer> partyScore = new HashMap<>();
+        min = gro.getMin();
+        max = gro.getMax();
+        avg = (min + max) / 2;
+
+        for (Party par : allParties) {
+            currentPoints = 0;
+            parpol = par.getPolicy();
+            if (parpol >= min && parpol <= max) {
+                currentPoints += 100;
+            } else {
+                currentPoints += 50;
+            }
+            currentPoints /= (Math.abs(parpol - avg)) + 1;
+            partyScore.put(par, currentPoints);
+        }
+
+        // Find party with max score
+        int winNum = -1;
+        Party winKey = null;
+        for (Party par : partyScore.keySet()) {
+            if (partyScore.get(par) > winNum) {
+                winNum = partyScore.get(par);
+                winKey = par;
+            }
+        }
+
+        // Find current party (if any)
+        Party currentParty = null;
+        for (Party par : allParties) {
+            if (par.supportGroups.contains(gro)) {
+                currentParty = par;
+                break;
+            }
+        }
+
+        // Only switch if winKey’s score is much better than current
+        boolean shouldSwitch = false;
+        if (currentParty == null) {
+            shouldSwitch = true; // not currently assigned
+        } else {
+            int currentScore = partyScore.get(currentParty);
+            if (winNum > currentScore + threshold) {
+                shouldSwitch = true;
+            }
+        }
+
+        // Reassign if needed
+        if (shouldSwitch) {
+            // Remove group from all parties
+            for (Party par : allParties) {
+                par.supportGroups.remove(gro);
+            }
+            winKey.addToSupport(gro);
+        } else if (currentParty != null) {
+            // Keep current assignment
+            currentParty.addToSupport(gro);
+        }
+    }
+}
+    
+    
     
     public static int leaderStartDate = startdate;
     
@@ -1248,21 +1323,24 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
                     resonancePoints--;
                 }
                 }
+                int totGroupPoints = 0;
+                for(Group gp : par.supportGroups){
+                    totGroupPoints+= gp.getPoints();
+                }
                 
-            }
-            
-            int totGroupPoints = 0;
-            for(Group gp : allGroups){
-                totGroupPoints+= gp.getPoints();
-            }
-            
-            totGroupPoints = totGroupPoints/(allGroups.size()+1);
-            //totGroupPoints /=2;
-            if(resonancePoints == 0){
+                if(resonancePoints == 0){
                     if(gro.getPoints() < totGroupPoints/2){
                         resonancePoints++;
                     }
                 }
+                
+            }
+            
+            
+            
+            //totGroupPoints = totGroupPoints/(allGroups.size()+1);
+            //totGroupPoints /=2;
+            
             
             
             boolean isAlienated = resonancePoints<=0;
@@ -1283,6 +1361,44 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         
         
     }
+    
+    
+    
+    
+    public static void checkAlienationNew() {
+    for (Group gro : allGroups) {
+        boolean isRepresented = false;
+        boolean hasCloseParty = false;
+
+        int min = gro.getMin();
+        int max = gro.getMax();
+        int avg = (min + max) / 2;
+
+        for (Party par : allParties) {
+            if (par.supportGroups.contains(gro)) {
+                isRepresented = true;
+            }
+            // Check if any party's policy is within threshold of group's avg
+            int threshold = 10; // You can tune this
+            if (Math.abs(par.getPolicy() - avg) < threshold) {
+                hasCloseParty = true;
+            }
+        }
+
+        // Alienated if not represented and no close party exists
+        boolean shouldBeAlienated = !isRepresented && !hasCloseParty;
+
+        // If group is alienated, create a new party, then mark as not alienated
+        if (shouldBeAlienated && gro.getAlienated()) {
+            createNewParty(gro, avg);
+            gro.changeAlienation(false);
+        } else {
+            gro.changeAlienation(shouldBeAlienated);
+        }
+    }
+}
+    
+    
     
     public static void createNewParty(Group gro, int avg){
         gro.changeAlienation(false);
