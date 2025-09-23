@@ -2005,9 +2005,9 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		System.out.println("\n");
 		String put = "";
 		
-		if(1 == 2){
+		//if(1 == 2){
 		put = sc.nextLine();
-		}
+		//}
 		//String put = "debugmode"; // for debug
 		if(put.equalsIgnoreCase("archive")){
 		    displayArchive();
