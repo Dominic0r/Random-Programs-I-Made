@@ -244,6 +244,29 @@ public class Main
             return this.ideology;
         }
         
+        public String disIdeo(){
+            String returnIdeo = "";
+            if(this.ideology>50){
+                if(this.ideology>85){
+                    returnIdeo = "Far-left";
+                }else if(this.ideology <=85 && this.ideology> 70){
+                    returnIdeo = "Left-wing";
+                }else{
+                    returnIdeo = "Center left";
+                }
+            }else{
+                if(this.ideology>30){
+                    returnIdeo = "Center right";
+                }else if(this.ideology<=30 && this.ideology>15){
+                    returnIdeo = "Right-wing";
+                }else{
+                    returnIdeo = "Far-Right";
+                }
+            }
+            
+            return returnIdeo;
+        }
+        
         public String getName(){
             return this.name;
         }
@@ -1435,7 +1458,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             gro.getLeader().ageUp();
         }
             
-            
+        
             
             if(rulingParty != null){
         //updateAuth(); Authoritarian backsliding delayed for now
@@ -1444,6 +1467,14 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }
             
         }
+        
+        presCdown--;
+        if(presCdown == 0){
+            electPresident();
+            presCdown = defpresCdown;
+        }
+        
+        
         checkNoGroups();
         boolean rpartyhasnogroups = false;
         elecCount--;
@@ -1583,6 +1614,87 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         allParties.sort(Comparator.comparing (Party -> Party.getPolicy()));
     }
     
+    
+    public static Person president;
+    public static int presCdown = 10;
+    public static int defpresCdown =48;
+    
+    public static void electPresident(){
+    int rounds = 1;
+    List<Person> candidates = new ArrayList<>();
+    for (Group par : allGroups) {
+        if (par.getLeader() != null) {
+            candidates.add(par.getLeader());
+        }
+    }
+
+    Person winner = null;
+    boolean hasGotMajority = false;
+
+    while (!hasGotMajority && candidates.size() > 0) {
+        Map<Person, Integer> voteCount = new HashMap<>();  // <--- RESET VOTES EACH ROUND
+
+        // Voting
+        for (Party votingParty : allParties) {
+            Person bestCandidate = null;
+            int minDiff = Integer.MAX_VALUE;
+            List<Person> tiedCandidates = new ArrayList<>();
+            for (Person candidate : candidates) {
+                int diff = Math.abs(votingParty.getPolicy() - candidate.getIdeology());
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    tiedCandidates.clear();
+                    tiedCandidates.add(candidate);
+                } else if (diff == minDiff) {
+                    tiedCandidates.add(candidate);
+                }
+            }
+            // If there's a tie, choose randomly among best candidates
+            if (!tiedCandidates.isEmpty()) {
+                bestCandidate = tiedCandidates.get(ra.nextInt(tiedCandidates.size()));
+            }
+            // Party votes for candidate with closest ideology, weighted by seats
+            voteCount.put(bestCandidate, voteCount.getOrDefault(bestCandidate, 0) + votingParty.getSeats());
+        }
+
+        // Find winner
+        winner = null;
+        int maxVotes = 0;
+        for (Map.Entry<Person, Integer> entry : voteCount.entrySet()) {
+            if (entry.getValue() > maxVotes) {
+                maxVotes = entry.getValue();
+                winner = entry.getKey();
+            }
+        }
+
+        System.out.println("Round " + rounds);
+        for (Person pe : voteCount.keySet()) {
+            System.out.println(pe.getName() + ": " + voteCount.get(pe) + " votes");
+        }
+
+        int totalVotes = 0;
+        for (int v : voteCount.values()) totalVotes += v;
+
+        if (maxVotes > totalVotes / 2) { // Use majority of total votes, not just >50
+            hasGotMajority = true;
+        } else {
+            rounds++;
+            int minVotes = Collections.min(voteCount.values());
+            List<Person> lowestCandidates = new ArrayList<>();
+            for (Map.Entry<Person, Integer> entry : voteCount.entrySet()) {
+                if (entry.getValue() == minVotes) {
+                    lowestCandidates.add(entry.getKey());
+                }
+            }
+            // If more than one has the lowest, randomly pick one to eliminate
+            Person toRemove = lowestCandidates.get(ra.nextInt(lowestCandidates.size()));
+            candidates.remove(toRemove);
+        }
+    }
+    president = winner;
+}
+    
+    
 	public static void main(String[] args) throws Exception{
 	    Scanner sc = new Scanner(System.in);
 		generateGroups();
@@ -1600,7 +1712,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         //System.out.println("DEBUG AUTH: "+ auth);
 		
 		System.out.println(months[moNum]+ " - "+ year);
-		System.out.print("Next election in ");
+		System.out.print("Next Parliamentary election in ");
 		if(elecCount > 12){
 		    
 		    System.out.print(elecCount/12);
@@ -1617,6 +1729,29 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		    }else{
 		        System.out.println(" month");
 		    }
+		}
+		
+		System.out.print("Next Presidential election in ");
+		if(presCdown > 12){
+		    
+		    System.out.print(presCdown/12);
+		    if(presCdown/12 >1){
+		        System.out.println(" years");
+		    }else{
+		        System.out.println(" year");
+		    }
+		    
+		}else{
+		    System.out.print(presCdown);
+		    if(presCdown > 1){
+		        System.out.println(" months");
+		    }else{
+		        System.out.println(" month");
+		    }
+		}
+		
+		if(president != null){
+		    System.out.println("President: "+ president.getName()+ " ("+ president.disIdeo()+ ")");
 		}
 		if(rulingParty != null){
 		System.out.println("\nRuling Party: "+ rulingParty.getName());
