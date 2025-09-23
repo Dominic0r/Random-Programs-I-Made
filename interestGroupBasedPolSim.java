@@ -279,6 +279,7 @@ public class Main
     public static class Coalition{
         ArrayList<Party> members = new ArrayList<>();
         Party leader;
+        int stability;
         
         public Coalition(Party leader){
             this.leader = leader;
@@ -296,6 +297,36 @@ public class Main
             }
             
             return total;
+        }
+        
+        public int getStability(){
+            int totstab = 0;
+            int ideodif = 0;
+            int parnumfac = 0;
+            
+            for(Party par: members){
+                if(par!= leader){
+                    ideodif += Math.abs(par.getPolicy()- leader.getPolicy());
+                }
+            }
+            ideodif /= members.size();
+            ideodif = 50- (ideodif/2);
+            
+            parnumfac = 50/ members.size();
+            
+            
+            totstab+= ideodif + parnumfac;
+            
+            if(getTotalSeats() < 40){
+                totstab/=2;
+            }
+            
+            if(leader.getSeats() <= getTotalSeats()){
+                totstab/=2;
+            }
+            
+            return totstab;
+            
         }
         
         public int getNumOfMembers(){
@@ -799,12 +830,13 @@ allGroups.get(12).addPartyName("New Flame Front");
     
     public static Coalition rulingCoalition;
     public static ArrayList<Coalition> allCoalitions = new ArrayList<>();
+    public static ArrayList<Coalition> coalitionsWithMajority = new ArrayList<>();
     
     public static ArrayList<Party> independentParties = new ArrayList<>();
     
     public static void formCoalitions(Party largePar){
         allCoalitions.clear();
-        int thresh = 25;
+        int thresh = 45 - (5*allParties.size());
         for(Party par : allParties){
             if(par.getSeats() >=thresh){
                 
@@ -867,13 +899,32 @@ allGroups.get(12).addPartyName("New Flame Front");
         
         ArrayList<Coalition> toRemove = new ArrayList<>();
         for(Coalition coa : allCoalitions){
-            if(coa.getTotalSeats() >= maxnum){
-                maxnum = coa.getTotalSeats();
-                maxCoa = coa;
+            if(coa.getTotalSeats() >= 35){
+                coalitionsWithMajority.add(coa);
             }
             
             
         }
+        
+        for(Coalition coa : coalitionsWithMajority){
+            if(coa.getNumOfMembers() ==0){
+                toRemove.add(coa);
+            }
+        }
+        
+        coalitionsWithMajority.remove(toRemove);
+        toRemove.clear();
+        
+        for(Coalition coa : coalitionsWithMajority){
+            
+            if(coa.getStability() >= maxnum){
+                maxCoa = coa;
+                maxnum = coa.getStability();
+            }
+            
+            
+        }
+        
         
         for(Coalition coa : allCoalitions){
             if(coa.getNumOfMembers() <2 && coa != maxCoa){
@@ -1177,7 +1228,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
                 
                 
                 /*for(Group gor : allGroups){
-                    if(gor != gro){
+                    if(gor != gro){form
                         gor.changePoints(nupoints);
                     }
                 }*/
