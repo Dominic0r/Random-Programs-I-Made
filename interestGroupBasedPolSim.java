@@ -755,9 +755,10 @@ allGroups.get(12).addPartyName("New Flame Front");
             }*/
             
             
-            if(approvalRating<50 && rulingCoalition.members.contains(par)){
+            if(approvalRating<50 && !rulingCoalition.members.contains(par)){
                 points += Math.abs((par.getPolicy() - rulingCoalition.getLeader().getPolicy()));
             }
+            
             
             if(snapElec&& rulingCoalition.members.contains(par)){
                 points /=2;
@@ -887,7 +888,7 @@ allGroups.get(12).addPartyName("New Flame Front");
         for(Coalition coa : allCoalitions){
             coaPoint = 0;
             curCoaRuling = coa.getLeader();
-            threshold = 50;
+            threshold = 50-allParties.size();
             pragmatism = 50-curCoaRuling.getSeats();
             if(curCoaRuling.getSeats()>51){
                 threshold = 70;
@@ -954,6 +955,11 @@ allGroups.get(12).addPartyName("New Flame Front");
             if(coa.getStability() >= maxnum){
                 maxCoa = coa;
                 maxnum = coa.getStability();
+            }else if(coa.getStability() == maxnum){
+                if(coa.getTotalSeats() > maxCoa.getTotalSeats()){
+                    maxCoa = coa;
+                    maxnum = coa.getStability();
+                }
             }
             
             
@@ -1451,7 +1457,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         int cdownnum = 24;
         
         boolean hasTrig = false;
-        if(elecCount==0 || getGovNumSup() <35){
+        if(elecCount==0){
             //System.out.println("SCENARIO 1");
         triggerElection();
         
@@ -1491,7 +1497,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }*/
         
         if(!hasTrig && !snapElec&& rulingParty!=null){
-            if(ra.nextInt(100)> rulingCoalition.stability+ (rulingCoalition.stability/2)){
+            if(ra.nextInt(60)> rulingCoalition.stability+ (rulingCoalition.stability/2)){
                 snapElec = true;
                 if(elecCount >3){
                     elecCount = 3;
