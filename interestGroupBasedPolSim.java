@@ -419,9 +419,12 @@ allGroups.add(new Group(35, 65, "Centrists / Moderates", 80)); // 6 – technocr
 allGroups.add(new Group(55, 75, "Liberal Reformers", 70));      // 7 – urbanites, reform-focused
 allGroups.add(new Group(60, 85, "Labor Unions", 60));           // 8 – class-driven, suspicious of elites
 allGroups.add(new Group(70, 90, "Progressives", 65));           //9 – identity-focused, decentralized
-allGroups.add(new Group(65, 95, "Environmentalists", 15));      //10 – passionate but divided
+allGroups.add(new Group(65, 95, "Environmentalists", 25));      //10 – passionate but divided
 allGroups.add(new Group(80, 100, "Socialists", 40));            //11 – radical but infighting-prone
 allGroups.add(new Group(85, 100, "Radical Youth", 15));          //12 – chaotic, often uncooperative
+
+
+
 
 
 // 0 - Traditionalists
