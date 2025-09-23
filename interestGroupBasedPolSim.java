@@ -304,27 +304,61 @@ public class Main
             int ideodif = 0;
             int parnumfac = 0;
             
+            int extremeideoleft = -1;
+            int extremeideoright = 101;
+            
             for(Party par: members){
                 if(par!= leader){
                     ideodif += Math.abs(par.getPolicy()- leader.getPolicy());
+                    
                 }
+                
+                if(par.getPolicy() > extremeideoleft){
+                        extremeideoleft = par.getPolicy();
+                    }
+                    
+                    if(par.getPolicy() < extremeideoright){
+                        extremeideoright = par.getPolicy();
+                    }
             }
             ideodif /= members.size();
             ideodif = 50- (ideodif/2);
             
-            parnumfac = 50/ members.size();
+            int extremedif = Math.abs(extremeideoright-extremeideoleft);
+            
+            
+            
+            
+            
+            /*if(members.size() ==1){
+                parnumfac = 50/ members.size();
+            }else{
+                parnumfac = 50/ (members.size()-1);
+            }*/
+            
+            parnumfac = 50 - (5*members.size());
             
             
             totstab+= ideodif + parnumfac;
             
+            if(extremedif> 50){
+                totstab -= totstab/4;
+            }
+            if(extremedif< 20){
+                totstab+= totstab/4;
+            }
+            
             if(getTotalSeats() < 40){
                 totstab/=2;
             }
-            
-            if(leader.getSeats() <= getTotalSeats()){
-                totstab/=2;
+            if(getTotalSeats() > 59){
+                totstab+= totstab/4;
             }
             
+            if(leader.getSeats() <= getTotalSeats()/2){
+                totstab-=totstab/4;
+            }
+            stability = totstab;
             return totstab;
             
         }
@@ -896,7 +930,7 @@ allGroups.get(12).addPartyName("New Flame Front");
         
         int maxnum=-1;
         Coalition maxCoa = null;
-        
+        coalitionsWithMajority.clear();
         ArrayList<Coalition> toRemove = new ArrayList<>();
         for(Coalition coa : allCoalitions){
             if(coa.getTotalSeats() >= 35){
@@ -924,15 +958,34 @@ allGroups.get(12).addPartyName("New Flame Front");
             
             
         }
+        System.out.println("\nCoalition Negotiations:");
+		for(Coalition coa : allCoalitions){
+		    
+		        
+		        coa.displayMembers();
+		        System.out.println(coa.getTotalSeats()+ "% of Parliament");
+		        System.out.println("Stability level: "+ coa.stability);
+		        System.out.println("====================");
+		        
+		    
+		}
+        
+        
+        
         
         
         for(Coalition coa : allCoalitions){
-            if(coa.getNumOfMembers() <2 && coa != maxCoa){
+            if(coa!=maxCoa){
+                
+                
+                coa.members.removeAll(maxCoa.members);
                 toRemove.add(coa);
+                
             }
         }
         
-        allCoalitions.remove(toRemove);
+        
+        allCoalitions.removeAll(toRemove);
         toRemove.clear();
         Party oldPar = null;
         if(rulingCoalition != null){
@@ -959,6 +1012,7 @@ allGroups.get(12).addPartyName("New Flame Front");
         approvalRating =  rulingCoalition.getTotalSeats();
         
         rulingParty = rulingCoalition.getLeader();
+        
         
         
         independentParties.clear();
@@ -1406,12 +1460,13 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             snapElec = false;
         }
         
-        int govSeats = getGovNumSup();
         
         
         
+        
+        /*int govSeats=0;
         if(rulingParty!=null && !hasTrig && !snapElec){
-            
+            govSeats = rulingCoalition.getTotalSeats();
             if(rulingParty.getSeats() < govSeats/2){
                 
                 if(ra.nextInt(govSeats) > rulingParty.getSeats()+ (rulingParty.getSeats()/2) && cooldown <=0){
@@ -1428,6 +1483,15 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             
             if(ra.nextInt((100-govSeats)+1) > govSeats+ (govSeats/2) && cooldown <=0){
                 System.out.println("SCENARIO 2");
+                snapElec = true;
+                if(elecCount >3){
+                    elecCount = 3;
+                }
+            }
+        }*/
+        
+        if(!hasTrig && !snapElec&& rulingParty!=null){
+            if(ra.nextInt(100)> rulingCoalition.stability+ (rulingCoalition.stability/2)){
                 snapElec = true;
                 if(elecCount >3){
                     elecCount = 3;
@@ -1552,17 +1616,8 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		System.out.println("The Governing Coalition - "+ rulingCoalition.getTotalSeats()+ "% of Parliament");
 		rulingCoalition.displayMembers();
 		}
-		System.out.println("\nOther Coaltions:");
-		for(Coalition coa : allCoalitions){
-		    if(coa!= rulingCoalition){
-		        
-		        coa.displayMembers();
-		        System.out.println(coa.getTotalSeats()+ "% of Parliament");
-		        System.out.println("====================");
-		    }
-		    
-		}
-		System.out.println("\nParties not in Coalition:");
+		
+		System.out.println("\nOpposition Parties:");
 		for(Party par: independentParties){
 		    System.out.println(par.getName());
 		}
