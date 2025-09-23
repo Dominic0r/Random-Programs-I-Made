@@ -888,8 +888,10 @@ allGroups.get(12).addPartyName("New Flame Front");
         for(Coalition coa : allCoalitions){
             coaPoint = 0;
             curCoaRuling = coa.getLeader();
-            threshold = 50-allParties.size();
+            
             pragmatism = 50-curCoaRuling.getSeats();
+            threshold = (100-(allParties.size()*5))-pragmatism;
+            
             if(curCoaRuling.getSeats()>51){
                 threshold = 70;
             }
