@@ -386,7 +386,7 @@ public class Main
     
     public static List<Group> allGroups = new ArrayList<>();
     public static void generateGroups(){
-allGroups.add(new Group(1, 15, "Traditionalists", 35));         // 0 – culturally rigid, fading influence
+allGroups.add(new Group(1, 15, "Traditionalists", 15));         // 0 – culturally rigid, fading influence
 allGroups.add(new Group(10, 30, "Nationalists", 25));           // 1 – assertive, suspicious of global elites
 allGroups.add(new Group(25, 45, "Capitalists", 70));            // 2 – elite-backed, anti-populist
 allGroups.add(new Group(20, 35, "Law & Order Bloc", 50));       // 3 – pro-police, anti-chaos, neutral on economics
@@ -395,166 +395,167 @@ allGroups.add(new Group(15, 35, "Rural Conservatives", 30));    // 5 – nostalg
 allGroups.add(new Group(35, 65, "Centrists / Moderates", 80)); // 6 – technocratic, middle-of-the-road
 allGroups.add(new Group(55, 75, "Liberal Reformers", 70));      // 7 – urbanites, reform-focused
 allGroups.add(new Group(60, 85, "Labor Unions", 60));           // 8 – class-driven, suspicious of elites
-allGroups.add(new Group(70, 90, "Progressives", 35));           //9 – identity-focused, decentralized
-allGroups.add(new Group(65, 95, "Environmentalists", 25));      //10 – passionate but divided
-allGroups.add(new Group(80, 100, "Socialists", 15));            //11 – radical but infighting-prone
-allGroups.add(new Group(85, 100, "Radical Youth", 5));          //12 – chaotic, often uncooperative
+allGroups.add(new Group(70, 90, "Progressives", 45));           //9 – identity-focused, decentralized
+allGroups.add(new Group(65, 95, "Environmentalists", 15));      //10 – passionate but divided
+allGroups.add(new Group(80, 100, "Socialists", 30));            //11 – radical but infighting-prone
+allGroups.add(new Group(85, 100, "Radical Youth", 15));          //12 – chaotic, often uncooperative
+
 
 // 0 - Traditionalists
+allGroups.get(0).addPartyName("Faith and Family Party");
+allGroups.get(0).addPartyName("Moral Order Party");
+allGroups.get(0).addPartyName("Sacred Tradition Front");
+allGroups.get(0).addPartyName("Conscience Party");
+allGroups.get(0).addPartyName("Covenant Union");
+allGroups.get(0).addPartyName("Pillar of Values Movement");
 allGroups.get(0).addPartyName("Heritage Party");
-allGroups.get(0).addPartyName("Values Party");
-allGroups.get(0).addPartyName("Legacy Union");
-allGroups.get(0).addPartyName("Tradition Party");
-allGroups.get(0).addPartyName("Stability Bloc");
-allGroups.get(0).addPartyName("Family Party");
-allGroups.get(0).addPartyName("Cultural Party");
-allGroups.get(0).addPartyName("Roots Party");
-allGroups.get(0).addPartyName("Order Party");
-allGroups.get(0).addPartyName("Foundation Party");
+allGroups.get(0).addPartyName("National Virtue Coalition");
+allGroups.get(0).addPartyName("Guardian Party");
+allGroups.get(0).addPartyName("Traditional Path Front");
 
 // 1 - Nationalists
-allGroups.get(1).addPartyName("National Party");
-allGroups.get(1).addPartyName("Unity Party");
-allGroups.get(1).addPartyName("Homeland Party");
-allGroups.get(1).addPartyName("Sovereign Bloc");
-allGroups.get(1).addPartyName("Flag Party");
-allGroups.get(1).addPartyName("Nation Party");
-allGroups.get(1).addPartyName("Patriot Party");
-allGroups.get(1).addPartyName("Union Party");
-allGroups.get(1).addPartyName("Front Party");
-allGroups.get(1).addPartyName("Renewal Party");
+allGroups.get(1).addPartyName("National Front");
+allGroups.get(1).addPartyName("Sovereign Nation Party");
+allGroups.get(1).addPartyName("Flagbearers' Union");
+allGroups.get(1).addPartyName("Homeland Voice Movement");
+allGroups.get(1).addPartyName("Great Nation Alliance");
+allGroups.get(1).addPartyName("Citizens' Front");
+allGroups.get(1).addPartyName("Homeland Defense Party");
+allGroups.get(1).addPartyName("Unity Nation Bloc");
+allGroups.get(1).addPartyName("National Renewal Party");
+allGroups.get(1).addPartyName("True Patriots' Union");
 
 // 2 - Capitalists
-allGroups.get(2).addPartyName("Growth Party");
-allGroups.get(2).addPartyName("Freedom Party");
-allGroups.get(2).addPartyName("Market Party");
-allGroups.get(2).addPartyName("Progress Party");
-allGroups.get(2).addPartyName("Opportunity Party");
-allGroups.get(2).addPartyName("Enterprise Party");
-allGroups.get(2).addPartyName("Commerce Party");
-allGroups.get(2).addPartyName("Future Party");
-allGroups.get(2).addPartyName("Wealth Party");
-allGroups.get(2).addPartyName("Development Party");
+allGroups.get(2).addPartyName("Free Market Party");
+allGroups.get(2).addPartyName("Enterprise League");
+allGroups.get(2).addPartyName("Economic Liberty Coalition");
+allGroups.get(2).addPartyName("Growth First Party");
+allGroups.get(2).addPartyName("Opportunity Union");
+allGroups.get(2).addPartyName("Business Forward Bloc");
+allGroups.get(2).addPartyName("Commerce Alliance");
+allGroups.get(2).addPartyName("Modern Economy Front");
+allGroups.get(2).addPartyName("Prosperity Party");
+allGroups.get(2).addPartyName("Innovation and Trade Party");
 
 // 3 - Law & Order Bloc
-allGroups.get(3).addPartyName("Justice Party");
-allGroups.get(3).addPartyName("Order Party");
-allGroups.get(3).addPartyName("Security Party");
-allGroups.get(3).addPartyName("Peace Party");
+allGroups.get(3).addPartyName("Order and Justice Party");
+allGroups.get(3).addPartyName("Peace and Stability Union");
+allGroups.get(3).addPartyName("Security First Party");
+allGroups.get(3).addPartyName("Lawkeepers' Front");
 allGroups.get(3).addPartyName("Shield Party");
-allGroups.get(3).addPartyName("Duty Party");
-allGroups.get(3).addPartyName("Law Party");
-allGroups.get(3).addPartyName("Safe Party");
-allGroups.get(3).addPartyName("Civic Party");
-allGroups.get(3).addPartyName("Guard Party");
+allGroups.get(3).addPartyName("Justice and Honor Movement");
+allGroups.get(3).addPartyName("Civic Discipline Coalition");
+allGroups.get(3).addPartyName("Safe Streets Party");
+allGroups.get(3).addPartyName("Law and Duty Alliance");
+allGroups.get(3).addPartyName("Nation Secure Bloc");
 
 // 4 - Small Business Owners
-allGroups.get(4).addPartyName("Local Party");
-allGroups.get(4).addPartyName("People’s Party");
-allGroups.get(4).addPartyName("Independent Party");
-allGroups.get(4).addPartyName("Community Party");
-allGroups.get(4).addPartyName("Work Party");
-allGroups.get(4).addPartyName("Owners Party");
-allGroups.get(4).addPartyName("Merchant Party");
-allGroups.get(4).addPartyName("Trade Party");
-allGroups.get(4).addPartyName("Self-Reliance Party");
-allGroups.get(4).addPartyName("Business Party");
+allGroups.get(4).addPartyName("Entrepreneurs' Party");
+allGroups.get(4).addPartyName("Independent Work Alliance");
+allGroups.get(4).addPartyName("Local Prosperity Party");
+allGroups.get(4).addPartyName("Peoples Commerce Front");
+allGroups.get(4).addPartyName("Small Enterprise Coalition");
+allGroups.get(4).addPartyName("Owners and Workers Party");
+allGroups.get(4).addPartyName("Community Business Bloc");
+allGroups.get(4).addPartyName("Merchant League");
+allGroups.get(4).addPartyName("Self-Reliance Movement");
+allGroups.get(4).addPartyName("Marketplace Party");
 
 // 5 - Rural Conservatives
-allGroups.get(5).addPartyName("Rural Party");
-allGroups.get(5).addPartyName("Agrarian Party");
-allGroups.get(5).addPartyName("Countryside Party");
-allGroups.get(5).addPartyName("Homestead Party");
-allGroups.get(5).addPartyName("Farmers Party");
-allGroups.get(5).addPartyName("Lands Party");
-allGroups.get(5).addPartyName("Hills Party");
-allGroups.get(5).addPartyName("Folk Party");
-allGroups.get(5).addPartyName("Village Party");
-allGroups.get(5).addPartyName("Fields Party");
+allGroups.get(5).addPartyName("Rural Voice Party");
+allGroups.get(5).addPartyName("Farm and Faith Coalition");
+allGroups.get(5).addPartyName("Fields and Families Party");
+allGroups.get(5).addPartyName("Agrarian Union");
+allGroups.get(5).addPartyName("Backcountry Party");
+allGroups.get(5).addPartyName("Soil and Spirit Front");
+allGroups.get(5).addPartyName("Homestead Movement");
+allGroups.get(5).addPartyName("Green Hills Party");
+allGroups.get(5).addPartyName("Folkland Bloc");
+allGroups.get(5).addPartyName("Countryside Alliance");
 
 // 6 - Centrists / Moderates
-allGroups.get(6).addPartyName("Center Party");
-allGroups.get(6).addPartyName("Middle Party");
-allGroups.get(6).addPartyName("Balance Party");
-allGroups.get(6).addPartyName("Consensus Party");
-allGroups.get(6).addPartyName("Unity Party");
-allGroups.get(6).addPartyName("Bridge Party");
-allGroups.get(6).addPartyName("Together Party");
-allGroups.get(6).addPartyName("Coalition Party");
-allGroups.get(6).addPartyName("Stability Party");
-allGroups.get(6).addPartyName("Civic Party");
+allGroups.get(6).addPartyName("Common Ground Party");
+allGroups.get(6).addPartyName("Unity Movement");
+allGroups.get(6).addPartyName("National Consensus Party");
+allGroups.get(6).addPartyName("Balanced Future Bloc");
+allGroups.get(6).addPartyName("People’s Middle Way");
+allGroups.get(6).addPartyName("Moderate Alliance");
+allGroups.get(6).addPartyName("Civic Bridge Party");
+allGroups.get(6).addPartyName("Forward Together Front");
+allGroups.get(6).addPartyName("Coalition for Progress");
+allGroups.get(6).addPartyName("Stability and Reform Party");
 
 // 7 - Liberal Reformers
 allGroups.get(7).addPartyName("Reform Party");
-allGroups.get(7).addPartyName("Renewal Party");
-allGroups.get(7).addPartyName("Freedom Party");
-allGroups.get(7).addPartyName("Rights Party");
-allGroups.get(7).addPartyName("Hope Party");
-allGroups.get(7).addPartyName("Light Party");
-allGroups.get(7).addPartyName("Unity Party");
-allGroups.get(7).addPartyName("Future Party");
-allGroups.get(7).addPartyName("Progressive Party");
-allGroups.get(7).addPartyName("Change Party");
+allGroups.get(7).addPartyName("Civic Renewal Front");
+allGroups.get(7).addPartyName("Open Society Party");
+allGroups.get(7).addPartyName("Freedom and Rights Coalition");
+allGroups.get(7).addPartyName("Hope and Change Movement");
+allGroups.get(7).addPartyName("New Light Party");
+allGroups.get(7).addPartyName("Modern Unity Bloc");
+allGroups.get(7).addPartyName("Future Civic Party");
+allGroups.get(7).addPartyName("Progressive Union");
+allGroups.get(7).addPartyName("Center for Reform");
 
 // 8 - Labor Unions
-allGroups.get(8).addPartyName("Workers Party");
-allGroups.get(8).addPartyName("Labor Party");
-allGroups.get(8).addPartyName("Union Party");
-allGroups.get(8).addPartyName("Families Party");
-allGroups.get(8).addPartyName("Hands Party");
-allGroups.get(8).addPartyName("Strength Party");
+allGroups.get(8).addPartyName("Workers Alliance");
+allGroups.get(8).addPartyName("Labor Solidarity Party");
+allGroups.get(8).addPartyName("Peoples Rights Front");
+allGroups.get(8).addPartyName("Union Front Party");
+allGroups.get(8).addPartyName("Working Families Bloc");
+allGroups.get(8).addPartyName("Justice for Labor Party");
+allGroups.get(8).addPartyName("Strong Hands Movement");
+allGroups.get(8).addPartyName("Labor Voice Union");
 allGroups.get(8).addPartyName("Fair Work Party");
-allGroups.get(8).addPartyName("Voice Party");
-allGroups.get(8).addPartyName("Rights Party");
-allGroups.get(8).addPartyName("Solidarity Party");
+allGroups.get(8).addPartyName("Peoples Strength Coalition");
 
 // 9 - Progressives
-allGroups.get(9).addPartyName("Equality Party");
-allGroups.get(9).addPartyName("Change Party");
-allGroups.get(9).addPartyName("Justice Party");
-allGroups.get(9).addPartyName("Tomorrow Party");
-allGroups.get(9).addPartyName("Future Party");
-allGroups.get(9).addPartyName("Bright Party");
-allGroups.get(9).addPartyName("Unity Party");
-allGroups.get(9).addPartyName("New Party");
-allGroups.get(9).addPartyName("Inclusive Party");
-allGroups.get(9).addPartyName("People’s Party");
+allGroups.get(9).addPartyName("Forward Equality Party");
+allGroups.get(9).addPartyName("Change Now Coalition");
+allGroups.get(9).addPartyName("Rainbow Front");
+allGroups.get(9).addPartyName("Social Justice Party");
+allGroups.get(9).addPartyName("Tomorrow Movement");
+allGroups.get(9).addPartyName("Equality Bloc");
+allGroups.get(9).addPartyName("Bright Future Party");
+allGroups.get(9).addPartyName("Inclusive Society Party");
+allGroups.get(9).addPartyName("Unity for Progress");
+allGroups.get(9).addPartyName("New Rights Party");
 
 // 10 - Environmentalists
 allGroups.get(10).addPartyName("Green Party");
-allGroups.get(10).addPartyName("Earth Party");
-allGroups.get(10).addPartyName("Future Party");
-allGroups.get(10).addPartyName("Clean Party");
-allGroups.get(10).addPartyName("Nature Party");
-allGroups.get(10).addPartyName("Eco Party");
-allGroups.get(10).addPartyName("Planet Party");
-allGroups.get(10).addPartyName("Living Party");
-allGroups.get(10).addPartyName("Sustainable Party");
-allGroups.get(10).addPartyName("Earth Party");
+allGroups.get(10).addPartyName("Planet First Coalition");
+allGroups.get(10).addPartyName("EcoFuture Bloc");
+allGroups.get(10).addPartyName("Clean Earth Alliance");
+allGroups.get(10).addPartyName("Natures Voice Party");
+allGroups.get(10).addPartyName("Zero Emissions Front");
+allGroups.get(10).addPartyName("Living Earth Party");
+allGroups.get(10).addPartyName("Global Greens Union");
+allGroups.get(10).addPartyName("Sustainable Society Party");
+allGroups.get(10).addPartyName("Earthguard Movement");
 
 // 11 - Socialists
-allGroups.get(11).addPartyName("Social Party");
-allGroups.get(11).addPartyName("Workers Party");
-allGroups.get(11).addPartyName("Equality Party");
-allGroups.get(11).addPartyName("Justice Party");
-allGroups.get(11).addPartyName("Red Party");
-allGroups.get(11).addPartyName("Labor Party");
-allGroups.get(11).addPartyName("People’s Party");
-allGroups.get(11).addPartyName("Left Party");
-allGroups.get(11).addPartyName("Common Party");
-allGroups.get(11).addPartyName("Union Party");
+allGroups.get(11).addPartyName("Peoples Socialist Party");
+allGroups.get(11).addPartyName("Red Flag Union");
+allGroups.get(11).addPartyName("United Workers Party");
+allGroups.get(11).addPartyName("Class Struggle Front");
+allGroups.get(11).addPartyName("Social Equality Bloc");
+allGroups.get(11).addPartyName("Revolutionary Justice Party");
+allGroups.get(11).addPartyName("Democratic Labor Party");
+allGroups.get(11).addPartyName("New Left Front");
+allGroups.get(11).addPartyName("Common Struggle Union");
+allGroups.get(11).addPartyName("People Power Coalition");
 
 // 12 - Radical Youth
-allGroups.get(12).addPartyName("Youth Party");
-allGroups.get(12).addPartyName("Next Party");
-allGroups.get(12).addPartyName("Voices Party");
-allGroups.get(12).addPartyName("Future Party");
-allGroups.get(12).addPartyName("Change Party");
-allGroups.get(12).addPartyName("Rise Party");
-allGroups.get(12).addPartyName("New Party");
-allGroups.get(12).addPartyName("Spark Party");
-allGroups.get(12).addPartyName("Flame Party");
-allGroups.get(12).addPartyName("Revolt Party");
+allGroups.get(12).addPartyName("Youth Liberation Front");
+allGroups.get(12).addPartyName("Revolt and Rise Party");
+allGroups.get(12).addPartyName("Next Gen Coalition");
+allGroups.get(12).addPartyName("Awakened Voices Party");
+allGroups.get(12).addPartyName("Radical Future Bloc");
+allGroups.get(12).addPartyName("Voices of Change");
+allGroups.get(12).addPartyName("Break the Chains Party");
+allGroups.get(12).addPartyName("The Spark Movement");
+allGroups.get(12).addPartyName("Reimagine Party");
+allGroups.get(12).addPartyName("New Flame Front");
 
 
 
@@ -890,8 +891,9 @@ String[] lastNames = {
             curCoaRuling = coa.getLeader();
             
             pragmatism = 50-curCoaRuling.getSeats();
-            threshold = (100-(allParties.size()*5))-pragmatism;
             
+            //threshold = 30 + (int)(0.5 * curCoaRuling.getSeats());
+            threshold = 50;
             if(curCoaRuling.getSeats()>51){
                 threshold = 70;
             }
@@ -907,15 +909,13 @@ String[] lastNames = {
                     debugIdeologydif = 100 - Math.abs(par.getPolicy()-curCoaRuling.getPolicy());
                     
                     //coaPoint += (50 -curCoaRuling.getSeats()) /2;
-                    pragmachange = (50 -curCoaRuling.getSeats()) /2;
+                    //pragmachange = (50 -curCoaRuling.getSeats()) /2;
                     
                     coaPoint += debugIdeologydif/2;
                     coaPoint+= pragmatism/2;
                     //coaPoint += pragmachange;
                     
-                    if(curCoaRuling.getSeats() < par.getSeats()){
-                        coaPoint /=2;
-                    }
+                    
                     
                     if(coaPoint >= threshold){
                         coa.addToMemberList(par);
@@ -954,7 +954,7 @@ String[] lastNames = {
         
         for(Coalition coa : coalitionsWithMajority){
             
-            if(coa.getStability() >= maxnum){
+            if(coa.getStability() > maxnum){
                 maxCoa = coa;
                 maxnum = coa.getStability();
             }else if(coa.getStability() == maxnum){
@@ -984,7 +984,6 @@ String[] lastNames = {
         
         for(Coalition coa : allCoalitions){
             if(coa!=maxCoa){
-                
                 
                 coa.members.removeAll(maxCoa.members);
                 toRemove.add(coa);
@@ -1155,7 +1154,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     public static void checkAlienation(){
         int min,max,avg;
         int parpol = 0;
-        int threshold = 15;
+        int threshold = 10;
         int resonancePoints = 0;
         for(Group gro : allGroups){
             min= gro.getMin();
@@ -1191,7 +1190,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             totGroupPoints = totGroupPoints/(allGroups.size()+1);
             //totGroupPoints /=2;
             if(resonancePoints == 0){
-                    if(gro.getPoints() < totGroupPoints){
+                    if(gro.getPoints() < totGroupPoints/2){
                         resonancePoints++;
                     }
                 }
@@ -1353,7 +1352,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         checkSeats();        // (5) Removes parties that did poorly in the election
         findBiggestParty();    // (6) Uses final seat counts to build government and opposition
         elecCount = 5*12;
-        
+        sortParties();
         
         
         
@@ -1565,6 +1564,24 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }
     }
     
+    private static final Set<String> STOP_WORDS = new HashSet<>(Arrays.asList(
+        "of", "the", "and", "in", "for", "to", "on", "at", "by", "with", "a", "an"
+    ));
+
+
+    public static String toAcronym(String phrase) {
+        StringBuilder acronym = new StringBuilder();
+        for (String word : phrase.split("\\s+")) {
+            if (!word.isEmpty() && !STOP_WORDS.contains(word.toLowerCase())) {
+                acronym.append(Character.toUpperCase(word.charAt(0)));
+            }
+        }
+        return acronym.toString();
+    }
+    
+    public static void sortParties(){
+        allParties.sort(Comparator.comparing (Party -> Party.getPolicy()));
+    }
     
 	public static void main(String[] args) throws Exception{
 	    Scanner sc = new Scanner(System.in);
@@ -1578,7 +1595,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         checkAlienation();   // (2) Identifies unrepresented groups and may create new parties
         checkNoGroups();     // (3) Cleans up parties with no support groups (needed after new parties may be created)
         monthly();
-        
+        sortParties();
         System.out.println("DEBUG APPROVAL: "+ approvalRating);
         //System.out.println("DEBUG AUTH: "+ auth);
 		
@@ -1619,9 +1636,15 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             }
 		
 		}*/
-		
+		int idx = 1;
 		if(rulingCoalition != null){
-		System.out.println("The Governing Coalition - "+ rulingCoalition.getTotalSeats()+ "% of Parliament");
+		for(Party par: rulingCoalition.members){
+		    System.out.print(toAcronym(par.getName()));
+		    System.out.print((idx == rulingCoalition.members.size())? "":"-" );
+		    idx++;
+		}
+		
+		System.out.println(" Government - "+ rulingCoalition.getTotalSeats()+ "% of Parliament");
 		rulingCoalition.displayMembers();
 		}
 		
@@ -1654,8 +1677,10 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		}*/
 		
 		System.out.println("\n");
+		String put = "";
 		
-		String put = sc.nextLine();
+		put = sc.nextLine();
+		
 		//String put = "debugmode"; // for debug
 		if(put.equalsIgnoreCase("archive")){
 		    displayArchive();
