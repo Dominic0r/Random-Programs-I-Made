@@ -108,6 +108,10 @@ public class Main
         public String getRandomPartyName(){
             return this.partyNames.get(ra.nextInt(this.partyNames.size()));
         }
+        
+        public int getIdeology(){
+            return (minPolicy+maxPolicy)/2;
+        }
     }
     
     public static class Party{
@@ -115,6 +119,7 @@ public class Main
         int seats;
         String name;
         boolean isMajor;
+        int unity;
         
         Person leader;
         List<Group> supportGroups = new ArrayList<>();
@@ -125,12 +130,45 @@ public class Main
             this.seats = 0;
         }
         
+        public void unityUpdate(){
+            int ideounity = 0;
+            int minide = 101;
+            int maxide = -1;
+            for(Group gro: supportGroups){
+                if(gro.getIdeology() > maxide){
+                    maxide = gro.getIdeology();
+                }
+                
+                if(gro.getIdeology() < minide){
+                    minide = gro.getIdeology();
+                }
+            }
+            
+            ideounity = (100-Math.abs(maxide-minide))/2;
+            
+            int numpar = 50- (supportGroups.size()*5);
+            unity = ideounity + numpar;
+        }
+        
+        public int getUnity(){
+            return unity;
+        }
+        
         public void determineLeader(){
             if(supportGroups!= null){
             int wpoint = -1;
             Group wingroup = null;
             
             oldPerson = leader;
+            if(leader != null){
+            for(Group gro: supportGroups){
+                if(gro.leader == leader){
+                    wpoint = gro.getPoints()+ (gro.getPoints()/2);
+                    wingroup = gro;
+                }
+            }
+            }
+            
             for(Group gro : supportGroups){
                 if(gro.getPoints() > wpoint){
                     wpoint = gro.getPoints();
@@ -1180,12 +1218,13 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     public static void checkAlienation(){
         int min,max,avg;
         int parpol = 0;
-        int threshold = 10;
+        int threshold = 0;
         int resonancePoints = 0;
         for(Group gro : allGroups){
-            min= gro.getMin();
+            avg = gro.getIdeology();
+            min = gro.getMin();
             max = gro.getMax();
-            avg = (min+max)/2;
+            threshold = (avg > 20 && avg < 80)? 20:5;
             
             
             resonancePoints = 0;
@@ -1204,6 +1243,10 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
                 if(par.supportGroups.size() == 1){
                     resonancePoints++;
                 }
+                
+                if(par.getUnity() < 50){
+                    resonancePoints--;
+                }
                 }
                 
             }
@@ -1220,12 +1263,14 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
                         resonancePoints++;
                     }
                 }
-                
+            
+            
+            boolean isAlienated = resonancePoints<=0;
             
             if(gro.getAlienated()){
                 createNewParty(gro, avg);
             }else{
-                gro.changeAlienation(resonancePoints==0);
+                gro.changeAlienation(isAlienated);
             }
             
             /*if(resonancePoints == 0){
@@ -1396,12 +1441,13 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             oldPerson = null;
             changedLead = false;
             par.determineLeader();
-            /*if(rulingParty!= null){
-            if(changedLead && rulingParty== par && oldPerson != null  ){
+            if(rulingParty!= null){
+            if(changedLead && rulingParty== par && oldPerson != null){
+                primeMinister = par.leader;
                 previousRulingParties.add(new archiveParty(rulingParty.getName(),leaderStartDate,year, oldPerson.getName()));
                 leaderStartDate=  year;
             }
-            }*/
+            }
             
             if(changedLead){
                 auth /=2;
@@ -1451,6 +1497,9 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         leadercDown = 12;
         }
         
+        for(Party par: allParties){
+            par.unityUpdate();
+        }
         
         moNum++;
         if(moNum == 12){
@@ -1716,6 +1765,9 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		arrangeGroups();     // (1) Assigns groups to parties based on current party policies
         checkAlienation();   // (2) Identifies unrepresented groups and may create new parties
         checkNoGroups();     // (3) Cleans up parties with no support groups (needed after new parties may be created)
+        for(Party par: allParties){
+            par.unityUpdate();
+        }
         monthly();
         sortParties();
         System.out.println("DEBUG APPROVAL: "+ approvalRating);
@@ -1814,6 +1866,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		        System.out.print(" - "+gro.getName());
 		        totsup += gro.getPoints();
 		    }
+		    System.out.println(par.getUnity());
 		    //System.out.println("Support Points: "+ totsup);
 		    
 		}
