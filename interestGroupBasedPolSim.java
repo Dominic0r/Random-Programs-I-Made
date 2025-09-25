@@ -448,17 +448,17 @@ public class Main
     public static List<Group> allGroups = new ArrayList<>();
     public static void generateGroups(){
 allGroups.add(new Group(1, 15, "Traditionalists", 15));         // 0 – culturally rigid, fading influence
-allGroups.add(new Group(10, 30, "Nationalists", 25));           // 1 – assertive, suspicious of global elites
+allGroups.add(new Group(10, 30, "Nationalists", 35));           // 1 – assertive, suspicious of global elites
 allGroups.add(new Group(25, 45, "Capitalists", 70));            // 2 – elite-backed, anti-populist
 allGroups.add(new Group(20, 35, "Law & Order Bloc", 50));       // 3 – pro-police, anti-chaos, neutral on economics
 allGroups.add(new Group(35, 55, "Small Business Owners", 60));  // 4 – practical-minded, split over regulation
 allGroups.add(new Group(15, 35, "Rural Conservatives", 30));    // 5 – nostalgic, pro-subsidies
 allGroups.add(new Group(35, 65, "Centrists / Moderates", 80)); // 6 – technocratic, middle-of-the-road
 allGroups.add(new Group(55, 75, "Liberal Reformers", 70));      // 7 – urbanites, reform-focused
-allGroups.add(new Group(60, 85, "Labor Unions", 60));           // 8 – class-driven, suspicious of elites
-allGroups.add(new Group(70, 90, "Progressives", 65));           //9 – identity-focused, decentralized
-allGroups.add(new Group(65, 95, "Environmentalists", 25));      //10 – passionate but divided
-allGroups.add(new Group(80, 100, "Socialists", 40));            //11 – radical but infighting-prone
+allGroups.add(new Group(60, 85, "Labor Unions", 45));           // 8 – class-driven, suspicious of elites
+allGroups.add(new Group(70, 90, "Progressives", 55));           //9 – identity-focused, decentralized
+allGroups.add(new Group(65, 95, "Environmentalists", 20));      //10 – passionate but divided
+allGroups.add(new Group(80, 100, "Socialists", 35));            //11 – radical but infighting-prone
 allGroups.add(new Group(85, 100, "Radical Youth", 15));          //12 – chaotic, often uncooperative
 
 
@@ -909,7 +909,7 @@ String[] lastNames = {
             }
             
             if(par.isMajor()){
-                points += points/4;
+                points +=points/4;
             }
             
             if(par == rulingParty && !isFair){
@@ -967,9 +967,21 @@ String[] lastNames = {
             }
             
             /*System.out.println("Interation "+ i +"\n");
-            for(Map.Entry<Party, Integer> entry : partyScore.entrySet()){
+            /*for(Map.Entry<Party, Integer> entry : partyScore.entrySet()){
                 System.out.println(entry.getValue()+ " "+ entry.getKey());
+            }*/
+            
+            /*for(Map.Entry<Party, Integer> entry : partyScore.entrySet()){
+                //System.out.println(entry.getValue()+ " "+ entry.getKey().getName());
+                System.out.println(entry.getKey().getName()+ " ");
             }
+            for(Party pp: allParties){
+                //System.out.println(entry.getValue()+ " "+ entry.getKey().getName());
+                System.out.println(pp.getName()+ " "+ partySeats.get(pp));
+            }
+            
+            System.out.println(winParty.getName());
+            
             if(winParty == null){
                 System.out.println("WinParty is null! at iteration "+ i);
                 
@@ -986,9 +998,7 @@ String[] lastNames = {
         
         for(Party par : allParties){
             par.setSeats(partySeats.get(par));
-            if(par.getSeats() >= allParties.size()){
-                System.out.println(par.getName()+ ": "+ par.getSeats()+"%");
-            }
+            
         }
         
     }
@@ -1494,17 +1504,45 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }
     }
     
+    
     public static void checkSeats(){
         int threshold = allParties.size();
+        int lostseats = 0;
         List<Party> toRemove = new ArrayList<>();
         for(Party par : allParties){
-            if(par.getSeats()<threshold){
+            if(par.getSeats()<= threshold){
+                lostseats += par.getSeats();
                 toRemove.add(par);
             }
         }
         
         allParties.removeAll(toRemove);
         toRemove.clear();
+        if(lostseats >0){
+            redistrib(lostseats);
+        }
+    }
+    
+    public static void redistrib(int toredis){
+        int maxval=-1;
+        Party maxPar = null;
+        for(int i=0; i< toredis;i++){
+            maxval = -1;
+                maxPar = null;
+            for(Party par: allParties){
+                
+                if(((par.getSeats()*100)/(par.getSeats()+1))> maxval&& par.getSeats() >0){
+                    maxval = ((par.getSeats()*100)/(par.getSeats()+1));
+                    maxPar = par;
+                }
+            }
+            
+            maxPar.setSeats(maxPar.getSeats()+1);
+        }
+        
+        for(Party par : allParties){
+                System.out.println(par.getName()+ ": "+ par.getSeats()+"%");
+        }
     }
     
     public static void checkNoGroups(){
@@ -1803,6 +1841,8 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     List<Person> candidates = new ArrayList<>();
     for (Group par : allGroups) {
         if (par.getLeader() != null) {
+            System.out.println("Leader of "+ par.getName());
+            
             candidates.add(par.getLeader());
         }
     }
@@ -1812,7 +1852,10 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 
     while (!hasGotMajority && candidates.size() > 0) {
         Map<Person, Integer> voteCount = new HashMap<>();  // <--- RESET VOTES EACH ROUND
-
+        for (Person candidate : candidates) {
+            voteCount.put(candidate, 0);
+        }
+        
         // Voting
         for (Party votingParty : allParties) {
             Person bestCandidate = null;
@@ -1829,11 +1872,13 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
                 }
             }
             // If there's a tie, choose randomly among best candidates
-            if (!tiedCandidates.isEmpty()) {
+            if (tiedCandidates.size()>1) {
                 bestCandidate = tiedCandidates.get(ra.nextInt(tiedCandidates.size()));
+            } else{
+                bestCandidate = tiedCandidates.get(0);
             }
             // Party votes for candidate with closest ideology, weighted by seats
-            voteCount.put(bestCandidate, voteCount.getOrDefault(bestCandidate, 0) + votingParty.getSeats());
+            voteCount.put(bestCandidate,  voteCount.getOrDefault(bestCandidate, 0) + votingParty.getSeats());
         }
 
         // Find winner
@@ -1846,9 +1891,19 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             }
         }
 
-        System.out.println("Round " + rounds);
+        /*System.out.println("Round " + rounds);
         for (Person pe : voteCount.keySet()) {
             //System.out.println(pe.getName() + ": " + voteCount.get(pe) + " votes");
+            System.out.println(
+            pe.getName() +
+            " (Ideology: " + pe.disIdeo() + "): " +
+            voteCount.get(pe) + " votes"
+            );
+        }*/
+        
+        System.out.println("Round " + rounds);
+        for(Person pe : candidates){
+            
             System.out.println(
             pe.getName() +
             " (Ideology: " + pe.disIdeo() + "): " +
@@ -1995,6 +2050,13 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		    //System.out.println("Support Points: "+ totsup);
 		    
 		}
+		
+		int totalnumofseats = 0;
+		for(Party par : allParties){
+		    totalnumofseats += par.getSeats();
+		}
+		
+		System.out.println("Total Number of Seats: "+ totalnumofseats);
 		
 		//for debug 
 		/*System.out.println("\n\n");
