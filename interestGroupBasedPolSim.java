@@ -867,6 +867,8 @@ String[] lastNames = {
         HashMap<Party,Integer> partyScoreOrig = new HashMap<>();
         HashMap<Party,Integer> partySeats = new HashMap<>();
         int points;
+        int randbonus = ra.nextInt(allParties.size());
+        int curparnum = 0;
         for(Party par : allParties){
             points = 0;
             for(Group gro : par.supportGroups){
@@ -916,9 +918,16 @@ String[] lastNames = {
                 int increaseby = auth/10;
                 points *=increaseby;
             }
+            
+            for(int i=0; i<5; i++){
+                if(ra.nextBoolean()){
+                    points += points/4;
+                }
+            }
             //System.out.println(par.getName()+ " "+points*100);
             
             partyScore.put(par, points*100);
+            curparnum++;
         }
         partyScoreOrig.putAll(partyScore);
         
@@ -1443,6 +1452,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }while(!found);
         Party newParty = new Party(avg, gro.getRandomPartyName());
         
+        newParty.leader = gro.getLeader();
         allParties.add(newParty);
         newParty.addToSupport(gro);
         
