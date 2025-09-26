@@ -106,7 +106,25 @@ public class Main
         }
         
         public String getRandomPartyName(){
-            return this.partyNames.get(ra.nextInt(this.partyNames.size()));
+            //return this.partyNames.get(ra.nextInt(this.partyNames.size()));
+            int avg = (minPolicy+maxPolicy)/2;
+            if(avg>50){
+                if(avg>85){
+                    return farLeft.get(ra.nextInt(farLeft.size()));
+                }else if(avg <=85 && avg> 70){
+                    return leftWing.get(ra.nextInt(leftWing.size()));
+                }else{
+                    return centerLeft.get(ra.nextInt(centerLeft.size()));
+                }
+            }else{
+                if(avg>30){
+                    return centerRight.get(ra.nextInt(centerRight.size()));
+                }else if(avg<=30 && avg>15){
+                    return rightWing.get(ra.nextInt(rightWing.size()));
+                }else{
+                    return farRight.get(ra.nextInt(farRight.size()));
+                }
+            }
         }
         
         public int getIdeology(){
@@ -447,184 +465,370 @@ public class Main
     
     public static List<Group> allGroups = new ArrayList<>();
     public static void generateGroups(){
-allGroups.add(new Group(1, 15, "Traditionalists", 15));         // 0 – culturally rigid, fading influence
-allGroups.add(new Group(10, 30, "Nationalists", 35));           // 1 – assertive, suspicious of global elites
-allGroups.add(new Group(25, 45, "Capitalists", 70));            // 2 – elite-backed, anti-populist
-allGroups.add(new Group(20, 35, "Law & Order Bloc", 50));       // 3 – pro-police, anti-chaos, neutral on economics
-allGroups.add(new Group(35, 55, "Small Business Owners", 60));  // 4 – practical-minded, split over regulation
-allGroups.add(new Group(15, 35, "Rural Conservatives", 30));    // 5 – nostalgic, pro-subsidies
-allGroups.add(new Group(35, 65, "Centrists / Moderates", 80)); // 6 – technocratic, middle-of-the-road
-allGroups.add(new Group(55, 75, "Liberal Reformers", 70));      // 7 – urbanites, reform-focused
-allGroups.add(new Group(60, 85, "Labor Unions", 45));           // 8 – class-driven, suspicious of elites
-allGroups.add(new Group(70, 90, "Progressives", 55));           //9 – identity-focused, decentralized
-allGroups.add(new Group(65, 95, "Environmentalists", 20));      //10 – passionate but divided
-allGroups.add(new Group(80, 100, "Socialists", 35));            //11 – radical but infighting-prone
-allGroups.add(new Group(85, 100, "Radical Youth", 15));          //12 – chaotic, often uncooperative
+        // Geography
+allGroups.add(new Group(20, 60, "Urban Voters", 65));
+allGroups.add(new Group(0, 40, "Rural Voters", 55));
+allGroups.add(new Group(10, 50, "Suburban Voters", 50));
 
+// Class & Economy
+allGroups.add(new Group(0, 30, "Business Elites", 60));
+allGroups.add(new Group(40, 70, "Working Class", 65));
+allGroups.add(new Group(70, 100, "Poor and Unemployed", 50));
 
+// Age & Education
+allGroups.add(new Group(50, 90, "Students and Youth", 45));
+allGroups.add(new Group(20, 60, "Middle-Aged Voters", 70));
+allGroups.add(new Group(10, 40, "Elderly Voters", 60));
 
+// Culture & Identity
+allGroups.add(new Group(0, 30, "Religious Conservatives", 55));
+allGroups.add(new Group(60, 100, "Progressive Activists", 45));
+allGroups.add(new Group(40, 80, "Ethnic and Cultural Minorities", 50));
 
-
-// 0 - Traditionalists
-allGroups.get(0).addPartyName("Faith and Family Party");
-allGroups.get(0).addPartyName("Moral Order Party");
-allGroups.get(0).addPartyName("Sacred Tradition Front");
-allGroups.get(0).addPartyName("Conscience Party");
-allGroups.get(0).addPartyName("Covenant Union");
-allGroups.get(0).addPartyName("Pillar of Values Movement");
-allGroups.get(0).addPartyName("Heritage Party");
-allGroups.get(0).addPartyName("National Virtue Coalition");
-allGroups.get(0).addPartyName("Guardian Party");
-allGroups.get(0).addPartyName("Traditional Path Front");
-
-// 1 - Nationalists
-allGroups.get(1).addPartyName("National Front");
-allGroups.get(1).addPartyName("Sovereign Nation Party");
-allGroups.get(1).addPartyName("Flagbearers' Union");
-allGroups.get(1).addPartyName("Homeland Voice Movement");
-allGroups.get(1).addPartyName("Great Nation Alliance");
-allGroups.get(1).addPartyName("Citizens' Front");
-allGroups.get(1).addPartyName("Homeland Defense Party");
-allGroups.get(1).addPartyName("Unity Nation Bloc");
-allGroups.get(1).addPartyName("National Renewal Party");
-allGroups.get(1).addPartyName("True Patriots' Union");
-
-// 2 - Capitalists
-allGroups.get(2).addPartyName("Free Market Party");
-allGroups.get(2).addPartyName("Enterprise League");
-allGroups.get(2).addPartyName("Economic Liberty Coalition");
-allGroups.get(2).addPartyName("Growth First Party");
-allGroups.get(2).addPartyName("Opportunity Union");
-allGroups.get(2).addPartyName("Business Forward Bloc");
-allGroups.get(2).addPartyName("Commerce Alliance");
-allGroups.get(2).addPartyName("Modern Economy Front");
-allGroups.get(2).addPartyName("Prosperity Party");
-allGroups.get(2).addPartyName("Innovation and Trade Party");
-
-// 3 - Law & Order Bloc
-allGroups.get(3).addPartyName("Order and Justice Party");
-allGroups.get(3).addPartyName("Peace and Stability Union");
-allGroups.get(3).addPartyName("Security First Party");
-allGroups.get(3).addPartyName("Lawkeepers' Front");
-allGroups.get(3).addPartyName("Shield Party");
-allGroups.get(3).addPartyName("Justice and Honor Movement");
-allGroups.get(3).addPartyName("Civic Discipline Coalition");
-allGroups.get(3).addPartyName("Safe Streets Party");
-allGroups.get(3).addPartyName("Law and Duty Alliance");
-allGroups.get(3).addPartyName("Nation Secure Bloc");
-
-// 4 - Small Business Owners
-allGroups.get(4).addPartyName("Entrepreneurs' Party");
-allGroups.get(4).addPartyName("Independent Work Alliance");
-allGroups.get(4).addPartyName("Local Prosperity Party");
-allGroups.get(4).addPartyName("Peoples Commerce Front");
-allGroups.get(4).addPartyName("Small Enterprise Coalition");
-allGroups.get(4).addPartyName("Owners and Workers Party");
-allGroups.get(4).addPartyName("Community Business Bloc");
-allGroups.get(4).addPartyName("Merchant League");
-allGroups.get(4).addPartyName("Self-Reliance Movement");
-allGroups.get(4).addPartyName("Marketplace Party");
-
-// 5 - Rural Conservatives
-allGroups.get(5).addPartyName("Rural Voice Party");
-allGroups.get(5).addPartyName("Farm and Faith Coalition");
-allGroups.get(5).addPartyName("Fields and Families Party");
-allGroups.get(5).addPartyName("Agrarian Union");
-allGroups.get(5).addPartyName("Backcountry Party");
-allGroups.get(5).addPartyName("Soil and Spirit Front");
-allGroups.get(5).addPartyName("Homestead Movement");
-allGroups.get(5).addPartyName("Green Hills Party");
-allGroups.get(5).addPartyName("Folkland Bloc");
-allGroups.get(5).addPartyName("Countryside Alliance");
-
-// 6 - Centrists / Moderates
-allGroups.get(6).addPartyName("Common Ground Party");
-allGroups.get(6).addPartyName("Unity Movement");
-allGroups.get(6).addPartyName("National Consensus Party");
-allGroups.get(6).addPartyName("Balanced Future Bloc");
-allGroups.get(6).addPartyName("People’s Middle Way");
-allGroups.get(6).addPartyName("Moderate Alliance");
-allGroups.get(6).addPartyName("Civic Bridge Party");
-allGroups.get(6).addPartyName("Forward Together Front");
-allGroups.get(6).addPartyName("Coalition for Progress");
-allGroups.get(6).addPartyName("Stability and Reform Party");
-
-// 7 - Liberal Reformers
-allGroups.get(7).addPartyName("Reform Party");
-allGroups.get(7).addPartyName("Civic Renewal Front");
-allGroups.get(7).addPartyName("Open Society Party");
-allGroups.get(7).addPartyName("Freedom and Rights Coalition");
-allGroups.get(7).addPartyName("Hope and Change Movement");
-allGroups.get(7).addPartyName("New Light Party");
-allGroups.get(7).addPartyName("Modern Unity Bloc");
-allGroups.get(7).addPartyName("Future Civic Party");
-allGroups.get(7).addPartyName("Progressive Union");
-allGroups.get(7).addPartyName("Center for Reform");
-
-// 8 - Labor Unions
-allGroups.get(8).addPartyName("Workers Alliance");
-allGroups.get(8).addPartyName("Labor Solidarity Party");
-allGroups.get(8).addPartyName("Peoples Rights Front");
-allGroups.get(8).addPartyName("Union Front Party");
-allGroups.get(8).addPartyName("Working Families Bloc");
-allGroups.get(8).addPartyName("Justice for Labor Party");
-allGroups.get(8).addPartyName("Strong Hands Movement");
-allGroups.get(8).addPartyName("Labor Voice Union");
-allGroups.get(8).addPartyName("Fair Work Party");
-allGroups.get(8).addPartyName("Peoples Strength Coalition");
-
-// 9 - Progressives
-allGroups.get(9).addPartyName("Forward Equality Party");
-allGroups.get(9).addPartyName("Change Now Coalition");
-allGroups.get(9).addPartyName("Rainbow Front");
-allGroups.get(9).addPartyName("Social Justice Party");
-allGroups.get(9).addPartyName("Tomorrow Movement");
-allGroups.get(9).addPartyName("Equality Bloc");
-allGroups.get(9).addPartyName("Bright Future Party");
-allGroups.get(9).addPartyName("Inclusive Society Party");
-allGroups.get(9).addPartyName("Unity for Progress");
-allGroups.get(9).addPartyName("New Rights Party");
-
-// 10 - Environmentalists
-allGroups.get(10).addPartyName("Green Party");
-allGroups.get(10).addPartyName("Planet First Coalition");
-allGroups.get(10).addPartyName("EcoFuture Bloc");
-allGroups.get(10).addPartyName("Clean Earth Alliance");
-allGroups.get(10).addPartyName("Natures Voice Party");
-allGroups.get(10).addPartyName("Zero Emissions Front");
-allGroups.get(10).addPartyName("Living Earth Party");
-allGroups.get(10).addPartyName("Global Greens Union");
-allGroups.get(10).addPartyName("Sustainable Society Party");
-allGroups.get(10).addPartyName("Earthguard Movement");
-
-// 11 - Socialists
-allGroups.get(11).addPartyName("Peoples Socialist Party");
-allGroups.get(11).addPartyName("Red Flag Union");
-allGroups.get(11).addPartyName("United Workers Party");
-allGroups.get(11).addPartyName("Class Struggle Front");
-allGroups.get(11).addPartyName("Social Equality Bloc");
-allGroups.get(11).addPartyName("Revolutionary Justice Party");
-allGroups.get(11).addPartyName("Democratic Labor Party");
-allGroups.get(11).addPartyName("New Left Front");
-allGroups.get(11).addPartyName("Common Struggle Union");
-allGroups.get(11).addPartyName("People Power Coalition");
-
-// 12 - Radical Youth
-allGroups.get(12).addPartyName("Youth Liberation Front");
-allGroups.get(12).addPartyName("Revolt and Rise Party");
-allGroups.get(12).addPartyName("Next Gen Coalition");
-allGroups.get(12).addPartyName("Awakened Voices Party");
-allGroups.get(12).addPartyName("Radical Future Bloc");
-allGroups.get(12).addPartyName("Voices of Change");
-allGroups.get(12).addPartyName("Break the Chains Party");
-allGroups.get(12).addPartyName("The Spark Movement");
-allGroups.get(12).addPartyName("Reimagine Party");
-allGroups.get(12).addPartyName("New Flame Front");
-
-
-
+// Institutions
+allGroups.add(new Group(0, 40, "Military and Police", 50));
+allGroups.add(new Group(30, 70, "Civil Servants and Bureaucrats", 55));
+allGroups.add(new Group(30, 70, "Teachers and Intellectuals", 45));
 
     }
+    
+    
+            // Far-left Parties
+public static ArrayList<String> farLeft = new ArrayList<>(Arrays.asList(
+    "Workers' Vanguard Party",
+    "Revolutionary Socialist Front",
+    "United Proletarian Alliance",
+    "Communist Renewal Bloc",
+    "Red Star League",
+    "Peoples' Revolutionary Council",
+    "Anti-Capitalist Collective",
+    "Socialist Unity Organization",
+    "Union of Revolutionary Workers",
+    "Radical Labor Movement",
+    "People’s Liberation Party",
+    "Proletarian Justice Front",
+    "Workers' Liberation Front",
+    "Internationalist Communist League",
+    "Peasants and Workers’ Congress",
+    "Socialist Revolutionary Front",
+    "Workers' Solidarity Movement",
+    "Class Struggle Party",
+    "Peoples' Power Coalition",
+    "United Revolutionary Left",
+    "Socialist Action Committee",
+    "Anti-Imperialist Front",
+    "Red Workers’ Alliance",
+    "Marxist Renewal Movement",
+    "Democratic Socialist Front",
+    "Communist Workers’ Bloc",
+    "Workers' Struggle Party",
+    "Council of the Left",
+    "Socialist Resistance League",
+    "Proletarian Unity Party",
+    "Revolutionary Action Front",
+    "Union of the Oppressed",
+    "Workers' Liberation Council",
+    "Radical Socialist Bloc",
+    "Red Unity Movement",
+    "Front of the Toilers",
+    "Socialist Liberation Party",
+    "Labor Socialist Alliance",
+    "International Red Front",
+    "Democratic Workers' Movement",
+    "Progressive Socialist League",
+    "Class Unity Front",
+    "Socialist Advance Bloc",
+    "Revolutionary Democracy Party",
+    "Alliance for Workers' Power",
+    "Workers’ Struggle Collective",
+    "Freedom and Socialism Party",
+    "Left Socialist Congress",
+    "Peoples' Struggle Movement"
+));
+
+// Left-wing Parties
+public static ArrayList<String> leftWing = new ArrayList<>(Arrays.asList(
+    "Progressive Party",
+    "Democratic Social Party",
+    "Labor Alliance",
+    "Social Justice Party",
+    "Equality Movement",
+    "New Left Coalition",
+    "People’s Democratic Front",
+    "Progressive Labor League",
+    "United Socialist Democrats",
+    "Alliance for Equality",
+    "Democratic Reform Bloc",
+    "Workers' Rights Party",
+    "Forward Together Party",
+    "Green Socialist Movement",
+    "Justice and Progress Party",
+    "Democratic Socialist League",
+    "Union of Democratic Forces",
+    "Equality and Freedom Front",
+    "Progressive Unity Party",
+    "Social Justice League",
+    "Labor and Justice Party",
+    "United Democratic Movement",
+    "Freedom and Equality Party",
+    "New Progressive Alliance",
+    "Workers’ Progress Party",
+    "Democratic Equality Front",
+    "Socialist Democrats Union",
+    "Justice Party",
+    "Democracy and Labor Party",
+    "Progressive Front",
+    "Social Reform Bloc",
+    "Union for Justice",
+    "United Progressives",
+    "Democratic Renewal League",
+    "Equality Bloc",
+    "Labor Progress Alliance",
+    "United Justice Movement",
+    "Progressive Democratic Bloc",
+    "Justice and Liberty Front",
+    "Equality and Democracy Party",
+    "Social Renewal Party",
+    "Reformist Unity Front",
+    "Workers’ Democratic Alliance",
+    "Left Unity Party",
+    "Forward Justice League",
+    "People’s Progressive Union",
+    "Democratic Labor Bloc",
+    "Alliance of Progressives",
+    "Renewal and Justice Party"
+));
+
+// Center-left Parties
+public static ArrayList<String> centerLeft = new ArrayList<>(Arrays.asList(
+    "Democratic Party",
+    "People’s Party",
+    "Unity Party",
+    "Progress Party",
+    "Social Democratic Party",
+    "New Horizons Party",
+    "Future Party",
+    "Forward Party",
+    "Alliance for Democracy",
+    "National Unity Movement",
+    "Progressive Democrats",
+    "Democratic Renewal Party",
+    "People’s Democratic Alliance",
+    "Reform Party",
+    "Justice and Progress League",
+    "Union for Democracy",
+    "Democratic Front",
+    "National Renewal Party",
+    "Liberty and Justice Party",
+    "Democratic Alliance",
+    "Progressive Unity Front",
+    "United Reformers",
+    "Movement for Renewal",
+    "Democracy Party",
+    "National Progress League",
+    "Democratic Future Party",
+    "Union of Progressives",
+    "Democracy and Justice Bloc",
+    "Forward Democracy Party",
+    "New Democratic Alliance",
+    "Democratic National Movement",
+    "Progressive Future Party",
+    "People’s Alliance",
+    "National Progress Bloc",
+    "Democratic Congress",
+    "Justice and Democracy Party",
+    "National Renewal Front",
+    "Alliance of Democrats",
+    "Democratic Unity League",
+    "New Progress Party",
+    "Movement for Justice",
+    "National Democratic Union",
+    "Democratic Liberty Party",
+    "Forward Democracy Front",
+    "Democratic Renewal League",
+    "Unity for Progress",
+    "National Democratic Bloc",
+    "Future and Justice Party",
+    "Renewal Party"
+));
+
+// Center-right Parties
+public static ArrayList<String> centerRight = new ArrayList<>(Arrays.asList(
+    "National Party",
+    "Republic Party",
+    "Liberal Conservative Party",
+    "Christian Democratic Party",
+    "Unity and Freedom Party",
+    "Reform and Stability Party",
+    "National Progress Party",
+    "Union Party",
+    "Alliance for Liberty",
+    "Renewal and Reform Party",
+    "Stability Bloc",
+    "Conservative Democrats",
+    "Liberal Alliance",
+    "National Unity Party",
+    "Future Conservatives",
+    "Responsible Reform Party",
+    "Union for Stability",
+    "Progress and Liberty Party",
+    "National Conservative Party",
+    "Moderate Reform Party",
+    "Alliance of Liberals",
+    "National Liberal Union",
+    "United Conservative Front",
+    "Democracy and Liberty Party",
+    "Progressive Conservatives",
+    "Stability League",
+    "National Democratic Conservatives",
+    "Union for Liberty",
+    "Moderate Unity Party",
+    "National Freedom Party",
+    "Forward Conservatives",
+    "Alliance for Renewal",
+    "Democratic Conservatives",
+    "Progress and Stability Party",
+    "Renewal League",
+    "Union of Liberals",
+    "Conservative Progress Party",
+    "National Responsibility Party",
+    "Democratic Liberal Front",
+    "Union of Reformers",
+    "National Unity League",
+    "Conservative Renewal Bloc",
+    "National Moderates Party",
+    "Democracy and Stability Front",
+    "Union for Progress and Liberty",
+    "Conservative Democrats Union",
+    "Forward Liberty Party",
+    "National Renewal Bloc",
+    "Responsible Unity Party"
+));
+
+// Right-wing Parties
+public static ArrayList<String> rightWing = new ArrayList<>(Arrays.asList(
+    "Conservative Party",
+    "National Freedom Front",
+    "Traditionalist Party",
+    "Faith and Nation Party",
+    "Order and Stability Party",
+    "National Reform Party",
+    "Right Democratic Party",
+    "Patriotic Union",
+    "National Heritage Party",
+    "Unity Conservatives",
+    "Law and Order Party",
+    "National Renewal League",
+    "Freedom and Tradition Party",
+    "Homeland Party",
+    "National Stability Bloc",
+    "Conservative Front",
+    "Union of Patriots",
+    "National Democratic Right",
+    "Traditional Unity Party",
+    "Faith and Family Party",
+    "Right Progress Party",
+    "National Pride League",
+    "Conservative Renewal Party",
+    "Alliance for Order",
+    "National Liberty Party",
+    "Faith and Nation Bloc",
+    "Conservative Union",
+    "Right Reform Party",
+    "National Stability Party",
+    "Conservative National League",
+    "Tradition and Freedom Party",
+    "Unity of the Right",
+    "National Future Conservatives",
+    "Order and Justice Party",
+    "Patriotic Renewal Party",
+    "Right Alliance",
+    "Heritage and Faith Party",
+    "National Order League",
+    "Law and Justice Party",
+    "Right Stability Party",
+    "National Faith Party",
+    "Homeland Renewal Bloc",
+    "Conservative Heritage Party",
+    "National Unity Conservatives",
+    "Tradition and Stability Party",
+    "Right Unity Party",
+    "Alliance for Faith",
+    "Nationalist Renewal Party",
+    "Order Front",
+    "Patriots’ Bloc"
+));
+
+// Far-right Parties
+public static ArrayList<String> farRight = new ArrayList<>(Arrays.asList(
+    "National Front",
+    "Patriotic Renewal Front",
+    "Homeland First Party",
+    "United Patriots",
+    "National Rebirth Party",
+    "Faith and Fatherland Party",
+    "Nationalist Bloc",
+    "Front for Tradition",
+    "National Sovereignty Party",
+    "Right National Front",
+    "Alliance for the Nation",
+    "National Order Front",
+    "Patriotic Unity Party",
+    "National Destiny Party",
+    "National Power League",
+    "True Patriots Party",
+    "Front of National Renewal",
+    "National Salvation Bloc",
+    "Faith and Nation Front",
+    "Order and Nation Party",
+    "Nationalist Renewal League",
+    "Homeland Defense Party",
+    "National Justice Front",
+    "Patriotic Front",
+    "National Integrity Party",
+    "National Resurrection Front",
+    "Unity of the Nation Party",
+    "National Identity Party",
+    "Fatherland Party",
+    "National Future Front",
+    "True Nation Party",
+    "Sovereignty League",
+    "National Homeland Bloc",
+    "National Unity Front",
+    "National Defense Party",
+    "Faith and People Party",
+    "National Reawakening Party",
+    "Patriotic Heritage Front",
+    "National Guardians",
+    "Right Nationalist League",
+    "Homeland First Front",
+    "Front for National Unity",
+    "National Power Party",
+    "Faithful Nation Front",
+    "National Order Bloc",
+    "Sons of the Nation",
+    "Homeland League",
+    "Nationalist Salvation Party",
+    "Patriotic Destiny Front",
+    "National Will Party"
+));
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     public static List<Party> allParties = new ArrayList<>();
     public static void generateParties(){
@@ -902,7 +1106,7 @@ String[] lastNames = {
             
             
             if(approvalRating<50 && !rulingCoalition.members.contains(par)){
-                points += Math.abs((par.getPolicy() - rulingCoalition.getLeader().getPolicy()));
+                points += Math.abs((par.getPolicy() - rulingCoalition.getLeader().getPolicy()))-15;
             }
             
             
@@ -1313,7 +1517,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         
     }*/
     
-    public static void checkAlienation(){
+    public static void checkAlienationOld(){
         int min,max,avg;
         int parpol = 0;
         int threshold = 0;
@@ -1393,36 +1597,30 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     
     
     
-    public static void checkAlienationNew() {
-    for (Group gro : allGroups) {
-        boolean isRepresented = false;
-        boolean hasCloseParty = false;
-
-        int min = gro.getMin();
-        int max = gro.getMax();
-        int avg = (min + max) / 2;
-
-        for (Party par : allParties) {
-            if (par.supportGroups.contains(gro)) {
-                isRepresented = true;
+    public static void checkAlienation() {
+        int resonance = 0;
+        int threshold = 75;
+        List<Group> alienatedGroups = new ArrayList<>();
+    for(Party par: allParties){
+        for(Group gro : par.supportGroups){
+            resonance = (100-Math.abs(gro.getIdeology()-par.getPolicy()))/2;
+            resonance += (100-(par.supportGroups.size()*5))/2;
+            
+            
+            boolean isAlienated = resonance<threshold;
+            
+            if(gro.getAlienated()){
+                alienatedGroups.add(gro);
+                
+            }else{
+                gro.changeAlienation(isAlienated);
             }
-            // Check if any party's policy is within threshold of group's avg
-            int threshold = 10; // You can tune this
-            if (Math.abs(par.getPolicy() - avg) < threshold) {
-                hasCloseParty = true;
-            }
+            
         }
-
-        // Alienated if not represented and no close party exists
-        boolean shouldBeAlienated = !isRepresented && !hasCloseParty;
-
-        // If group is alienated, create a new party, then mark as not alienated
-        if (shouldBeAlienated && gro.getAlienated()) {
-            createNewParty(gro, avg);
-            gro.changeAlienation(false);
-        } else {
-            gro.changeAlienation(shouldBeAlienated);
-        }
+    }
+    
+    for(Group gro: alienatedGroups){
+        createNewParty(gro, gro.getIdeology());
     }
 }
     
@@ -1542,7 +1740,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             for(Party par: allParties){
                 
                 if(((par.getSeats()*100)/(par.getSeats()+1))> maxval&& par.getSeats() >0){
-                    maxval = ((par.getSeats()*100)/(par.getSeats()+1));
+                    maxval = ((par.getSeats()*100)/(par.getSeats()*2));
                     maxPar = par;
                 }
             }
@@ -1923,21 +2121,28 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 
         int totalVotes = 0;
         for (int v : voteCount.values()) totalVotes += v;
-
+        
+        
         if (maxVotes > totalVotes / 2) { // Use majority of total votes, not just >50
             hasGotMajority = true;
         } else {
             rounds++;
             int minVotes = Collections.min(voteCount.values());
             List<Person> lowestCandidates = new ArrayList<>();
+            List<Person> zeroVotes = new ArrayList<>();
             for (Map.Entry<Person, Integer> entry : voteCount.entrySet()) {
                 if (entry.getValue() == minVotes) {
                     lowestCandidates.add(entry.getKey());
+                }
+                
+                if(entry.getValue() == 0){
+                    zeroVotes.add(entry.getKey());
                 }
             }
             // If more than one has the lowest, randomly pick one to eliminate
             Person toRemove = lowestCandidates.get(ra.nextInt(lowestCandidates.size()));
             candidates.remove(toRemove);
+            candidates.removeAll(zeroVotes);
         }
     }
     president = winner;
@@ -2085,7 +2290,8 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		    displayArchive();
 		    sc.nextLine();
 		}
-		System.out.print("\033[H\033[2J"); System.out.flush();
+		//System.out.print("\033[H\033[2J"); System.out.flush();
+		System.out.println(new String(new char[50]).replace("\0", "\r\n")); 
 		demographicShifts();
 		partyShifts();
 		
