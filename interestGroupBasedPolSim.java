@@ -466,30 +466,19 @@ public class Main
     
     public static List<Group> allGroups = new ArrayList<>();
     public static void generateGroups(){
-        // Geography
-allGroups.add(new Group(20, 60, "Urban Voters", 65));
-allGroups.add(new Group(0, 40, "Rural Voters", 55));
-allGroups.add(new Group(10, 50, "Suburban Voters", 50));
-
-// Class & Economy
-allGroups.add(new Group(0, 30, "Business Elites", 60));
-allGroups.add(new Group(40, 70, "Working Class", 65));
-allGroups.add(new Group(70, 100, "Poor and Unemployed", 50));
-
-// Age & Education
-allGroups.add(new Group(50, 90, "Students and Youth", 45));
-allGroups.add(new Group(20, 60, "Middle-Aged Voters", 70));
-allGroups.add(new Group(10, 40, "Elderly Voters", 60));
-
-// Culture & Identity
-allGroups.add(new Group(0, 30, "Religious Conservatives", 55));
-allGroups.add(new Group(60, 100, "Progressive Activists", 45));
-allGroups.add(new Group(40, 80, "Ethnic and Cultural Minorities", 50));
-
-// Institutions
-allGroups.add(new Group(0, 40, "Military and Police", 50));
-allGroups.add(new Group(30, 70, "Civil Servants and Bureaucrats", 55));
-allGroups.add(new Group(30, 70, "Teachers and Intellectuals", 45));
+allGroups.add(new Group(1, 15, "Traditionalists", 15));         // 0 – culturally rigid, fading influence
+allGroups.add(new Group(10, 30, "Nationalists", 35));           // 1 – assertive, suspicious of global elites
+allGroups.add(new Group(25, 45, "Capitalists", 70));            // 2 – elite-backed, anti-populist
+allGroups.add(new Group(20, 35, "Law & Order Bloc", 50));       // 3 – pro-police, anti-chaos, neutral on economics
+allGroups.add(new Group(35, 55, "Small Business Owners", 60));  // 4 – practical-minded, split over regulation
+allGroups.add(new Group(15, 35, "Rural Conservatives", 30));    // 5 – nostalgic, pro-subsidies
+allGroups.add(new Group(35, 65, "Centrists / Moderates", 80)); // 6 – technocratic, middle-of-the-road
+allGroups.add(new Group(55, 75, "Liberal Reformers", 70));      // 7 – urbanites, reform-focused
+allGroups.add(new Group(60, 85, "Labor Unions", 45));           // 8 – class-driven, suspicious of elites
+allGroups.add(new Group(70, 90, "Progressives", 55));           //9 – identity-focused, decentralized
+allGroups.add(new Group(65, 95, "Environmentalists", 20));      //10 – passionate but divided
+allGroups.add(new Group(80, 100, "Socialists", 35));            //11 – radical but infighting-prone
+//allGroups.add(new Group(85, 100, "Radical Youth", 15));          //12 – chaotic, often uncooperative
 
     }
     
@@ -1124,11 +1113,11 @@ String[] lastNames = {
                 points *=increaseby;
             }
             
-            for(int i=0; i<5; i++){
+            /*for(int i=0; i<5; i++){
                 if(ra.nextBoolean()){
                     points += points/4;
                 }
-            }
+            }*/
             //System.out.println(par.getName()+ " "+points*100);
             
             partyScore.put(par, points*100);
