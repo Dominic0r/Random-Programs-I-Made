@@ -174,32 +174,33 @@ public class Main
         
         public void determineLeader(){
             if(supportGroups!= null){
-            int wpoint = -1;
-            Group wingroup = null;
-            
-            oldPerson = leader;
-            if(leader != null){
-            for(Group gro: supportGroups){
-                if(gro.leader == leader){
-                    wpoint = gro.getPoints()+ (gro.getPoints()/2);
-                    wingroup = gro;
-                }
-            }
-            }
-            
-            for(Group gro : supportGroups){
-                if(gro.getPoints() > wpoint){
-                    wpoint = gro.getPoints();
-                    wingroup = gro;
-                }
-            }
-            if(wingroup != null){
-                leader = wingroup.getLeader();
                 
-            }else{
-                leader = new Person(ra.nextInt(20)+45, getRandomName(), policy);
-            }
-            
+                int wpoint = -1;
+                Group wingroup = null;
+                
+                oldPerson = leader;
+                    if(leader != null){
+                        for(Group gro: supportGroups){
+                            if(gro.leader == leader){
+                                wpoint = gro.getPoints()*5;
+                                wingroup = gro;
+                            }
+                        }
+                    }
+                
+                for(Group gro : supportGroups){
+                    if(gro.getPoints() > wpoint){
+                        wpoint = gro.getPoints();
+                        wingroup = gro;
+                    }
+                }
+                if(wingroup != null){
+                    leader = wingroup.getLeader();
+                    
+                }else{
+                    leader = new Person(ra.nextInt(20)+45, getRandomName(), policy);
+                }
+                
             } else{
                 leader = new Person(ra.nextInt(20)+45, getRandomName(), policy);
             }
