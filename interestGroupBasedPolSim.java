@@ -468,14 +468,14 @@ public class Main
     public static void generateGroups(){
 allGroups.add(new Group(1, 15, "Traditionalists", 15));         // 0 – culturally rigid, fading influence
 allGroups.add(new Group(10, 30, "Nationalists", 35));           // 1 – assertive, suspicious of global elites
-allGroups.add(new Group(25, 45, "Capitalists", 70));            // 2 – elite-backed, anti-populist
-allGroups.add(new Group(20, 35, "Law & Order Bloc", 50));       // 3 – pro-police, anti-chaos, neutral on economics
-allGroups.add(new Group(35, 55, "Small Business Owners", 60));  // 4 – practical-minded, split over regulation
-allGroups.add(new Group(15, 35, "Rural Conservatives", 30));    // 5 – nostalgic, pro-subsidies
+allGroups.add(new Group(30, 45, "Capitalists", 70));            // 2 – elite-backed, anti-populist
+allGroups.add(new Group(20, 35, "Law & Order Bloc", 30));       // 3 – pro-police, anti-chaos, neutral on economics
+allGroups.add(new Group(40, 55, "Small Business Owners", 60));  // 4 – practical-minded, split over regulation
+allGroups.add(new Group(15, 30, "Rural Conservatives", 30));    // 5 – nostalgic, pro-subsidies
 allGroups.add(new Group(35, 65, "Centrists / Moderates", 80)); // 6 – technocratic, middle-of-the-road
 allGroups.add(new Group(55, 75, "Liberal Reformers", 70));      // 7 – urbanites, reform-focused
-allGroups.add(new Group(60, 85, "Labor Unions", 45));           // 8 – class-driven, suspicious of elites
-allGroups.add(new Group(70, 90, "Progressives", 55));           //9 – identity-focused, decentralized
+allGroups.add(new Group(65, 85, "Labor Unions", 50));           // 8 – class-driven, suspicious of elites
+allGroups.add(new Group(70, 90, "Progressives", 60));           //9 – identity-focused, decentralized
 allGroups.add(new Group(65, 95, "Environmentalists", 20));      //10 – passionate but divided
 allGroups.add(new Group(80, 100, "Socialists", 35));            //11 – radical but infighting-prone
 //allGroups.add(new Group(85, 100, "Radical Youth", 15));          //12 – chaotic, often uncooperative
@@ -1004,6 +1004,8 @@ String[] lastNames = {
                 currentPoints += 50;
             }
             currentPoints /= (Math.abs(parpol - avg)) + 1;
+			
+			
             partyScore.put(par, currentPoints);
         }
 
@@ -1589,7 +1591,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     
     public static void checkAlienation() {
         int resonance = 0;
-        int threshold = 75;
+        int threshold = 65;
         List<Group> alienatedGroups = new ArrayList<>();
     for(Party par: allParties){
         for(Group gro : par.supportGroups){
@@ -1738,17 +1740,27 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             maxPar.setSeats(maxPar.getSeats()+1);
         }
         
-        for(Party par : allParties){
+        
+    }
+	
+	public static void showResults(){
+		for(Party par : allParties){
                 System.out.println(par.getName()+ ": "+ par.getSeats()+"%");
         }
-    }
+	}
     
     public static void checkNoGroups(){
         List<Party> toRemove = new ArrayList<>();
+		int lostseats = 0;
         for(Party par : allParties){
-            if(par.supportGroups.size() == 0 && par.getSeats() == 0){
+            if(par.supportGroups.size() == 0){
                 toRemove.add(par);
+				if(par.getSeats()> 0){
+					lostseats += par.getSeats();
+				}
             }
+			
+			
         }
         
         
@@ -1763,7 +1775,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
                 toRemove.remove(rulingParty);
             }
         }
-        
+        redistrib(lostseats);
         allParties.removeAll(toRemove);
         toRemove.clear();
         
@@ -1905,7 +1917,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         if(elecCount==0){
             //System.out.println("SCENARIO 1");
         triggerElection();
-        
+        showResults();
             hasTrig = true;
             cooldown = cdownnum;
             snapElec = false;
