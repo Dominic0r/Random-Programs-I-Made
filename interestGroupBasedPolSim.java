@@ -40,7 +40,7 @@ public class Main
             this.givePoints = givePoints;
             minpoints = givePoints- (givePoints/5);
             maxpoints = givePoints + (givePoints/5);
-            this.leader = new Person(ra.nextInt(20)+45, getRandomName(), (minPolicy+maxPolicy)/2);
+            this.leader = new Person(ra.nextInt(20)+45, getRandomName(), minPolicy +ra.nextInt(maxPolicy-minPolicy));
             
         }
         
@@ -54,7 +54,8 @@ public class Main
                 if(ra.nextInt(20)+75 < leader.getAge()){
                     oldPerson = this.leader;
                     changedLead = true;
-                    this.leader = new Person(ra.nextInt(20)+45, getRandomName(), (minPolicy+maxPolicy)/2);
+					
+                    this.leader = new Person(ra.nextInt(20)+45, getRandomName(), minPolicy +ra.nextInt(maxPolicy-minPolicy));
                 }
             }
         }
@@ -466,19 +467,19 @@ public class Main
     
     public static List<Group> allGroups = new ArrayList<>();
     public static void generateGroups(){
-allGroups.add(new Group(1, 15, "Traditionalists", 15));         // 0 – culturally rigid, fading influence
+allGroups.add(new Group(1, 15, "Traditionalists", 20));         // 0 – culturally rigid, fading influence
 allGroups.add(new Group(10, 30, "Nationalists", 35));           // 1 – assertive, suspicious of global elites
-allGroups.add(new Group(30, 45, "Capitalists", 70));            // 2 – elite-backed, anti-populist
+allGroups.add(new Group(30, 40, "Capitalists", 70));            // 2 – elite-backed, anti-populist
 allGroups.add(new Group(20, 35, "Law & Order Bloc", 30));       // 3 – pro-police, anti-chaos, neutral on economics
-allGroups.add(new Group(40, 55, "Small Business Owners", 60));  // 4 – practical-minded, split over regulation
+allGroups.add(new Group(40, 55, "Small Business Owners", 45));  // 4 – practical-minded, split over regulation
 allGroups.add(new Group(15, 30, "Rural Conservatives", 30));    // 5 – nostalgic, pro-subsidies
-allGroups.add(new Group(35, 65, "Centrists / Moderates", 80)); // 6 – technocratic, middle-of-the-road
-allGroups.add(new Group(55, 75, "Liberal Reformers", 70));      // 7 – urbanites, reform-focused
-allGroups.add(new Group(65, 85, "Labor Unions", 50));           // 8 – class-driven, suspicious of elites
-allGroups.add(new Group(70, 90, "Progressives", 60));           //9 – identity-focused, decentralized
-allGroups.add(new Group(65, 95, "Environmentalists", 20));      //10 – passionate but divided
-allGroups.add(new Group(80, 100, "Socialists", 35));            //11 – radical but infighting-prone
-//allGroups.add(new Group(85, 100, "Radical Youth", 15));          //12 – chaotic, often uncooperative
+allGroups.add(new Group(55, 70, "Liberal Reformers", 70));      // 7 – urbanites, reform-focused
+allGroups.add(new Group(40, 60, "Centrists / Moderates", 80)); // 6 – technocratic, middle-of-the-road
+allGroups.add(new Group(65, 80, "Labor Unions", 50));           // 8 – class-driven, suspicious of elites
+allGroups.add(new Group(70, 85, "Progressives", 60));           //9 – identity-focused, decentralized
+allGroups.add(new Group(65, 80, "Environmentalists", 20));      //10 – passionate but divided
+allGroups.add(new Group(75, 90, "Socialists", 35));            //11 – radical but infighting-prone
+allGroups.add(new Group(85, 100, "Radicals", 15));          //12 – chaotic, often uncooperative
 
     }
     
@@ -1648,6 +1649,66 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         
     }
     
+	public static int detParNameIdeology(Party par){
+		for(String name: farLeft){
+			if(par.getName().equalsIgnoreCase(name)){
+				return 1; // far left name
+			}
+		}
+		
+		for(String name: leftWing){
+			if(par.getName().equalsIgnoreCase(name)){
+				return 2; // far left name
+			}
+		}
+		
+		for(String name: centerLeft){
+			if(par.getName().equalsIgnoreCase(name)){
+				return 3; // far left name
+			}
+		}
+		
+		for(String name: centerRight){
+			if(par.getName().equalsIgnoreCase(name)){
+				return 4; // far left name
+			}
+		}
+		
+		for(String name: rightWing){
+			if(par.getName().equalsIgnoreCase(name)){
+				return 5; // far left name
+			}
+		}
+		for(String name: farRight){
+			if(par.getName().equalsIgnoreCase(name)){
+				return 6; // far left name
+			}
+		}
+		return 0;
+	}
+	
+	public static int detActualPartyIdeo(Party par){
+		int toreturn = 0;
+            if(par.getPolicy()>50){
+                if(par.getPolicy()>85){
+                    toreturn= 1;
+                }else if(par.getPolicy() <=85 && par.getPolicy()> 70){
+                    toreturn= 2;
+                }else{
+                    toreturn= 3;
+                }
+            }else{
+                if(par.getPolicy()>30){
+                    toreturn= 4;
+                }else if(par.getPolicy()<=30 && par.getPolicy()>15){
+                    toreturn =5;
+                }else{
+                    toreturn =6;
+                }
+            }
+            return toreturn;
+            
+	}
     
     public static void partyShifts(){
         int maxnum = 0;
@@ -1666,14 +1727,33 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             }
             
             if(maxGroup != null){
-            avg = (maxGroup.getMin()+maxGroup.getMax())/2;
-            
+            //avg = (maxGroup.getMin()+maxGroup.getMax())/2;
+            avg = maxGroup.getLeader().getIdeology();
             if(par.getPolicy()> avg){
-                par.changePolicy((par.getPolicy()-avg)/5);
+                par.changePolicy((par.getPolicy()-avg)/10);
             }else{
-                par.changePolicy((avg-par.getPolicy())/5);
+                par.changePolicy((avg-par.getPolicy())/10);
             }
             }
+			
+			if(detParNameIdeology(par) != detActualPartyIdeo(par)){
+				switch(detActualPartyIdeo(par)){
+					case 1: par.name = farLeft.get(ra.nextInt(farLeft.size()));
+					break;
+					case 2:par.name = leftWing.get(ra.nextInt(leftWing.size()));
+					break;
+					case 3:par.name = centerLeft.get(ra.nextInt(centerLeft.size()));
+					break;
+					case 4:par.name = centerRight.get(ra.nextInt(centerRight.size()));
+					break;
+					case 5:par.name = rightWing.get(ra.nextInt(rightWing.size()));
+					break;
+					case 6:par.name = farRight.get(ra.nextInt(farRight.size()));
+					break;
+				}
+				//par.name = maxGroup.getRandomPartyName();
+			}
+			
         }
         
         
@@ -2044,7 +2124,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     
     public static Person president;
     public static int presCdown = 10;
-    public static int defpresCdown =48;
+    public static int defpresCdown =72;
     
     public static void electPresident(){
     int rounds = 1;
@@ -2117,7 +2197,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             System.out.println(
             pe.getName() +
             " (Ideology: " + pe.disIdeo() + "): " +
-            voteCount.get(pe) + " votes"
+            voteCount.get(pe) + "%"
             );
         }
 
@@ -2291,6 +2371,9 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		if(put.equalsIgnoreCase("archive")){
 		    displayArchive();
 		    sc.nextLine();
+		}
+		if(put.equalsIgnoreCase("exit")){
+			System.exit(0);
 		}
 		//System.out.print("\033[H\033[2J"); System.out.flush();
 		System.out.println(new String(new char[50]).replace("\0", "\r\n")); 
