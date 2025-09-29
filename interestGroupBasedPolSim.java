@@ -1820,8 +1820,8 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
                 maxPar = null;
             for(Party par: allParties){
                 
-                if(((par.getSeats()*100)/(par.getSeats()+1))< maxval&& par.getSeats() >0){
-                    maxval = ((par.getSeats()*100)/(par.getSeats()*2));
+                if(((par.getSeats()*100)/(par.getSeats()+1))< maxval){
+                    maxval = ((par.getSeats()*100)/(par.getSeats()+1));
                     maxPar = par;
                 }
             }
