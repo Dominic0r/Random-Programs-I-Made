@@ -38,8 +38,8 @@ public class Main
             this.name = name;
             this.isAlienated = false;
             this.givePoints = givePoints;
-            minpoints = givePoints- (givePoints/5);
-            maxpoints = givePoints + (givePoints/5);
+            minpoints = givePoints- (givePoints/2);
+            maxpoints = givePoints + (givePoints/2);
             this.leader = new Person(ra.nextInt(20)+45, getRandomName(), minPolicy +ra.nextInt(maxPolicy-minPolicy));
             
         }
@@ -55,7 +55,17 @@ public class Main
                     oldPerson = this.leader;
                     changedLead = true;
 					
+					
+					
                     this.leader = new Person(ra.nextInt(20)+45, getRandomName(), minPolicy +ra.nextInt(maxPolicy-minPolicy));
+					if(oldPerson == president){
+						president = vicePresident;
+						appointVP();
+					}
+					
+					if(oldPerson == vicePresident){
+						appointVP();
+					}
                 }
             }
         }
@@ -470,7 +480,7 @@ public class Main
 allGroups.add(new Group(1, 15, "Traditionalists", 20));         // 0 – culturally rigid, fading influence
 allGroups.add(new Group(10, 30, "Nationalists", 35));           // 1 – assertive, suspicious of global elites
 allGroups.add(new Group(30, 40, "Capitalists", 70));            // 2 – elite-backed, anti-populist
-allGroups.add(new Group(20, 35, "Law & Order Bloc", 30));       // 3 – pro-police, anti-chaos, neutral on economics
+allGroups.add(new Group(20, 35, "Law & Order Bloc", 50));       // 3 – pro-police, anti-chaos, neutral on economics
 allGroups.add(new Group(40, 55, "Small Business Owners", 45));  // 4 – practical-minded, split over regulation
 allGroups.add(new Group(15, 30, "Rural Conservatives", 30));    // 5 – nostalgic, pro-subsidies
 allGroups.add(new Group(55, 70, "Liberal Reformers", 70));      // 7 – urbanites, reform-focused
@@ -998,7 +1008,7 @@ String[] lastNames = {
 
         for (Party par : allParties) {
             currentPoints = 0;
-            parpol = par.getPolicy();
+            parpol = par.leader.getIdeology();
             if (parpol >= min && parpol <= max) {
                 currentPoints += 100;
             } else {
@@ -1760,16 +1770,15 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     }
     
     public static void demographicShifts(){
-        int changeBy = ra.nextInt(9)+1;
+        int changeBy = 0;
         int nupoints = changeBy/allGroups.size();
         
         for(Group gro : allGroups){
+			changeBy = ra.nextInt((gro.getPoints()/5)+1);
             if(ra.nextBoolean()){
                 if(ra.nextBoolean()){
                     changeBy*=-1;
                     
-                }else{
-                    nupoints*=-1;
                 }
                 gro.changePoints(changeBy);
                 
@@ -1804,14 +1813,14 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     }
     
     public static void redistrib(int toredis){
-        int maxval=-1;
+        int maxval=100000;
         Party maxPar = null;
         for(int i=0; i< toredis;i++){
-            maxval = -1;
+            maxval = 100000;
                 maxPar = null;
             for(Party par: allParties){
                 
-                if(((par.getSeats()*100)/(par.getSeats()+1))> maxval&& par.getSeats() >0){
+                if(((par.getSeats()*100)/(par.getSeats()+1))< maxval&& par.getSeats() >0){
                     maxval = ((par.getSeats()*100)/(par.getSeats()*2));
                     maxPar = par;
                 }
@@ -2228,7 +2237,29 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }
     }
     president = winner;
+	appointVP();
 }
+
+public static Person vicePresident;
+
+public static void appointVP(){
+	int maxnum = 0;
+	Group maxGroup = null;
+	int factor = 0;
+	
+	for(Group gro : allGroups){
+			if(gro.leader != president){
+			factor = 100-Math.abs(president.getIdeology()-gro.leader.getIdeology());
+			if(factor > maxnum){
+				maxnum = factor;
+				maxGroup = gro;
+			}
+		}
+	}
+	
+	vicePresident = maxGroup.leader;
+}
+
     
     
 	public static void main(String[] args) throws Exception{
@@ -2292,6 +2323,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		
 		if(president != null){
 		    System.out.println("President: "+ president.getName()+ " ("+ president.disIdeo()+ ")");
+			System.out.println("Vice-President: "+ vicePresident.getName()+ " ("+ vicePresident.disIdeo()+ ")");
 		}
 		if(rulingParty != null){
 		    if(rulingParty.getLeader() != null){
