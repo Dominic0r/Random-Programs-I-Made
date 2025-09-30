@@ -2331,10 +2331,10 @@ public static int bbcDown = 10; // boombust countdown
         }
         monthly();
         sortParties();
-        System.out.println("DEBUG APPROVAL: "+ approvalRating);
+        System.out.println("Approval Rating: "+ approvalRating+ "%");
         //System.out.println("DEBUG AUTH: "+ auth);
 		// --- ECONOMIC DISPLAY ---
-            System.out.println("Economic Index: " + economicIndex + " / 100");
+            System.out.println("Economic Index: " + economicIndex);
             System.out.println("Unemployment Rate: " + unemploymentRate + "%");
 		
 		System.out.println(months[moNum]+ " - "+ year);
@@ -2424,8 +2424,8 @@ public static int bbcDown = 10; // boombust countdown
 		    System.out.println("\n\n"+par.getName()+ " - "+ par.getIdeology() + " - "+ par.getSeats()+ "% of Parliament");
 		    if(par.getLeader()!=null){
 		    System.out.println("Leader: "+ par.getLeader().getName());
-			System.out.println(par.getLeader().getIdeology());
-			System.out.println(par.getPolicy());
+			//System.out.println(par.getLeader().getIdeology());
+			//System.out.println(par.getPolicy());
 		    }else{
 		        System.out.println("Leader: No Leader");
 		    }
