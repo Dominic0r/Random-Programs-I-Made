@@ -19,6 +19,10 @@ public class Main
     public static int auth = 0; // authoritarianism
     public static boolean isFair = true;
     
+	 // ECONOMIC SYSTEM VARIABLES
+    public static int economicIndex = 50; // Range: 0-100, 50 is average
+    public static int unemploymentRate = 10; // percent
+	
     public static class Group{
         int minPolicy;
         int maxPolicy;
@@ -849,7 +853,7 @@ public static ArrayList<String> farRight = new ArrayList<>(Arrays.asList(
     
     public static Party rulingParty = null;
     
-    public static int approvalRating = 50;
+    public static int approvalRating = 100;
     
     
     
@@ -1352,7 +1356,7 @@ String[] lastNames = {
         
         
         for(Coalition coa : allCoalitions){
-            if(coa!=maxCoa){
+            if(coa!=maxCoa&& coa != null){
                 
                 coa.members.removeAll(maxCoa.members);
                 toRemove.add(coa);
@@ -1623,7 +1627,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     }
     
     for(Group gro: alienatedGroups){
-        createNewParty(gro, gro.getIdeology());
+        createNewParty(gro, gro.getLeader().getIdeology());
     }
 }
     
@@ -1739,11 +1743,19 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             if(maxGroup != null){
             //avg = (maxGroup.getMin()+maxGroup.getMax())/2;
             avg = maxGroup.getLeader().getIdeology();
-            if(par.getPolicy()> avg){
+            /*if(par.getPolicy()> avg){
                 par.changePolicy((par.getPolicy()-avg)/10);
             }else{
                 par.changePolicy((avg-par.getPolicy())/10);
-            }
+            }*/
+			int dif = par.getPolicy()- avg;
+			
+			if(dif>0){
+				par.changePolicy(-1);
+			}else if(dif < 0){
+				par.changePolicy(1);
+			}
+			
             }
 			
 			if(detParNameIdeology(par) != detActualPartyIdeo(par)){
@@ -1918,10 +1930,17 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     }
     
     public static void updateApproval(){
-        approvalRating -= (year-startdate)/5;
+        approvalRating -= ra.nextInt(((year-startdate)/5)+1);
         
-        approvalRating -= auth/10;
-        
+        //approvalRating -= auth/10;
+         // Economy impact
+        approvalRating += (economicIndex - 50) / 4; // boost/penalty for good/bad economy
+        approvalRating -= unemploymentRate / 4; // penalty for high unemployment
+
+        approvalRating += ra.nextInt(2);
+
+        if (approvalRating < 1) approvalRating = 1;
+        if (approvalRating > 99) approvalRating = 99;
         
         
         /*if(getGovNumSup()<50){
@@ -1940,6 +1959,8 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     }
     
     public static void monthly(){
+		updateEconomy();
+        
         updateApproval();
         leadercDown --;
         if(leadercDown <0){
@@ -2260,6 +2281,38 @@ public static void appointVP(){
 	vicePresident = maxGroup.leader;
 }
 
+public static boolean boombums = true; // boom = true, bust = false
+public static int bbcDown = 10; // boombust countdown
+
+// --- ECONOMIC SYSTEM METHOD ---
+    public static void updateEconomy() {
+        // Random fluctuation, affected by policy centerness
+        int economicChange = ra.nextInt(7) - 3; // -3 to +3
+		if(boombums){
+			economicChange += ra.nextInt(bbcDown+1);
+		}else{
+			economicChange -= ra.nextInt(bbcDown+1);
+		}
+		bbcDown--;
+		
+		if(bbcDown<1){
+			bbcDown = ((ra.nextInt(5)+1)*4)+6;
+			boombums = !boombums;
+		}
+		
+        if (rulingParty != null) {
+            int centerness = 50 - Math.abs(rulingParty.getPolicy() - 50);
+            economicChange += centerness / 20; // centrist parties stabilize economy
+        }
+        economicIndex += economicChange;
+        if (economicIndex > 100) economicIndex = 100;
+        if (economicIndex < 0) economicIndex = 0;
+        // Unemployment loosely tracks economy + random fluctuation
+        unemploymentRate = 20 - (economicIndex / 5) + ra.nextInt(3) - 1;
+        if (unemploymentRate < 1) unemploymentRate = 1;
+        if (unemploymentRate > 25) unemploymentRate = 25;
+    }
+
     
     
 	public static void main(String[] args) throws Exception{
@@ -2280,6 +2333,9 @@ public static void appointVP(){
         sortParties();
         System.out.println("DEBUG APPROVAL: "+ approvalRating);
         //System.out.println("DEBUG AUTH: "+ auth);
+		// --- ECONOMIC DISPLAY ---
+            System.out.println("Economic Index: " + economicIndex + " / 100");
+            System.out.println("Unemployment Rate: " + unemploymentRate + "%");
 		
 		System.out.println(months[moNum]+ " - "+ year);
 		System.out.print("Next Presidential election in ");
@@ -2368,6 +2424,8 @@ public static void appointVP(){
 		    System.out.println("\n\n"+par.getName()+ " - "+ par.getIdeology() + " - "+ par.getSeats()+ "% of Parliament");
 		    if(par.getLeader()!=null){
 		    System.out.println("Leader: "+ par.getLeader().getName());
+			System.out.println(par.getLeader().getIdeology());
+			System.out.println(par.getPolicy());
 		    }else{
 		        System.out.println("Leader: No Leader");
 		    }
