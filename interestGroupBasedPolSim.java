@@ -1115,6 +1115,28 @@ String[] lastNames = {
             if(approvalRating<50 && !rulingCoalition.members.contains(par)){
                 points += Math.abs((par.getPolicy() - rulingCoalition.getLeader().getPolicy()))-15;
             }
+			
+				
+			if(rulingCoalition!= null && rulingCoalition.members.contains(par)){
+				points -= (points*unemploymentRate)/100;
+			
+				points -= (100-economicIndex)/4;
+			}else{
+				points += (points*unemploymentRate)/100;
+			
+				points += (100-economicIndex)/4;
+			}
+			
+			
+			
+			if(par.supportGroups!= null){
+				for(Group gro: par.supportGroups){
+					if(gro.leader == president){points += points/2;
+					}
+					if(gro.leader == vicePresident){points += points/4;
+					}
+				}
+			}
             
             
             if(snapElec&& rulingCoalition.members.contains(par)){
@@ -1245,7 +1267,7 @@ String[] lastNames = {
     public static Person primeMinister = null;
     public static void formCoalitions(Party largePar){
         allCoalitions.clear();
-        int thresh = 45 - (5*allParties.size());
+        int thresh = 40 - (5*allParties.size());
         for(Party par : allParties){
             if(par.getSeats() >=thresh){
                 
@@ -1758,7 +1780,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 			
             }
 			
-			if(detParNameIdeology(par) != detActualPartyIdeo(par)){
+			if(Math.abs(detParNameIdeology(par)-detActualPartyIdeo(par))>1){
 				switch(detActualPartyIdeo(par)){
 					case 1: par.name = farLeft.get(ra.nextInt(farLeft.size()));
 					break;
