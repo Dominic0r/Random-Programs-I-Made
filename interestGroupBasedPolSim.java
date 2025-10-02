@@ -477,6 +477,20 @@ public class Main
             return members.contains(testpar);
         }
     }
+	
+	public static class armedGroup{
+		String name;
+		int strength;
+		boolean isPolitical;
+		
+		public armedGroup(String name, int strength, boolean isPolitical){
+			this.name = name;
+			this.strength = strength;
+			this.isPolitical = isPolitical;
+		}
+	}
+	
+	public static armedGroup Police = new armedGroup("National Police", 1000, false);
     
     
     public static List<Group> allGroups = new ArrayList<>();
