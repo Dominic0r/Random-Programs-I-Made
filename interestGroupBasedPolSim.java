@@ -510,31 +510,35 @@ allGroups.add(new Group(75, 90, "Socialists", 35));            //11 – radical 
 allGroups.add(new Group(85, 100, "Radicals", 15));          //12 – chaotic, often uncooperative*/
 
 // Radical Right (0–15)
-allGroups.add(new Group(0, 10, "Nationalists", 35));
-allGroups.add(new Group(5, 15, "Reactionaries", 25));
+allGroups.add(new Group(0, 10, "Nationalists", getranNumbetween100and1())); // 35
+allGroups.add(new Group(5, 15, "Reactionaries", getranNumbetween100and1())); // 25
 
 // Dissident Right (15–30)
-allGroups.add(new Group(15, 25, "Conservatives", 40));
-allGroups.add(new Group(20, 30, "Traditional Right", 30));
+allGroups.add(new Group(15, 25, "Conservatives", getranNumbetween100and1())); //40
+allGroups.add(new Group(20, 30, "Traditional Right", getranNumbetween100and1())); //30
 
 // Establishment Right (30–45)
-allGroups.add(new Group(30, 40, "Capitalists", 60));
-allGroups.add(new Group(35, 45, "Defense Industry", 50));
+allGroups.add(new Group(30, 40, "Capitalists", getranNumbetween100and1())); // 60
+allGroups.add(new Group(35, 45, "Defense Industry", getranNumbetween100and1())); //50
 
 // Establishment Left (55–70)
-allGroups.add(new Group(55, 65, "Administratic Progressives", 55));
-allGroups.add(new Group(60, 70, "Labor Moderates", 50));
+allGroups.add(new Group(55, 65, "Administratic Progressives", getranNumbetween100and1())); // 55
+allGroups.add(new Group(60, 70, "Labor Moderates", getranNumbetween100and1())); // 50
 
 // Dissident Left (70–85)
-allGroups.add(new Group(70, 80, "Reformists", 30));
-allGroups.add(new Group(75, 85, "Grassroots Progressives", 35));
+allGroups.add(new Group(70, 80, "Reformists", getranNumbetween100and1())); // 30
+allGroups.add(new Group(75, 85, "Grassroots Progressives", getranNumbetween100and1())); //35
 
 // Radical Left (85–100)
-allGroups.add(new Group(85, 95, "Socialists", 25));
-allGroups.add(new Group(90, 100, "Communists", 20));
+allGroups.add(new Group(85, 95, "Socialists", getranNumbetween100and1())); // 25
+allGroups.add(new Group(90, 100, "Communists", getranNumbetween100and1())); // 20
 
 
     }
+	
+	public static int getranNumbetween100and1(){
+		return ra.nextInt(99)+1;
+	}
     
     
             // Far-left Parties
@@ -1348,7 +1352,9 @@ String[] lastNames = {
                     coaPoint += debugIdeologydif/2;
                     coaPoint+= pragmatism/2;
                     //coaPoint += pragmachange;
-                    
+                    if(par == findSecondParty()){
+						coaPoint -= coaPoint/4;
+					}
                     
                     
                     if(coaPoint >= threshold){
@@ -1476,6 +1482,30 @@ String[] lastNames = {
         
     }
 	
+	public static Party findSecondParty(){
+		Party maxPar = null;
+		int maxNum = 0;
+		Party secondPar = null;
+		int secNum = 0;
+		for(Party par: allParties){
+			if(par.getSeats()> maxNum){
+				if(maxPar != null){
+					secondPar = maxPar;
+					secNum = maxNum;
+					
+				}
+				
+				maxPar = par;
+				maxNum = par.getSeats();
+			}else if(par.getSeats() > secNum){
+				secNum = par.getSeats();
+				secondPar = par;
+			}
+		}
+		
+		return secondPar;
+	}
+	
 	public static List<Party> toleration = new ArrayList<>();
 	public static void confidenceVote(){
 		toleration.clear();
@@ -1486,18 +1516,36 @@ String[] lastNames = {
 		int threshold = 65;
 		int partyPolicyDif = 0;
 		int leaderPolicyDif = 0;
-		int numofPars = 25- (allParties.size()*3);
+		int numofPars = allParties.size()*5;
 		int points = 0;
+		Party secondParty = findSecondParty();
+		int secPartyPolicyDif;
+		int secLeaderPolicyDif;
+		int oppopoints = 0;
 		if(totalseatscoalition >= 50){
 			
 		}else{
 			for(Party par: allParties){
+				oppopoints = 0;
 				if(!rulingCoalition.members.contains(par)){
 					partyPolicyDif = ((100-Math.abs(par.getPolicy()- rulingParty.getPolicy()))/2);
 					leaderPolicyDif = ((100-Math.abs(par.leader.getIdeology()- rulingParty.leader.getIdeology()))/4);
 					points = partyPolicyDif + leaderPolicyDif+ numofPars;
-					if(points >= threshold){
-						toleration.add(par);
+					
+					if(!rulingCoalition.members.contains(secondParty)){
+						secPartyPolicyDif = ((100-Math.abs(par.getPolicy()- secondParty.getPolicy()))/2);
+						secLeaderPolicyDif = ((100-Math.abs(par.leader.getIdeology()- rulingParty.leader.getIdeology()))/4);
+						oppopoints = secPartyPolicyDif+ secLeaderPolicyDif + numofPars;
+					}
+					
+					if(oppopoints ==0){
+						if(points >= threshold){
+							toleration.add(par);
+						}
+					}else{
+						if(points >= oppopoints){
+							toleration.add(par);
+						}
 					}
 				}
 			}
@@ -1714,9 +1762,9 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         List<Group> alienatedGroups = new ArrayList<>();
     for(Party par: allParties){
         for(Group gro : par.supportGroups){
-            resonance = (100-Math.abs(gro.getIdeology()-par.getPolicy()))/2;
-            resonance += (100-(par.supportGroups.size()*5))/4;
-			resonance+= (100-Math.abs(gro.leader.getIdeology()-par.leader.getIdeology()))/4;
+            resonance = (100-Math.abs(gro.getIdeology()-par.getPolicy()))/4;
+            resonance += (100-(par.supportGroups.size()*8))/4;
+			resonance+= (100-Math.abs(gro.leader.getIdeology()-par.leader.getIdeology()))/2;
             
             
             boolean isAlienated = resonance<threshold;
@@ -1912,7 +1960,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     
     
     public static void checkSeats(){
-        int threshold = allParties.size();
+        int threshold = allParties.size()/2;
         int lostseats = 0;
         List<Party> toRemove = new ArrayList<>();
         for(Party par : allParties){
@@ -2459,7 +2507,8 @@ public static int bbcDown = 10; // boombust countdown
 		// --- ECONOMIC DISPLAY ---
             System.out.println("Economic Index: " + economicIndex);
             System.out.println("Unemployment Rate: " + unemploymentRate + "%");
-		
+			int gdpGrowth = (economicIndex-25)/5;
+			System.out.println("GDP Growth: " +gdpGrowth+"%");
 		System.out.println(months[moNum]+ " - "+ year);
 		System.out.print("Next Presidential election in ");
 		if(presCdown > 12){
