@@ -1170,9 +1170,9 @@ String[] lastNames = {
 			
 			if(par.supportGroups!= null){
 				for(Group gro: par.supportGroups){
-					if(gro.leader == president){points += points/2;
+					if(gro.leader == president){points += points/4;
 					}
-					if(gro.leader == vicePresident){points += points/4;
+					if(gro.leader == vicePresident){points += points/8;
 					}
 				}
 			}
@@ -1488,7 +1488,7 @@ String[] lastNames = {
 		int leaderPolicyDif = 0;
 		int numofPars = 25- (allParties.size()*3);
 		int points = 0;
-		if(totalseatscoalition > 50){
+		if(totalseatscoalition >= 50){
 			
 		}else{
 			for(Party par: allParties){
@@ -1709,12 +1709,14 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     
     public static void checkAlienation() {
         int resonance = 0;
-        int threshold = 65;
+        int threshold = 75;
+		
         List<Group> alienatedGroups = new ArrayList<>();
     for(Party par: allParties){
         for(Group gro : par.supportGroups){
             resonance = (100-Math.abs(gro.getIdeology()-par.getPolicy()))/2;
-            resonance += (100-(par.supportGroups.size()*5))/2;
+            resonance += (100-(par.supportGroups.size()*5))/4;
+			resonance+= (100-Math.abs(gro.leader.getIdeology()-par.leader.getIdeology()))/4;
             
             
             boolean isAlienated = resonance<threshold;
@@ -2393,16 +2395,33 @@ public static int bbcDown = 10; // boombust countdown
         // Random fluctuation, affected by policy centerness
         int economicChange = ra.nextInt(7) - 3; // -3 to +3
 		if(boombums){
-			economicChange += ra.nextInt(bbcDown+1);
+			economicChange += ra.nextInt(bbcDown+1)/2;
 		}else{
-			economicChange -= ra.nextInt(bbcDown+1);
+			economicChange -= ra.nextInt(bbcDown+1)/2;
 		}
 		bbcDown--;
 		
-		if(bbcDown<1){
-			bbcDown = ((ra.nextInt(5)+1)*4)+6;
-			boombums = !boombums;
+		if(economicIndex >75 && boombums){
+			bbcDown/=2;
 		}
+		
+		if(economicIndex< 25 && !boombums){
+			bbcDown /=2;
+		}
+		
+		economicChange -= (economicIndex-50)/10;
+		
+		if(bbcDown<1){
+			bbcDown = ((ra.nextInt(5)+1)*3)+3;
+			boombums = !boombums;
+			
+			if(ra.nextInt(100)<5){
+				System.out.println("Economic Crash!");
+				bbcDown = (ra.nextInt(10)+1)*3;
+				boombums = false;
+			}
+		}
+		
 		
         if (rulingParty != null) {
             int centerness = 50 - Math.abs(rulingParty.getPolicy() - 50);
@@ -2518,7 +2537,7 @@ public static int bbcDown = 10; // boombust countdown
 		}
 		
 		if(toleration.size()>0){
-			System.out.println("Parties in toleration:");
+			System.out.println("\nParties in toleration:");
 			
 			for(Party par: toleration){
 				System.out.println(par.getName());
@@ -2548,7 +2567,7 @@ public static int bbcDown = 10; // boombust countdown
 		        System.out.print(" - "+gro.getName());
 		        totsup += gro.getPoints();
 		    }
-		    System.out.println(par.getUnity());
+		    //System.out.println(par.getUnity());
 		    //System.out.println("Support Points: "+ totsup);
 		    
 		}
@@ -2558,7 +2577,7 @@ public static int bbcDown = 10; // boombust countdown
 		    totalnumofseats += par.getSeats();
 		}
 		
-		System.out.println("Total Number of Seats: "+ totalnumofseats);
+		//System.out.println("Total Number of Seats: "+ totalnumofseats);
 		
 		//for debug 
 		/*System.out.println("\n\n");
