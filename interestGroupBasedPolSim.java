@@ -495,7 +495,7 @@ public class Main
     
     public static List<Group> allGroups = new ArrayList<>();
     public static void generateGroups(){
-allGroups.add(new Group(1, 15, "Traditionalists", 20));         // 0 – culturally rigid, fading influence
+/*allGroups.add(new Group(1, 15, "Traditionalists", 20));         // 0 – culturally rigid, fading influence
 allGroups.add(new Group(10, 30, "Nationalists", 35));           // 1 – assertive, suspicious of global elites
 allGroups.add(new Group(30, 40, "Capitalists", 70));            // 2 – elite-backed, anti-populist
 allGroups.add(new Group(20, 35, "Law & Order Bloc", 50));       // 3 – pro-police, anti-chaos, neutral on economics
@@ -503,11 +503,36 @@ allGroups.add(new Group(40, 55, "Small Business Owners", 45));  // 4 – practic
 allGroups.add(new Group(15, 30, "Rural Conservatives", 30));    // 5 – nostalgic, pro-subsidies
 allGroups.add(new Group(55, 70, "Liberal Reformers", 70));      // 7 – urbanites, reform-focused
 allGroups.add(new Group(40, 60, "Centrists / Moderates", 80)); // 6 – technocratic, middle-of-the-road
-allGroups.add(new Group(65, 80, "Labor Unions", 50));           // 8 – class-driven, suspicious of elites
-allGroups.add(new Group(70, 85, "Progressives", 60));           //9 – identity-focused, decentralized
-allGroups.add(new Group(65, 80, "Environmentalists", 20));      //10 – passionate but divided
+allGroups.add(new Group(75, 85, "Labor Unions", 50));           // 8 – class-driven, suspicious of elites
+allGroups.add(new Group(65, 80, "Progressives", 60));           //9 – identity-focused, decentralized
+allGroups.add(new Group(70, 85, "Environmentalists", 20));      //10 – passionate but divided
 allGroups.add(new Group(75, 90, "Socialists", 35));            //11 – radical but infighting-prone
-allGroups.add(new Group(85, 100, "Radicals", 15));          //12 – chaotic, often uncooperative
+allGroups.add(new Group(85, 100, "Radicals", 15));          //12 – chaotic, often uncooperative*/
+
+// Radical Right (0–15)
+allGroups.add(new Group(0, 10, "Nationalists", 35));
+allGroups.add(new Group(5, 15, "Reactionaries", 25));
+
+// Dissident Right (15–30)
+allGroups.add(new Group(15, 25, "Conservatives", 40));
+allGroups.add(new Group(20, 30, "Traditional Right", 30));
+
+// Establishment Right (30–45)
+allGroups.add(new Group(30, 40, "Capitalists", 60));
+allGroups.add(new Group(35, 45, "Defense Industry", 50));
+
+// Establishment Left (55–70)
+allGroups.add(new Group(55, 65, "Administratic Progressives", 55));
+allGroups.add(new Group(60, 70, "Labor Moderates", 50));
+
+// Dissident Left (70–85)
+allGroups.add(new Group(70, 80, "Reformists", 30));
+allGroups.add(new Group(75, 85, "Grassroots Progressives", 35));
+
+// Radical Left (85–100)
+allGroups.add(new Group(85, 95, "Socialists", 25));
+allGroups.add(new Group(90, 100, "Communists", 20));
+
 
     }
     
@@ -1450,6 +1475,48 @@ String[] lastNames = {
         
         
     }
+	
+	public static List<Party> toleration = new ArrayList<>();
+	public static void confidenceVote(){
+		toleration.clear();
+		int totalseatscoalition = 0;
+		for(Party par : rulingCoalition.members){
+			totalseatscoalition+= par.getSeats();
+		}
+		int threshold = 65;
+		int partyPolicyDif = 0;
+		int leaderPolicyDif = 0;
+		int numofPars = 25- (allParties.size()*3);
+		int points = 0;
+		if(totalseatscoalition > 50){
+			
+		}else{
+			for(Party par: allParties){
+				if(!rulingCoalition.members.contains(par)){
+					partyPolicyDif = ((100-Math.abs(par.getPolicy()- rulingParty.getPolicy()))/2);
+					leaderPolicyDif = ((100-Math.abs(par.leader.getIdeology()- rulingParty.leader.getIdeology()))/4);
+					points = partyPolicyDif + leaderPolicyDif+ numofPars;
+					if(points >= threshold){
+						toleration.add(par);
+					}
+				}
+			}
+		}
+		
+		int votesYes = 0;
+		for(Party par: allParties){
+			if(rulingCoalition.members.contains(par) || toleration.contains(par)){
+				votesYes+= par.getSeats();
+			}
+		}
+		
+		if(votesYes < 50){
+			System.out.println("Confidence vote failed. Elections in 6 months");
+			snapElec = true;
+			elecCount = 6;
+			
+		}
+	}
     
     
     
@@ -2067,6 +2134,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             hasTrig = true;
             cooldown = cdownnum;
             snapElec = false;
+			confidenceVote();
         }
         
         
@@ -2449,9 +2517,20 @@ public static int bbcDown = 10; // boombust countdown
 		rulingCoalition.displayMembers();
 		}
 		
+		if(toleration.size()>0){
+			System.out.println("Parties in toleration:");
+			
+			for(Party par: toleration){
+				System.out.println(par.getName());
+			}
+			
+		}
+		
 		System.out.println("\nOpposition Parties:");
 		for(Party par: independentParties){
-		    System.out.println(par.getName());
+			if(!toleration.contains(par)){
+				System.out.println(par.getName());
+			}
 		}
 		
 		int totsup = 0;
