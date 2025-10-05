@@ -1515,7 +1515,7 @@ String[] lastNames = {
 		for(Party par : rulingCoalition.members){
 			totalseatscoalition+= par.getSeats();
 		}
-		int threshold = 65;
+		int threshold = 50;
 		int partyPolicyDif = 0;
 		int leaderPolicyDif = 0;
 		int numofPars = allParties.size()*5;
@@ -1533,22 +1533,20 @@ String[] lastNames = {
 					partyPolicyDif = ((100-Math.abs(par.getPolicy()- rulingParty.getPolicy()))/2);
 					leaderPolicyDif = ((100-Math.abs(par.leader.getIdeology()- rulingParty.leader.getIdeology()))/4);
 					points = partyPolicyDif + leaderPolicyDif+ numofPars;
-					
+					points -= Math.abs(par.getPolicy()-50)/2;
 					if(!rulingCoalition.members.contains(secondParty)){
 						secPartyPolicyDif = ((100-Math.abs(par.getPolicy()- secondParty.getPolicy()))/2);
 						secLeaderPolicyDif = ((100-Math.abs(par.leader.getIdeology()- rulingParty.leader.getIdeology()))/4);
-						oppopoints = secPartyPolicyDif+ secLeaderPolicyDif + numofPars;
+						oppopoints = (secPartyPolicyDif+ secLeaderPolicyDif + numofPars);
+						
 					}
 					
-					if(oppopoints ==0){
+					threshold+=oppopoints;
+					
 						if(points >= threshold){
 							toleration.add(par);
 						}
-					}else{
-						if(points >= oppopoints){
-							toleration.add(par);
-						}
-					}
+					
 				}
 			}
 		}
