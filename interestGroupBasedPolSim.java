@@ -2478,7 +2478,7 @@ public static int bbcDown = 10; // boombust countdown
 			bbcDown /=2;
 		}
 		
-		economicChange -= (economicIndex-50)/10;
+		economicChange -= (economicIndex-50)/20;
 		
 		if(bbcDown<1){
 			bbcDown = ((ra.nextInt(5)+1)*3)+3;
