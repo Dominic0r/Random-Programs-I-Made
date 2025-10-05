@@ -1202,6 +1202,8 @@ String[] lastNames = {
             }*/
             //System.out.println(par.getName()+ " "+points*100);
             
+			points = (points*(100-Math.abs(par.getPolicy()-overton)))/100;
+			
             partyScore.put(par, points*100);
             curparnum++;
         }
@@ -2113,6 +2115,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     
     public static void monthly(){
 		updateEconomy();
+		overtonShift();
         
         updateApproval();
         leadercDown --;
@@ -2483,7 +2486,33 @@ public static int bbcDown = 10; // boombust countdown
         if (unemploymentRate < 1) unemploymentRate = 1;
         if (unemploymentRate > 25) unemploymentRate = 25;
     }
-
+	
+	public static int overton = 50;
+	
+	public static void overtonShift(){
+		int totShift = 0;
+		if(president != null){
+			totShift += (president.getIdeology()-overton)/20;
+		}
+		
+		if(primeMinister!= null){
+			totShift += (primeMinister.getIdeology()-overton)/25;
+		}
+		
+		if(vicePresident!= null){
+			totShift += (vicePresident.getIdeology()-overton)/30;
+		}
+		
+		overton += totShift;
+		
+		if(overton > 100){
+			overton = 100;
+		}
+		
+		if(overton < 0){
+			overton = 0;
+		}
+	}
     
     
 	public static void main(String[] args) throws Exception{
@@ -2509,6 +2538,8 @@ public static int bbcDown = 10; // boombust countdown
             System.out.println("Unemployment Rate: " + unemploymentRate + "%");
 			int gdpGrowth = (economicIndex-25)/5;
 			System.out.println("GDP Growth: " +gdpGrowth+"%");
+			
+			System.out.println("\nOverton Window: " + overton);
 		System.out.println(months[moNum]+ " - "+ year);
 		System.out.print("Next Presidential election in ");
 		if(presCdown > 12){
