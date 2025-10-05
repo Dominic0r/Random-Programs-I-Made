@@ -18,6 +18,7 @@ public class Main
     
     public static int auth = 0; // authoritarianism
     public static boolean isFair = true;
+	
     
 	 // ECONOMIC SYSTEM VARIABLES
     public static int economicIndex = 50; // Range: 0-100, 50 is average
@@ -153,6 +154,8 @@ public class Main
         String name;
         boolean isMajor;
         int unity;
+		
+		armedGroup paramilitary;
         
         Person leader;
         List<Group> supportGroups = new ArrayList<>();
@@ -1191,9 +1194,13 @@ String[] lastNames = {
             }
             
             if(par == rulingParty && !isFair){
-                int increaseby = auth/10;
+                int increaseby = auth/20;
                 points *=increaseby;
             }
+			
+			if(radicalism > 50){
+				points = ((points*Math.abs(par.getPolicy() - 50))*2)/100;
+			}
             
             /*for(int i=0; i<5; i++){
                 if(ra.nextBoolean()){
@@ -1202,7 +1209,7 @@ String[] lastNames = {
             }*/
             //System.out.println(par.getName()+ " "+points*100);
             
-			points = (points*(100-Math.abs(par.getPolicy()-overton)))/100;
+			points = ((points*(100-Math.abs(par.getPolicy()-overton)))*2)/100;
 			
             partyScore.put(par, points*100);
             curparnum++;
@@ -2150,9 +2157,10 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         
             
             if(rulingParty != null){
-        //updateAuth(); Authoritarian backsliding delayed for now
-        //checkIsFair();
-        //delayElec();
+		updateRad();
+        updateAuth();
+        checkIsFair();
+        delayElec();
         }
             
         }
@@ -2249,24 +2257,34 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     }
     
     public static void updateAuth(){
-        auth -= 10- (year-startdate);
+		int change = Math.abs(rulingParty.getPolicy() -50)/10;
+        change -= 10- (year-startdate);
         if(year- leaderStartDate < 5){
-            auth -= 1;
+            change -= 1;
         }
         
-        if(rulingParty.getPolicy() < 15 || rulingParty.getPolicy() > 85){
-            auth += 1;
-        }else{
-            auth -=50;
-        }
+   
+		
+		if(president == primeMinister){
+			change +=5;
+		}
+		
+		
+		
+		change += rulingParty.getSeats()/20;
         
-        if(auth <0){
+        changeAuth(change);
+    }
+	
+	public static void changeAuth(int change){
+		auth += change;
+		if(auth <0){
             auth =0;
         }
         if(auth > 100){
             auth = 100;
         }
-    }
+	}
     
     public static void checkIsFair(){
         if(isFair){
@@ -2511,8 +2529,94 @@ public static int bbcDown = 10; // boombust countdown
 			overton = 0;
 		}
 	}
+	
+	public static int radicalism = 0;
+
+	public static void updateRad(){
+		int change = 0;
+		if(snapElec){
+			change += 5;
+		}
+		
+		if(rulingCoalition.getTotalSeats()<50){
+			change +=3;
+		}
+		
+		change += auth/10;
+		change -= (100-Math.abs(rulingParty.getPolicy()-50))/20;
+		changeRad(change);
+	}
+	public static void changeRad(int change){
+		radicalism += change;
+		if(radicalism > 100){
+			radicalism = 100;
+		}
+		
+		if(radicalism < 0){
+			radicalism = 0;
+		}
+	}
+	
+	public static void checkParamilitaries(){
+		
+	}
+	
+	public static void newParamilitary(Party par){ //String name, int strength, boolean isPolitical
+		String name;
+		if(par.getPolicy()>50){
+			name = leftWingParamilitaries[ra.nextInt(leftWingParamilitaries.length)];
+		}else{
+			name = rightWingParamilitaries[ra.nextInt(rightWingParamilitaries.length)];
+		}
+		
+		
+		par.paramilitary = new armedGroup(name, 10, true);
+	}
     
-    
+	public static String[] leftWingParamilitaries = {
+    "People’s Liberation Front", "Red Banner Movement", "Workers’ Freedom Army",
+    "People’s Revolutionary Guard", "Democratic Liberation Front", "Union of the Masses",
+    "New Dawn Brigades", "People’s Justice Army", "Revolutionary Labor Front",
+    "Free People’s Force", "Popular Liberation Army", "People’s Unity Brigades",
+    "Revolutionary People’s Vanguard", "United Workers’ Front", "Voice of the People Movement",
+    "People’s Shield Army", "Liberation Movement of the Masses", "People’s Resistance Force",
+    "Revolutionary People’s Union", "United Front of Labor", "Proletarian Defense Force",
+    "Red People’s Guard", "Movement for the Poor", "Free Worker’s Army",
+    "Socialist People’s Front", "New Dawn Collective", "People’s Defense Brigades",
+    "Freedom for All Army", "Workers’ Unity Front", "Revolutionary Justice Force",
+    "People’s Volunteer Corps", "Union of the Oppressed", "Red Horizon Movement",
+    "Liberation of the People Army", "Democratic People’s Movement", "Socialist Vanguard",
+    "Voice of Labor Front", "Proletarian Liberation Army", "New Horizon Movement",
+    "Revolutionary Defense Force", "Workers’ People’s Guard", "People’s Unity Force",
+    "Revolutionary Justice Front", "United Commune Movement", "People’s Volunteer Guard",
+    "Red Uprising Army", "Freedom and Labor Front", "People’s Democratic Union",
+    "Revolutionary People’s Front", "Free People’s Brigades", "Union for Equality"
+};
+
+	public static String[] rightWingParamilitaries = {
+    "National Defense League", "Guardians of Order", "Homeland Protection Corps",
+    "Faith and Honor Front", "Sons of the Nation", "Unity Defense Force",
+    "Order and Progress Guard", "National Renewal Army", "Defenders of the Republic",
+    "Shield of the Nation", "Faithful Service Corps", "Loyalist Volunteer Force",
+    "Front for National Stability", "Patriotic Guard", "Order of the Banner",
+    "National Salvation Legion", "Faithful People’s Army", "Unity and Justice Front",
+    "Homeland Defense Force", "Order and Unity Brigade", "Legion of the Republic",
+    "National Order Corps", "People’s Protection Movement", "Loyalist Defense Guard",
+    "Faithful Front", "National Rebirth Force", "Order of the Crossed Swords",
+    "Patriotic Renewal Front", "Defenders of Civilization", "Guardians of the State",
+    "Front for National Harmony", "Shield of the Republic", "Faith and Nation Legion",
+    "Homeland Defense Brigades", "Front for Order and Stability", "People’s Loyal Army",
+    "Sovereign Defense Front", "Faithful Order Movement", "Front for National Revival",
+    "Loyalist People’s Guard", "Order and Justice Corps", "Sons of the Republic",
+    "Defenders of Tradition", "National People’s Legion", "Front for Faith and Duty",
+    "United Loyalist Force", "Guardians of the Homeland", "National Restoration Corps",
+    "Shield of the Fatherland", "Order of Renewal", "Patriot’s Legion"
+};
+
+
+	
+	
+	
 	public static void main(String[] args) throws Exception{
 	    Scanner sc = new Scanner(System.in);
 		generateGroups();
