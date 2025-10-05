@@ -1569,7 +1569,7 @@ String[] lastNames = {
 			System.out.println("Confidence vote failed. Elections in 6 months");
 			snapElec = true;
 			elecCount = 6;
-			changeRad(10);
+			changeRad(5);
 		}
 	}
     
@@ -2155,17 +2155,30 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }
             
         
-            checkParamilitaries();
-			updateParamilitaries();
+            
             if(rulingParty != null){
-		updateRad();
-        updateAuth();
+		
         checkIsFair();
         delayElec();
 		
         }
             
         }
+		checkParamilitaries();
+			updateParamilitaries();
+		if(rulingParty!=null){
+			updateRad();
+			updateAuth();
+		}
+		
+		if(radicalism > 50){
+			int poltoadd = ((auth/5)*approvalRating)/100
+			addStrength(Police, poltoadd);
+		}else{
+			if(Police.strength > 1000){
+				addStrength(Police, -5);
+			}
+		}
         
         presCdown--;
         if(presCdown == 0){
@@ -2265,12 +2278,19 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             change -= 1;
         }
         
-   
+   if(rulingParty.getPolicy() < 75 && rulingParty.getPolicy() > 25){
+	   change -= 20;
+   }
 		
 		if(president == primeMinister){
 			change +=5;
 		}
 		
+		if(radicalism>50){
+			change += radicalism/10;
+		} else{
+			change -= (100-radicalism)/30;
+		}
 		
 		
 		change += rulingParty.getSeats()/20;
@@ -2478,7 +2498,7 @@ public static int bbcDown = 10; // boombust countdown
 			bbcDown /=2;
 		}
 		
-		economicChange -= (economicIndex-50)/20;
+		economicChange -= (economicIndex-50)/40;
 		
 		if(bbcDown<1){
 			bbcDown = ((ra.nextInt(5)+1)*3)+3;
@@ -2537,17 +2557,25 @@ public static int bbcDown = 10; // boombust countdown
 	public static void updateRad(){
 		int change = 0;
 		if(snapElec){
-			change += 5;
+			change += 2;
 		}
 		
 		if(rulingCoalition.getTotalSeats()<50){
-			change +=3;
+			change +=1;
 		}
 		
-		change += auth/10;
-		change -= (100-Math.abs(rulingParty.getPolicy()-50))/10;
+		change -= Police.strength/500;
+		change -= (100-(Math.abs(rulingParty.getPolicy()-50)))/20;
+		
+		change += (isFair)? -1:2;
+		
+		change += (100-approvalRating)/20;
 		
 		change+= unemploymentRate/5;
+		
+		if(auth > 75 && year-startdate > 15){
+			change += (year-startdate)/5;
+		}
 		
 		changeRad(change);
 	}
@@ -2656,6 +2684,12 @@ public static void updateParamilitaries(){
 			
 			strengthToAdd= (strengthToAdd*radicalism)/100;
 			
+			if(auth >= 75){
+				
+					strengthToAdd =(par.paramilitary.strength/10)*-1;
+				
+			}
+			
 			addStrength(par.paramilitary, strengthToAdd);
 		}
 	}
@@ -2663,6 +2697,9 @@ public static void updateParamilitaries(){
 
 public static void addStrength(armedGroup arm, int toAdd){
 	arm.strength+= toAdd;
+	if(arm.strength <0){
+		arm.strength = 0;
+	}
 }
 
 
