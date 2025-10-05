@@ -1569,7 +1569,7 @@ String[] lastNames = {
 			System.out.println("Confidence vote failed. Elections in 6 months");
 			snapElec = true;
 			elecCount = 6;
-			
+			changeRad(10);
 		}
 	}
     
@@ -2155,12 +2155,14 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }
             
         
-            
+            checkParamilitaries();
+			updateParamilitaries();
             if(rulingParty != null){
 		updateRad();
         updateAuth();
         checkIsFair();
         delayElec();
+		
         }
             
         }
@@ -2508,15 +2510,15 @@ public static int bbcDown = 10; // boombust countdown
 	public static void overtonShift(){
 		int totShift = 0;
 		if(president != null){
-			totShift += (president.getIdeology()-overton)/20;
+			totShift += (president.getIdeology()-overton)/10;
 		}
 		
 		if(primeMinister!= null){
-			totShift += (primeMinister.getIdeology()-overton)/25;
+			totShift += (primeMinister.getIdeology()-overton)/20;
 		}
 		
 		if(vicePresident!= null){
-			totShift += (vicePresident.getIdeology()-overton)/30;
+			totShift += (vicePresident.getIdeology()-overton)/20;
 		}
 		
 		overton += totShift;
@@ -2543,7 +2545,10 @@ public static int bbcDown = 10; // boombust countdown
 		}
 		
 		change += auth/10;
-		change -= (100-Math.abs(rulingParty.getPolicy()-50))/20;
+		change -= (100-Math.abs(rulingParty.getPolicy()-50))/10;
+		
+		change+= unemploymentRate/5;
+		
 		changeRad(change);
 	}
 	public static void changeRad(int change){
@@ -2558,7 +2563,30 @@ public static int bbcDown = 10; // boombust countdown
 	}
 	
 	public static void checkParamilitaries(){
-		
+			// Only consider paramilitary formation if radicalism is high
+		if (radicalism > 50) {
+			for (Party par : allParties) {
+				// Extreme parties are more likely to form paramilitaries
+				boolean isExtreme = (par.getPolicy() < 20 || par.getPolicy() > 80);
+				// Only form paramilitary if not already present
+				boolean hasParamilitary = par.paramilitary != null;
+				// The more radicalism, the higher the chance
+				int chance = radicalism + (isExtreme ? 25 : 0); // boost for extremes
+
+				if (!hasParamilitary && ra.nextInt(100) < chance) {
+					newParamilitary(par);
+					System.out.println(par.getName() + " has formed a paramilitary group!");
+				}
+			}
+		} else {
+			// Optionally, disband paramilitaries if radicalism drops
+			for (Party par : allParties) {
+				if (par.paramilitary != null && radicalism < 30) {
+					System.out.println(par.getName() + " disbands their paramilitary group.");
+					par.paramilitary = null;
+				}
+			}
+		}
 	}
 	
 	public static void newParamilitary(Party par){ //String name, int strength, boolean isPolitical
@@ -2613,9 +2641,99 @@ public static int bbcDown = 10; // boombust countdown
     "Shield of the Fatherland", "Order of Renewal", "Patriot’s Legion"
 };
 
+public static void updateParamilitaries(){
+	int strengthToAdd = 0;
+	for(Party par: allParties){
+		if(par.paramilitary!=null){
+			strengthToAdd = 0;
+			int tgroupstrength = 0;
+			if(par.supportGroups!=null){
+				for(Group gro: par.supportGroups){
+					tgroupstrength+= gro.getPoints();
+				}
+				strengthToAdd = tgroupstrength/par.supportGroups.size();
+			}
+			
+			strengthToAdd= (strengthToAdd*radicalism)/100;
+			
+			addStrength(par.paramilitary, strengthToAdd);
+		}
+	}
+}
+
+public static void addStrength(armedGroup arm, int toAdd){
+	arm.strength+= toAdd;
+}
+
 
 	
-	
+	public static void displayMonopolyOfViolence() {
+    int policeStrength = Police.strength;
+    int totalParamilitaryStrength = 0;
+    Map<String, Integer> paramilitaryStrengths = new HashMap<>();
+    
+    for (Party par : allParties) {
+        if (par.paramilitary != null) {
+            totalParamilitaryStrength += par.paramilitary.strength;
+            paramilitaryStrengths.put(par.paramilitary.name, par.paramilitary.strength);
+        }
+    }
+    
+    int total = policeStrength + totalParamilitaryStrength;
+    System.out.println("\n\nMonopoly of Violence Breakdown:");
+    System.out.println("Police: " + policeStrength + " (" + (policeStrength * 100 / total) + "%)");
+    for (Map.Entry<String, Integer> entry : paramilitaryStrengths.entrySet()) {
+        System.out.println(entry.getKey()+ ": " + entry.getValue() + " (" + (entry.getValue() * 100 / total) + "%)");
+    }
+    double ratio = (double) policeStrength / total;
+    System.out.printf("State Monopoly: %.2f%%\n", ratio * 100);
+    
+    // Mechanic: Raise radicalism if monopoly drops
+    if (ratio < 0.5) { // less than 50% state control
+        System.out.println("Warning: Monopoly of Violence is weakening! Radicalism rises.");
+        changeRad(5); // increase radicalism
+    }
+}
+
+public static void displayRad(){
+	System.out.print("Radicalism is ");
+	if(radicalism> 50){
+		if(radicalism> 75){
+			System.out.print("Rampant");
+		}else{
+			System.out.print("Common");
+		}
+	}else{
+		if(radicalism>25){
+			System.out.print("Rising");
+		}else{
+			System.out.print("Minimal");
+		}
+	}
+	System.out.println(" ("+ radicalism+")");
+}
+
+public static void displayOverton(){
+	System.out.print("The overton window leans towards ");
+	if(overton>50){
+                if(overton>85){
+                    System.out.print("the far left");
+                }else if(overton <=85 && overton> 70){
+                    System.out.print("the left");
+                }else{
+                    System.out.print("the center");
+                }
+            }else{
+                if(overton>30){
+                    System.out.print("the center");
+                }else if(overton<=30 && overton>15){
+                    System.out.print("the right");
+                }else{
+                    System.out.print("the far right");
+                }
+            }
+	System.out.println(" ("+ overton+")");
+}
 	
 	public static void main(String[] args) throws Exception{
 	    Scanner sc = new Scanner(System.in);
@@ -2642,6 +2760,10 @@ public static int bbcDown = 10; // boombust countdown
 			System.out.println("GDP Growth: " +gdpGrowth+"%");
 			
 			System.out.println("\nOverton Window: " + overton);
+			
+			displayRad();
+			displayOverton();
+			System.out.println("Democracy Index: "+ (100-auth));
 		System.out.println(months[moNum]+ " - "+ year);
 		System.out.print("Next Presidential election in ");
 		if(presCdown > 12){
@@ -2753,6 +2875,7 @@ public static int bbcDown = 10; // boombust countdown
 		    //System.out.println("Support Points: "+ totsup);
 		    
 		}
+		displayMonopolyOfViolence();
 		
 		int totalnumofseats = 0;
 		for(Party par : allParties){
