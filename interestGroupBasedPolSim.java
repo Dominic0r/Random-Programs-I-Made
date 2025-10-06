@@ -1968,6 +1968,9 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     
     public static void checkSeats(){
         int threshold = allParties.size()/2;
+		if(!isFair){
+			threshold = -1;
+		}
         int lostseats = 0;
         List<Party> toRemove = new ArrayList<>();
         for(Party par : allParties){
@@ -2166,17 +2169,22 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }
 		checkParamilitaries();
 			updateParamilitaries();
+			
 		if(rulingParty!=null){
 			updateRad();
 			updateAuth();
+			checkOverthrow();
 		}
 		
+		
 		if(radicalism > 50){
-			int poltoadd = ((auth/5)*approvalRating)/100
+			if(rulingParty != null){
+			int poltoadd = (Police.strength*approvalRating)/1000;
 			addStrength(Police, poltoadd);
+			}
 		}else{
 			if(Police.strength > 1000){
-				addStrength(Police, -5);
+				addStrength(Police, (Police.strength/10)*-1);
 			}
 		}
         
@@ -2241,7 +2249,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             }
         }*/
         
-        if(!hasTrig && !snapElec&& rulingParty!=null){
+        if(!hasTrig && !snapElec&& rulingParty!=null && rulingCoalition != null){
             if(ra.nextInt(80)> rulingCoalition.stability+ (rulingCoalition.stability/2)){
                 
                 if(elecCount >12){
@@ -2478,6 +2486,11 @@ public static void appointVP(){
 
 public static boolean boombums = true; // boom = true, bust = false
 public static int bbcDown = 10; // boombust countdown
+public static int ecoHealth = 75;
+
+public static void updateEcoHealth(){
+	ecoHealth = economicIndex;
+}
 
 // --- ECONOMIC SYSTEM METHOD ---
     public static void updateEconomy() {
@@ -2490,20 +2503,20 @@ public static int bbcDown = 10; // boombust countdown
 		}
 		bbcDown--;
 		
-		if(economicIndex >75 && boombums){
+		if(economicIndex >85 && boombums){
 			bbcDown/=2;
 		}
 		
-		if(economicIndex< 25 && !boombums){
+		if(economicIndex< 15 && !boombums){
 			bbcDown /=2;
 		}
 		
-		economicChange -= (economicIndex-50)/40;
+		economicChange -= (economicIndex-ecoHealth)/20;
 		
 		if(bbcDown<1){
 			bbcDown = ((ra.nextInt(5)+1)*3)+3;
 			boombums = !boombums;
-			
+			updateEcoHealth();
 			if(ra.nextInt(100)<5){
 				System.out.println("Economic Crash!");
 				bbcDown = (ra.nextInt(10)+1)*3;
@@ -2560,18 +2573,22 @@ public static int bbcDown = 10; // boombust countdown
 			change += 2;
 		}
 		
-		if(rulingCoalition.getTotalSeats()<50){
-			change +=1;
+		if(rulingCoalition!= null){
+			if(rulingCoalition.getTotalSeats()<50){
+				change +=1;
+			}
 		}
 		
-		change -= Police.strength/500;
-		change -= (100-(Math.abs(rulingParty.getPolicy()-50)))/20;
+		change -= Police.strength/1000;
+		
+		//change -= (100-(Math.abs(rulingParty.getPolicy()-50)))/20;
 		
 		change += (isFair)? -1:2;
 		
 		change += (100-approvalRating)/20;
 		
 		change+= unemploymentRate/5;
+		change = (change*(100-(policeControl/2)))/100;
 		
 		if(auth > 75 && year-startdate > 15){
 			change += (year-startdate)/5;
@@ -2599,7 +2616,7 @@ public static int bbcDown = 10; // boombust countdown
 				// Only form paramilitary if not already present
 				boolean hasParamilitary = par.paramilitary != null;
 				// The more radicalism, the higher the chance
-				int chance = radicalism + (isExtreme ? 25 : 0); // boost for extremes
+				int chance = (radicalism/2) + (isExtreme ? 25 : 0); // boost for extremes
 
 				if (!hasParamilitary && ra.nextInt(100) < chance) {
 					newParamilitary(par);
@@ -2609,7 +2626,7 @@ public static int bbcDown = 10; // boombust countdown
 		} else {
 			// Optionally, disband paramilitaries if radicalism drops
 			for (Party par : allParties) {
-				if (par.paramilitary != null && radicalism < 30) {
+				if (par.paramilitary != null && radicalism < 10) {
 					System.out.println(par.getName() + " disbands their paramilitary group.");
 					par.paramilitary = null;
 				}
@@ -2686,11 +2703,18 @@ public static void updateParamilitaries(){
 			
 			if(auth >= 75){
 				
-					strengthToAdd =(par.paramilitary.strength/10)*-1;
-				
+					if(par != rulingParty){
+						strengthToAdd =par.paramilitary.strength/10;
+					}else{
+						addStrength(Police, par.paramilitary.strength/2);
+						strengthToAdd = (par.paramilitary.strength/2)*-1;
+					}
 			}
-			
-			addStrength(par.paramilitary, strengthToAdd);
+			if(strengthToAdd < 1)
+			{
+				strengthToAdd = 1;
+			}
+			addStrength(par.paramilitary, ra.nextInt(strengthToAdd+1));
 		}
 	}
 }
@@ -2704,32 +2728,101 @@ public static void addStrength(armedGroup arm, int toAdd){
 
 
 	
-	public static void displayMonopolyOfViolence() {
-    int policeStrength = Police.strength;
-    int totalParamilitaryStrength = 0;
-    Map<String, Integer> paramilitaryStrengths = new HashMap<>();
-    
-    for (Party par : allParties) {
-        if (par.paramilitary != null) {
-            totalParamilitaryStrength += par.paramilitary.strength;
-            paramilitaryStrengths.put(par.paramilitary.name, par.paramilitary.strength);
-        }
-    }
-    
-    int total = policeStrength + totalParamilitaryStrength;
-    System.out.println("\n\nMonopoly of Violence Breakdown:");
-    System.out.println("Police: " + policeStrength + " (" + (policeStrength * 100 / total) + "%)");
-    for (Map.Entry<String, Integer> entry : paramilitaryStrengths.entrySet()) {
-        System.out.println(entry.getKey()+ ": " + entry.getValue() + " (" + (entry.getValue() * 100 / total) + "%)");
-    }
-    double ratio = (double) policeStrength / total;
-    System.out.printf("State Monopoly: %.2f%%\n", ratio * 100);
-    
-    // Mechanic: Raise radicalism if monopoly drops
-    if (ratio < 0.5) { // less than 50% state control
-        System.out.println("Warning: Monopoly of Violence is weakening! Radicalism rises.");
-        changeRad(5); // increase radicalism
-    }
+	
+public static int policeControl = 100;
+
+public static void monopolyOfViolence(){
+	int policeStrength = Police.strength;
+	int otherParamilitaryStrength = 0;
+	List<Party> partiesWithParams = new ArrayList<>();
+	for(Party par: allParties){
+		if(par.paramilitary !=null){
+			otherParamilitaryStrength += par.paramilitary.strength;
+			partiesWithParams.add(par);
+		}
+	}
+	int total = policeStrength + otherParamilitaryStrength;
+	int pctg = 0;
+	
+	System.out.println("\nThe Monopoly of Violence");
+	pctg = (Police.strength*100)/total;
+	System.out.println("Police: "+ Police.strength+ " ("+ pctg+ "%)");
+	policeControl = pctg;
+	for(Party par: partiesWithParams){
+		pctg = (par.paramilitary.strength*100)/total;
+		System.out.println(par.paramilitary.name+ ": "+ par.paramilitary.strength + " ("+ pctg+ "%)");
+	}
+	
+	
+	
+}
+
+public static void checkOverthrow(){
+	boolean policeHaveControl = policeControl > 50;
+	boolean radicalismHigh = radicalism > 75;
+	boolean authoritarian = auth > 50;
+	boolean lowApproval = approvalRating < 50;
+	int chance = 0;
+	chance += (policeHaveControl)? 0:20;
+	chance += (radicalismHigh)? 20:0;
+	chance += (authoritarian)? 20: 0;
+	chance += (lowApproval)? 15:0;
+	chance += ra.nextInt(20);
+	int numofParams = 0;
+	
+	for(Party par: allParties){
+		if(par.paramilitary != null){
+			numofParams++;
+		}
+	}
+	
+	if(numofParams == 0){
+		chance = 0;
+	}
+	if(rulingParty == null){
+		chance = 0;
+	}
+	System.out.println("Chance: " + chance);
+	
+	
+	
+	if(ra.nextInt(50)+50< chance){
+		overthrowGovernment();
+	}
+	
+}
+
+public static void overthrowGovernment(){
+	int totalParamilitaryStrength = Police.strength;
+	List<Party> partiesWithParams = new ArrayList<>();
+	for(Party par: allParties){
+		if(par.paramilitary !=null){
+			totalParamilitaryStrength += par.paramilitary.strength;
+			partiesWithParams.add(par);
+		}
+	}
+	Party maxPar = null;
+	int maxnum = 0;
+	
+	for(Party par: partiesWithParams){
+		if(par.paramilitary.strength > maxnum && par != rulingParty){
+			maxnum = par.paramilitary.strength;
+			maxPar = par;
+		}
+	}
+	
+	int winparnumpctg = (maxnum*100)/totalParamilitaryStrength;
+		System.out.println("The Government has been overthrown");
+		addToArchive();
+		rulingParty = maxPar;
+		rulingCoalition = null;
+		toleration.clear();
+		radicalism=100-winparnumpctg;
+		auth = Math.abs(maxPar.getPolicy()-50)*2;
+		approvalRating = winparnumpctg;
+		startdate = year;
+            leaderStartDate = year;
+	
 }
 
 public static void displayRad(){
@@ -2912,7 +3005,7 @@ public static void displayOverton(){
 		    //System.out.println("Support Points: "+ totsup);
 		    
 		}
-		displayMonopolyOfViolence();
+		monopolyOfViolence();
 		
 		int totalnumofseats = 0;
 		for(Party par : allParties){
