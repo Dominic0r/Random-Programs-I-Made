@@ -1157,11 +1157,11 @@ String[] lastNames = {
                 points += (points*inverseApp)/100;
             }*/
             
-            
-            if(approvalRating<50 && !rulingCoalition.members.contains(par)){
-                points += Math.abs((par.getPolicy() - rulingCoalition.getLeader().getPolicy()))-15;
-            }
-			
+            if(rulingCoalition!=null){
+				if(approvalRating<50 && !rulingCoalition.members.contains(par)){
+					points += Math.abs((par.getPolicy() - rulingCoalition.getLeader().getPolicy()))-15;
+				}
+			}
 				
 			if(rulingCoalition!= null && rulingCoalition.members.contains(par)){
 				points -= (points*unemploymentRate)/100;
@@ -2519,7 +2519,7 @@ public static void updateEcoHealth(){
 			updateEcoHealth();
 			if(ra.nextInt(100)<5){
 				System.out.println("Economic Crash!");
-				bbcDown = (ra.nextInt(10)+1)*3;
+				bbcDown = (ra.nextInt(10)+4)*3;
 				boombums = false;
 			}
 		}
@@ -2626,7 +2626,7 @@ public static void updateEcoHealth(){
 		} else {
 			// Optionally, disband paramilitaries if radicalism drops
 			for (Party par : allParties) {
-				if (par.paramilitary != null && radicalism < 10) {
+				if (par.paramilitary != null && par.paramilitary.strength < 10) {
 					System.out.println(par.getName() + " disbands their paramilitary group.");
 					par.paramilitary = null;
 				}
@@ -2702,13 +2702,13 @@ public static void updateParamilitaries(){
 			strengthToAdd= (strengthToAdd*radicalism)/100;
 			
 			if(auth >= 75){
-				
 					if(par != rulingParty){
 						strengthToAdd =par.paramilitary.strength/10;
-					}else{
-						addStrength(Police, par.paramilitary.strength/2);
-						strengthToAdd = (par.paramilitary.strength/2)*-1;
 					}
+			}
+			
+			if(radicalism <10){
+				strengthToAdd = (par.paramilitary.strength/10)*-1;
 			}
 			if(strengthToAdd < 1)
 			{
@@ -2817,12 +2817,12 @@ public static void overthrowGovernment(){
 		rulingParty = maxPar;
 		rulingCoalition = null;
 		toleration.clear();
-		radicalism=100-winparnumpctg;
+		radicalism/=2;
 		auth = Math.abs(maxPar.getPolicy()-50)*2;
 		approvalRating = winparnumpctg;
 		startdate = year;
             leaderStartDate = year;
-	
+	formCoalitions(maxPar);
 }
 
 public static void displayRad(){
