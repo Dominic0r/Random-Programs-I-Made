@@ -2167,12 +2167,12 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }
             
         }
-		checkParamilitaries();
-			updateParamilitaries();
+		//checkParamilitaries();
+			//updateParamilitaries();
 			
 		if(rulingParty!=null){
-			updateRad();
-			updateAuth();
+			//updateRad();
+			//updateAuth();
 			
 		}
 		
@@ -2588,12 +2588,13 @@ public static void updateEcoHealth(){
 		change += (100-approvalRating)/20;
 		
 		change+= unemploymentRate/5;
-		change = (change*(100-(policeControl/2)))/100;
+		change += auth/20;
+		change = (change*policeControl)/75;
 		
-		if(auth > 75 && year-startdate > 15){
-			change += (year-startdate)/5;
+		if(policeControl> 75 && policeControl != 100){
+			change *=-1;
 		}
-		
+		System.out.println("Change: " + change);
 		changeRad(change);
 	}
 	public static void changeRad(int change){
@@ -2701,16 +2702,25 @@ public static void updateParamilitaries(){
 			
 			strengthToAdd= (strengthToAdd*radicalism)/100;
 			
+			int poldif = Math.abs(par.getPolicy() - rulingParty.getPolicy());
+			
+			strengthToAdd = (strengthToAdd*poldif)/100;
+			
 			if(radicalism <25){
 				strengthToAdd = (par.paramilitary.strength/10)*-1;
 			}
 			boolean neg = false;
 			if(strengthToAdd < 1)
 			{
-				strengthToAdd *=-1;
+				
 				neg = true;
 			}
-			addStrength(par.paramilitary, ra.nextInt(strengthToAdd)*((neg)? -1:0));
+			strengthToAdd = ra.nextInt(Math.abs(strengthToAdd)+1); 
+			
+			if(neg){
+				strengthToAdd*=-1;
+			}
+			addStrength(par.paramilitary, strengthToAdd);
 		}
 	}
 }
@@ -3001,7 +3011,7 @@ public static void displayOverton(){
 		    //System.out.println("Support Points: "+ totsup);
 		    
 		}
-		monopolyOfViolence();
+		//monopolyOfViolence();
 		
 		int totalnumofseats = 0;
 		for(Party par : allParties){
