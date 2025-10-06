@@ -2173,7 +2173,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		if(rulingParty!=null){
 			updateRad();
 			updateAuth();
-			checkOverthrow();
+			
 		}
 		
 		
@@ -2701,20 +2701,16 @@ public static void updateParamilitaries(){
 			
 			strengthToAdd= (strengthToAdd*radicalism)/100;
 			
-			if(auth >= 75){
-					if(par != rulingParty){
-						strengthToAdd =par.paramilitary.strength/10;
-					}
-			}
-			
-			if(radicalism <10){
+			if(radicalism <25){
 				strengthToAdd = (par.paramilitary.strength/10)*-1;
 			}
+			boolean neg = false;
 			if(strengthToAdd < 1)
 			{
-				strengthToAdd = 1;
+				strengthToAdd *=-1;
+				neg = true;
 			}
-			addStrength(par.paramilitary, ra.nextInt(strengthToAdd+1));
+			addStrength(par.paramilitary, ra.nextInt(strengthToAdd)*((neg)? -1:0));
 		}
 	}
 }
