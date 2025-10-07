@@ -2167,12 +2167,12 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }
             
         }
-		//checkParamilitaries();
-			//updateParamilitaries();
+		checkParamilitaries();
+			updateParamilitaries(); 
 			
 		if(rulingParty!=null){
-			//updateRad();
-			//updateAuth();
+			updateRad(); 
+			updateAuth();
 			
 		}
 		
