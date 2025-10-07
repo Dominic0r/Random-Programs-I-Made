@@ -2173,20 +2173,22 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		if(rulingParty!=null){
 			updateRad(); 
 			updateAuth();
-			
+			checkOverthrow();
 		}
 		
 		
-		if(radicalism > 50){
-			if(rulingParty != null){
-			int poltoadd = (Police.strength*approvalRating)/1000;
-			addStrength(Police, poltoadd);
-			}
-		}else{
-			if(Police.strength > 1000){
-				addStrength(Police, (Police.strength/10)*-1);
-			}
-		}
+		// At the end of updateRad() or monthly()
+if (radicalism > 50) {
+    int policeIncrease = (radicalism - 50) / 2; // More radicalism, more police
+    addStrength(Police, policeIncrease);
+}
+if (auth > 75 && Police.strength < 2000) { // Cap police
+    addStrength(Police, (auth - 70));
+}
+
+if(policeControl == 100){
+	addStrength(Police, ((Police.strength-2000)/10)*-1);
+}
         
         presCdown--;
         if(presCdown == 0){
@@ -2302,6 +2304,12 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
 		
 		
 		change += rulingParty.getSeats()/20;
+		
+		if (radicalism > 50) {
+    // Radicalism justifies crackdowns
+    change+= (radicalism - 50) / 5; // e.g., at radicalism=80, extraAuth=6
+    
+}
         
         changeAuth(change);
     }
@@ -2588,11 +2596,18 @@ public static void updateEcoHealth(){
 		change += (100-approvalRating)/20;
 		
 		change+= unemploymentRate/5;
-		change += auth/20;
+		
 		change = (change*policeControl)/75;
 		
+		if (auth > 70) {
+    // Authoritarianism radicalizes public
+    change+= (auth - 60) / 5; // e.g., at auth=80, extraRad=4
+    
+}
+
+		
 		if(policeControl> 75 && policeControl != 100){
-			change *=-1;
+			//change *=-1;
 		}
 		System.out.println("Change: " + change);
 		changeRad(change);
@@ -2706,7 +2721,7 @@ public static void updateParamilitaries(){
 			
 			strengthToAdd = (strengthToAdd*poldif)/100;
 			
-			if(radicalism <25){
+			if(radicalism <50){
 				strengthToAdd = (par.paramilitary.strength/10)*-1;
 			}
 			boolean neg = false;
@@ -2764,41 +2779,20 @@ public static void monopolyOfViolence(){
 }
 
 public static void checkOverthrow(){
-	boolean policeHaveControl = policeControl > 50;
-	boolean radicalismHigh = radicalism > 75;
-	boolean authoritarian = auth > 50;
-	boolean lowApproval = approvalRating < 50;
-	int chance = 0;
-	chance += (policeHaveControl)? 0:20;
-	chance += (radicalismHigh)? 20:0;
-	chance += (authoritarian)? 20: 0;
-	chance += (lowApproval)? 15:0;
-	chance += ra.nextInt(20);
-	int numofParams = 0;
-	
-	for(Party par: allParties){
-		if(par.paramilitary != null){
-			numofParams++;
-		}
-	}
-	
-	if(numofParams == 0){
-		chance = 0;
-	}
-	if(rulingParty == null){
-		chance = 0;
-	}
-	System.out.println("Chance: " + chance);
-	
-	
-	
-	if(ra.nextInt(50)+50< chance){
-		overthrowGovernment();
-	}
+	int revolutionChance = 0;
+if (auth > 70 && radicalism > 60) {
+    revolutionChance += (auth + radicalism) / 2; // or something steeper
+    // Consider adding more if approval is low
+    if (approvalRating < 40) revolutionChance += (40 - approvalRating);
+}
+System.out.println("Revolution chance: "+ revolutionChance);
+if (ra.nextInt(100) < revolutionChance) {
+    overthrowGovernment();
+}
 	
 }
 
-public static void overthrowGovernment(){
+public static void overthrowGovernmentOld(){
 	int totalParamilitaryStrength = Police.strength;
 	List<Party> partiesWithParams = new ArrayList<>();
 	for(Party par: allParties){
@@ -2829,6 +2823,70 @@ public static void overthrowGovernment(){
 		startdate = year;
             leaderStartDate = year;
 	formCoalitions(maxPar);
+}
+
+public static void overthrowGovernment() {
+    // Gather all paramilitary parties (not in government)
+    List<Party> rebels = new ArrayList<>();
+    int rebelStrength = 0, policeStrength = Police.strength;
+    for (Party par : allParties) {
+        if (par.paramilitary != null && par != rulingParty) {
+            rebels.add(par);
+            rebelStrength += par.paramilitary.strength;
+        }
+    }
+
+    // Coup odds: rebels vs police
+    boolean coupSuccess = rebelStrength > policeStrength || ra.nextInt(policeStrength + rebelStrength + 1) < rebelStrength;
+
+    if (!coupSuccess) {
+        // Coup fails: government cracks down
+        System.out.println("Coup attempt failed! Crackdown on rebels.");
+        for (Party rebel : rebels) {
+            addStrength(rebel.paramilitary, -ra.nextInt(rebel.paramilitary.strength / 2 + 1)); // lose up to half strength
+        }
+        addStrength(Police, policeStrength / 4); // police emboldened
+        changeAuth(10); // authoritarianism rises
+        changeRad(10); // radicalism rises
+        approvalRating -= 10;
+        return;
+    }
+
+    // Coup succeeds: determine leader (random weighted by strength)
+    int totalStrength = 0;
+    for (Party rebel : rebels) totalStrength += rebel.paramilitary.strength;
+    int pick = ra.nextInt(totalStrength);
+    Party newGov = null;
+    int runningSum = 0;
+    for (Party rebel : rebels) {
+        runningSum += rebel.paramilitary.strength;
+        if (pick < runningSum) {
+            newGov = rebel;
+            break;
+        }
+    }
+
+    System.out.println("The government has been overthrown by " + newGov.getName() + "!");
+    addToArchive();
+    rulingParty = newGov;
+    rulingCoalition = null;
+    toleration.clear();
+    radicalism /= 2;
+    auth = Math.abs(newGov.getPolicy() - 50) * 2;
+    approvalRating = 30 + ra.nextInt(40); // low, but not zero
+    startdate = year;
+    leaderStartDate = year;
+
+    // Aftermath: all rebel paramilitaries lose strength (civil war casualties)
+    for (Party rebel : rebels) {
+        if (rebel != newGov) {
+            addStrength(rebel.paramilitary, -rebel.paramilitary.strength / 2);
+        }
+    }
+    // Police are weakened
+    addStrength(Police, -policeStrength / 2);
+
+    formCoalitions(newGov);
 }
 
 public static void displayRad(){
@@ -2895,7 +2953,7 @@ public static void displayOverton(){
 			int gdpGrowth = (economicIndex-25)/5;
 			System.out.println("GDP Growth: " +gdpGrowth+"%");
 			
-			System.out.println("\nOverton Window: " + overton);
+			System.out.println("\n");
 			
 			displayRad();
 			displayOverton();
@@ -3011,7 +3069,7 @@ public static void displayOverton(){
 		    //System.out.println("Support Points: "+ totsup);
 		    
 		}
-		//monopolyOfViolence();
+		monopolyOfViolence();
 		
 		int totalnumofseats = 0;
 		for(Party par : allParties){
