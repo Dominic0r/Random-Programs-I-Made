@@ -1566,10 +1566,10 @@ String[] lastNames = {
 		}
 		
 		if(votesYes < 50){
-			System.out.println("Confidence vote failed. Elections in 6 months");
+			System.out.println("Confidence vote failed. Elections in 2 months");
 			snapElec = true;
-			elecCount = 6;
-			changeRad(5);
+			elecCount = 2;
+			//changeRad(5);
 		}
 	}
     
@@ -2167,14 +2167,14 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         }
             
         }
-		checkParamilitaries();
+		/*checkParamilitaries();
 			updateParamilitaries(); 
 			
 		if(rulingParty!=null){
 			updateRad(); 
 			updateAuth();
 			checkOverthrow();
-		}
+		}*/
 		
 		
 		// At the end of updateRad() or monthly()
@@ -2955,9 +2955,9 @@ public static void displayOverton(){
 			
 			System.out.println("\n");
 			
-			displayRad();
+			//displayRad();
 			displayOverton();
-			System.out.println("Democracy Index: "+ (100-auth));
+			//System.out.println("Democracy Index: "+ (100-auth));
 		System.out.println(months[moNum]+ " - "+ year);
 		System.out.print("Next Presidential election in ");
 		if(presCdown > 12){
@@ -3069,7 +3069,7 @@ public static void displayOverton(){
 		    //System.out.println("Support Points: "+ totsup);
 		    
 		}
-		monopolyOfViolence();
+		//monopolyOfViolence();
 		
 		int totalnumofseats = 0;
 		for(Party par : allParties){
