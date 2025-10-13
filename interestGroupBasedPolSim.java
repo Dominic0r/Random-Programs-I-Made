@@ -2424,7 +2424,7 @@ if(policeControl == 100){
 		
 		@Override
 		public String toString(){
-			return name + " ("+ startyear+ " - "+ endyear+ ") "+ party;
+			return name +" | "+ party+ " ("+ startyear+ " - "+ endyear+ ") ";
 		}
 	}
 	
@@ -3033,6 +3033,40 @@ public static void displayPresArchive(){
 		System.out.println(prar);
 	}
 }
+
+public static void displayAllArchives(){
+	for(presidentArchived prar: presArchive){
+		System.out.println("\n"+prar);
+		for(archiveParty par : previousRulingParties){
+			if(par.enddate < prar.endyear){
+				System.out.print("     ");
+				par.display();
+			}
+		}
+	} 
+	
+	String parname = "";
+	
+	for(Party par: allParties){
+		for(Group gro: par.supportGroups){
+			if(gro.getLeader() == president){
+				parname = par.getName();
+			}
+		}
+	}
+	
+	System.out.println("\n"+ president.getName()+" | "+ parname+ " ("+ presStartYear+ " - Present");
+	for(archiveParty par: previousRulingParties){
+		
+		if(par.enddate > presStartYear){
+			System.out.print("     ");
+			par.display();
+		}
+		
+	}
+	System.out.print("     ");
+	System.out.println(primeMinister.getName() + " | "+ rulingParty.getName()+ " ("+ startdate+ " - Present)");
+}
 	
 	public static void main(String[] args) throws Exception{
 	    Scanner sc = new Scanner(System.in);
@@ -3198,14 +3232,17 @@ public static void displayPresArchive(){
 		//String put = "debugmode"; // for debug
 		if(put.equalsIgnoreCase("archive")){
 			
-			System.out.println("prim for Prime Ministers and pres for Presidents");
+			/*System.out.println("prim for Prime Ministers and pres for Presidents");
 			put = sc.nextLine();
 			if(put.equalsIgnoreCase("prim")){
 				displayArchive();
-			}else{
+			}else if(pres){
 				displayPresArchive();
-			}
-		    
+			}else{
+				System.out.println("Presidents: ");
+				
+			}*/
+		    displayAllArchives();
 		    sc.nextLine();
 		}
 		if(put.equalsIgnoreCase("exit")){
