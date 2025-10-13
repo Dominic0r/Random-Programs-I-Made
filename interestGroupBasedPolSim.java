@@ -3038,7 +3038,7 @@ public static void displayAllArchives(){
 	for(presidentArchived prar: presArchive){
 		System.out.println("\n"+prar);
 		for(archiveParty par : previousRulingParties){
-			if(par.enddate < prar.endyear){
+			if(par.enddate < prar.endyear && par.startdate > prar.startyear){
 				System.out.print("     ");
 				par.display();
 			}
@@ -3055,7 +3055,7 @@ public static void displayAllArchives(){
 		}
 	}
 	
-	System.out.println("\n"+ president.getName()+" | "+ parname+ " ("+ presStartYear+ " - Present");
+	System.out.println("\n"+ president.getName()+" | "+ parname+ " ("+ presStartYear+ " - Present)");
 	for(archiveParty par: previousRulingParties){
 		
 		if(par.enddate > presStartYear){
