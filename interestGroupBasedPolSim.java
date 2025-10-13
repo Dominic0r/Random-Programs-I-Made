@@ -154,6 +154,7 @@ public class Main
         String name;
         boolean isMajor;
         int unity;
+		int failcount;
 		
 		armedGroup paramilitary;
         
@@ -164,7 +165,20 @@ public class Main
             this.policy = policy;
             this.name = name;
             this.seats = 0;
+			this.failcount = 0;
         }
+		
+		public void addFailCount(){
+			failcount++;
+		}
+		
+		public void resetFail(){
+			failcount = 0;
+		}
+		
+		public int getFailCount(){
+			return failcount;
+		}
         
         public void unityUpdate(){
             int ideounity = 0;
@@ -446,8 +460,8 @@ public class Main
                 totstab+= totstab/4;
             }
             
-            if(getTotalSeats() < 40){
-                totstab/=2;
+            if(getTotalSeats() < 50){
+                totstab-=(50-getTotalSeats())*5;
             }
             if(getTotalSeats() > 59){
                 totstab+= totstab/4;
@@ -1317,9 +1331,11 @@ String[] lastNames = {
     
     public static ArrayList<Party> independentParties = new ArrayList<>();
     public static Person primeMinister = null;
+	
+	public static int numOfSnaps = 0;
     public static void formCoalitions(Party largePar){
         allCoalitions.clear();
-        int thresh = 40 - (5*allParties.size());
+        int thresh = 45 - (5*allParties.size());
         for(Party par : allParties){
             if(par.getSeats() >=thresh){
                 
@@ -1364,7 +1380,7 @@ String[] lastNames = {
                     if(par == findSecondParty()){
 						coaPoint -= coaPoint/4;
 					}
-                    
+                    threshold -= numOfSnaps;
                     
                     if(coaPoint >= threshold){
                         coa.addToMemberList(par);
@@ -1536,6 +1552,7 @@ String[] lastNames = {
 		}else{
 			for(Party par: allParties){
 				oppopoints = 0;
+				threshold = 50;
 				if(!rulingCoalition.members.contains(par)){
 					partyPolicyDif = ((100-Math.abs(par.getPolicy()- rulingParty.getPolicy()))/2);
 					leaderPolicyDif = ((100-Math.abs(par.leader.getIdeology()- rulingParty.leader.getIdeology()))/4);
@@ -1548,7 +1565,7 @@ String[] lastNames = {
 						
 					}
 					
-					threshold+=oppopoints;
+					threshold+=oppopoints/4;
 					
 						if(points >= threshold){
 							toleration.add(par);
@@ -1569,7 +1586,13 @@ String[] lastNames = {
 			System.out.println("Confidence vote failed. Elections in 2 months");
 			snapElec = true;
 			elecCount = 2;
+			numOfSnaps++;
+			if(presCdown < 6){
+				presCdown+=2;
+			}
 			//changeRad(5);
+		}else{
+			numOfSnaps = 0;
 		}
 	}
     
@@ -1976,8 +1999,14 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         for(Party par : allParties){
             if(par.getSeats()<= threshold){
                 lostseats += par.getSeats();
-                toRemove.add(par);
-            }
+                par.setSeats(0);
+				par.addFailCount();
+				if(par.getFailCount() > ra.nextInt(20)){
+					toRemove.add(par);
+				}
+            }else{
+				par.resetFail();
+			}
         }
         
         allParties.removeAll(toRemove);
@@ -2055,13 +2084,14 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         
     }
     
+	
     public static void triggerElection(){
         election();          // (4) Calculates votes and assigns seats based on group support
         checkSeats();        // (5) Removes parties that did poorly in the election
         findBiggestParty();    // (6) Uses final seat counts to build government and opposition
         elecCount = 5*12;
         sortParties();
-        
+        confidenceVote();
         
         
     }
