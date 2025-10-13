@@ -64,6 +64,7 @@ public class Main
 					
                     this.leader = new Person(ra.nextInt(20)+45, getRandomName(), minPolicy +ra.nextInt(maxPolicy-minPolicy));
 					if(oldPerson == president){
+						addToPresArchive(president);
 						president = vicePresident;
 						appointVP();
 					}
@@ -1419,15 +1420,16 @@ String[] lastNames = {
         
         for(Coalition coa : coalitionsWithMajority){
             
-            if(coa.getStability() > maxnum){
-                maxCoa = coa;
-                maxnum = coa.getStability();
-            }else if(coa.getStability() == maxnum){
-                if(coa.getTotalSeats() > maxCoa.getTotalSeats()){
-                    maxCoa = coa;
-                    maxnum = coa.getStability();
-                }
-            }
+				if(coa.getStability() > maxnum){
+					maxCoa = coa;
+					maxnum = coa.getStability();
+				}else if(coa.getStability() <= maxnum&& maxCoa != null){
+					if(coa.getTotalSeats() > maxCoa.getTotalSeats()){
+						maxCoa = coa;
+						maxnum = coa.getStability();
+					}
+				}
+			
             
             
         }
@@ -1566,6 +1568,14 @@ String[] lastNames = {
 					}
 					
 					threshold+=oppopoints/4;
+					int mostRadical = 0;
+					for(Party mempar: rulingCoalition.members){
+						if(Math.abs(mempar.getPolicy()-50) > mostRadical){
+							mostRadical = Math.abs(mempar.getPolicy()-50);
+						}
+					}
+					
+					threshold += (Math.abs(par.getPolicy()-50)/2) + (Math.abs(par.getPolicy()-mostRadical));
 					
 						if(points >= threshold){
 							toleration.add(par);
@@ -2397,7 +2407,32 @@ if(policeControl == 100){
     public static int presCdown = 10;
     public static int defpresCdown =72;
     
+	public static List<presidentArchived> presArchive = new ArrayList<>();
+	
+	public static class presidentArchived{
+		int startyear;
+		int endyear;
+		String party;
+		String name;
+		
+		public presidentArchived(int startyear, int endyear, String party, String name){
+			this.startyear = startyear;
+			this.endyear = endyear;
+			this.party = party;
+			this.name = name;
+		}
+		
+		@Override
+		public String toString(){
+			return name + " ("+ startyear+ " - "+ endyear+ ") "+ party;
+		}
+	}
+	
     public static void electPresident(){
+	Person oldPres= null;
+	if(president != null){
+		oldPres = president;
+	}
     int rounds = 1;
     List<Person> candidates = new ArrayList<>();
     for (Group par : allGroups) {
@@ -2499,7 +2534,39 @@ if(policeControl == 100){
         }
     }
     president = winner;
+	if(oldPres != null){
+		if(president != oldPres){
+			
+		}
+		
+		presStartYear = year;
+	}else{
+		presStartYear = year;
+	}
+	
 	appointVP();
+}
+
+public static int presStartYear = year;
+
+
+public static void addToPresArchive(Person oldPres){
+	String name = oldPres.getName();
+	String parname = "";
+	for(Party par: allParties){
+		
+		for(Group gro: par.supportGroups){
+			
+			if(gro.leader == oldPres){
+				parname = par.getName();
+			}
+			
+			
+		}
+		
+	}
+	
+	presArchive.add(new presidentArchived(presStartYear, year, parname, name ));
 }
 
 public static Person vicePresident;
@@ -2958,6 +3025,12 @@ public static void displayOverton(){
             }
 	System.out.println(" ("+ overton+")");
 }
+
+public static void displayPresArchive(){
+	for(presidentArchived prar: presArchive){
+		System.out.println(prar);
+	}
+}
 	
 	public static void main(String[] args) throws Exception{
 	    Scanner sc = new Scanner(System.in);
@@ -3122,7 +3195,15 @@ public static void displayOverton(){
 		//}
 		//String put = "debugmode"; // for debug
 		if(put.equalsIgnoreCase("archive")){
-		    displayArchive();
+			
+			System.out.println("prim for Prime Ministers and pres for Presidents");
+			put = sc.nextLine();
+			if(put.equalsIgnoreCase("prim")){
+				displayArchive();
+			}else{
+				displayPresArchive();
+			}
+		    
 		    sc.nextLine();
 		}
 		if(put.equalsIgnoreCase("exit")){
