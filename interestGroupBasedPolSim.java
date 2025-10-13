@@ -62,16 +62,18 @@ public class Main
 					
 					
 					
-                    this.leader = new Person(ra.nextInt(20)+45, getRandomName(), minPolicy +ra.nextInt(maxPolicy-minPolicy));
+                    
 					if(oldPerson == president){
-						addToPresArchive(oldPerson);
+						addToPresArchive(president);
 						president = vicePresident;
+						presStartYear = year;
 						appointVP();
 					}
 					
 					if(oldPerson == vicePresident){
 						appointVP();
 					}
+					this.leader = new Person(ra.nextInt(20)+45, getRandomName(), minPolicy +ra.nextInt(maxPolicy-minPolicy));
                 }
             }
         }
