@@ -64,7 +64,7 @@ public class Main
 					
                     this.leader = new Person(ra.nextInt(20)+45, getRandomName(), minPolicy +ra.nextInt(maxPolicy-minPolicy));
 					if(oldPerson == president){
-						addToPresArchive(president);
+						addToPresArchive(oldPerson);
 						president = vicePresident;
 						appointVP();
 					}
@@ -3038,7 +3038,7 @@ public static void displayAllArchives(){
 	for(presidentArchived prar: presArchive){
 		System.out.println("\n"+prar);
 		for(archiveParty par : previousRulingParties){
-			if(par.enddate < prar.endyear && par.startdate > prar.startyear){
+			if(par.enddate > prar.startyear&& par.startdate < prar.endyear){
 				System.out.print("     ");
 				par.display();
 			}
