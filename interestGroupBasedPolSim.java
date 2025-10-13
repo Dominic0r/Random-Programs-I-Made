@@ -2536,11 +2536,13 @@ if(policeControl == 100){
     president = winner;
 	if(oldPres != null){
 		if(president != oldPres){
-			
+			addToPresArchive(oldPres);
+			presStartYear = year;
 		}
 		
-		presStartYear = year;
+		
 	}else{
+		
 		presStartYear = year;
 	}
 	
