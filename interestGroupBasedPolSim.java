@@ -463,9 +463,7 @@ public class Main
                 totstab+= totstab/4;
             }
             
-            if(getTotalSeats() < 50){
-                totstab-=(50-getTotalSeats())*5;
-            }
+            
             if(getTotalSeats() > 59){
                 totstab+= totstab/4;
             }
@@ -1203,7 +1201,7 @@ String[] lastNames = {
             
             
             if(snapElec&& rulingCoalition.members.contains(par)){
-                points /=2;
+                points -= points/4;
             }
             
             if(par.isMajor()){
@@ -1226,7 +1224,8 @@ String[] lastNames = {
             }*/
             //System.out.println(par.getName()+ " "+points*100);
             
-			points = ((points*(100-Math.abs(par.getPolicy()-overton)))*2)/100;
+			points += (points*(100-Math.abs(par.getPolicy()-overton)))/100;
+			
 			
             partyScore.put(par, points*100);
             curparnum++;
@@ -2648,20 +2647,35 @@ public static void updateEcoHealth(){
     }
 	
 	public static int overton = 50;
-	
+	public static boolean ideoTrend = ra.nextBoolean();
+	public static int trendstrength = ra.nextInt(12);
 	public static void overtonShift(){
 		int totShift = 0;
 		if(president != null){
-			totShift += (president.getIdeology()-overton)/10;
+			totShift += (president.getIdeology()-overton);
 		}
 		
 		if(primeMinister!= null){
-			totShift += (primeMinister.getIdeology()-overton)/20;
+			totShift += (primeMinister.getIdeology()-overton);
 		}
 		
 		if(vicePresident!= null){
-			totShift += (vicePresident.getIdeology()-overton)/20;
+			totShift += (vicePresident.getIdeology()-overton);
 		}
+		
+		if(ideoTrend){
+			totShift += ra.nextInt(trendstrength);
+		}else{
+			totShift -= ra.nextInt(trendstrength);
+		}
+		totShift /=10;
+		trendstrength--;
+		if(trendstrength <=0){
+			ideoTrend = !ideoTrend;
+			trendstrength = (ra.nextInt(10)+4)*3;
+		}
+		
+		
 		
 		overton += totShift;
 		
