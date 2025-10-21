@@ -1383,6 +1383,10 @@ String[] lastNames = {
 						coaPoint -= coaPoint/4;
 					}
                     threshold -= numOfSnaps;
+					
+					if(par.getPolicy() > 85 || par.getPolicy() <15){
+						threshold += threshold/4;
+					}
                     
                     if(coaPoint >= threshold){
                         coa.addToMemberList(par);
@@ -1451,7 +1455,7 @@ String[] lastNames = {
         
         
         for(Coalition coa : allCoalitions){
-            if(coa!=maxCoa&& coa != null){
+            if(coa!=maxCoa&& coa != null && coa.members !=null){
                 
                 coa.members.removeAll(maxCoa.members);
                 toRemove.add(coa);
@@ -1468,7 +1472,10 @@ String[] lastNames = {
         }
         
         rulingCoalition = maxCoa;
-        
+		
+		if(rulingCoalition.members.size()>1 && Math.abs(rulingCoalition.getLeader().getLeader().getIdeology()-50) < 35){	
+			removeMostExtreme(rulingCoalition);
+        }
         if(rulingCoalition.getLeader() != oldPar){
             if(oldPar !=null){
             addToArchive();
@@ -1510,6 +1517,23 @@ String[] lastNames = {
         
     }
 	
+	public static void removeMostExtreme(Coalition coa){
+		int maxExtreme = 0;
+		Party maxPar = null;
+		
+		for(Party par: coa.members){
+			if(Math.abs(par.getPolicy()-50) > maxExtreme){
+				maxExtreme = Math.abs(par.getPolicy()-50);
+				maxPar = par;
+			}
+			
+			
+		}	
+		if(coa.getTotalSeats()-maxPar.getSeats() > 50){
+				coa.members.remove(maxPar);
+			}
+	}
+	
 	public static Party findSecondParty(){
 		Party maxPar = null;
 		int maxNum = 0;
@@ -1535,6 +1559,7 @@ String[] lastNames = {
 	}
 	
 	public static List<Party> toleration = new ArrayList<>();
+	
 	public static void confidenceVote(){
 		toleration.clear();
 		int totalseatscoalition = 0;
@@ -2294,16 +2319,14 @@ if(policeControl == 100){
         
         if(!hasTrig && !snapElec&& rulingParty!=null && rulingCoalition != null){
             if(ra.nextInt(80)> rulingCoalition.stability+ (rulingCoalition.stability/2)){
-                
-                if(elecCount >12){
-                    System.out.println("SNAP ELECTION");
-                    snapElec = true;
-                    elecCount = 5;
-                }
+                formCoalitions(rulingParty);
+				confidenceVote();
+				
             }
         }
         
     }
+	
     
     
     public static void addToArchive(){
