@@ -1224,7 +1224,7 @@ String[] lastNames = {
             }*/
             //System.out.println(par.getName()+ " "+points*100);
             
-			points += (points*(100-Math.abs(par.getPolicy()-overton)))/100;
+			points += (points*(100-Math.abs(par.getPolicy()-overton)))/200;
 			
 			
             partyScore.put(par, points*100);
@@ -1451,11 +1451,13 @@ String[] lastNames = {
 		}
         
         
-        
+        if(maxCoa == null){
+			maxCoa = new Coalition(largePar);
+		}
         
         
         for(Coalition coa : allCoalitions){
-            if(coa!=maxCoa&& coa != null && coa.members !=null){
+            if(coa!=maxCoa && maxCoa !=null&& coa != null && coa.members !=null){
                 
                 coa.members.removeAll(maxCoa.members);
                 toRemove.add(coa);
@@ -1600,6 +1602,9 @@ String[] lastNames = {
 							mostRadical = Math.abs(mempar.getPolicy()-50);
 						}
 					}
+					int modLevel = ((50-Math.abs(par.getPolicy()-50))/10)+1;
+					threshold -= numOfSnaps*modLevel;
+					
 					
 					threshold += (Math.abs(par.getPolicy()-50)/2) + (Math.abs(par.getPolicy()-mostRadical));
 					
