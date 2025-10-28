@@ -2058,14 +2058,14 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     }
     
     public static void redistrib(int toredis){
-        int maxval=100000;
+        int maxval=0;
         Party maxPar = null;
         for(int i=0; i< toredis;i++){
-            maxval = 100000;
+            maxval = 0;
                 maxPar = null;
             for(Party par: allParties){
                 
-                if(((par.getSeats()*100)/(par.getSeats()+1))< maxval){
+                if(((par.getSeats()*100)/(par.getSeats()+1))> maxval){
                     maxval = ((par.getSeats()*100)/(par.getSeats()+1));
                     maxPar = par;
                 }
