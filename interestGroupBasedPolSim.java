@@ -63,17 +63,21 @@ public class Main
 					
 					
                     
-					if(oldPerson == president){
-						addToPresArchive(president);
-						president = vicePresident;
-						presStartYear = year;
-						appointVP();
+					if(oldPerson !=president && oldPerson != vicePresident){
+						this.leader = new Person(ra.nextInt(20)+45, getRandomName(), minPolicy +ra.nextInt(maxPolicy-minPolicy));
+					}else{
+						if(oldPerson == president){
+							addToPresArchive(president);
+							president = vicePresident;
+							presStartYear = year;
+							appointVP();
+						}
+						
+						if(oldPerson == vicePresident){
+							appointVP();
+						}
+						this.leader = new Person(ra.nextInt(20)+45, getRandomName(), minPolicy +ra.nextInt(maxPolicy-minPolicy));
 					}
-					
-					if(oldPerson == vicePresident){
-						appointVP();
-					}
-					this.leader = new Person(ra.nextInt(20)+45, getRandomName(), minPolicy +ra.nextInt(maxPolicy-minPolicy));
                 }
             }
         }
@@ -475,6 +479,20 @@ public class Main
             return totstab;
             
         }
+		
+		public boolean containsRadicals(){
+			boolean hasRad = false;
+			
+			if(members != null){
+				for(Party par: members){
+					if(par.getPolicy() > 85 || par.getPolicy() < 15){
+						hasRad = true;
+					}
+				}
+			}
+			
+			return hasRad;
+		}
         
         public int getNumOfMembers(){
             return members.size();
@@ -1114,6 +1132,12 @@ String[] lastNames = {
                 shouldSwitch = true;
             }
         }
+		if(currentParty!=null){
+		if(currentParty.supportGroups.size() ==1){
+			shouldSwitch = false;
+		}
+		}
+		
 
         // Reassign if needed
         if (shouldSwitch) {
@@ -1362,6 +1386,10 @@ String[] lastNames = {
             if(curCoaRuling.getSeats()>51){
                 threshold = 70;
             }
+			
+			if(snapElec){
+				threshold -= numOfSnaps*3;
+			}
             Scanner sc= new Scanner(System.in);
             //System.out.println(curCoaRuling.getName());
             int debugIdeologydif = 0;
@@ -1382,7 +1410,7 @@ String[] lastNames = {
                     if(par == findSecondParty()){
 						coaPoint -= coaPoint/4;
 					}
-                    threshold -= numOfSnaps;
+                    
 					
 					if(par.getPolicy() > 85 || par.getPolicy() <15){
 						threshold += threshold/4;
@@ -1595,7 +1623,7 @@ String[] lastNames = {
 						
 					}
 					
-					threshold+=oppopoints/4;
+					threshold+=oppopoints/10;
 					int mostRadical = 0;
 					for(Party mempar: rulingCoalition.members){
 						if(Math.abs(mempar.getPolicy()-50) > mostRadical){
@@ -1603,10 +1631,14 @@ String[] lastNames = {
 						}
 					}
 					int modLevel = ((50-Math.abs(par.getPolicy()-50))/10)+1;
-					threshold -= numOfSnaps*modLevel;
-					
-					
+					//threshold -= numOfSnaps*modLevel;
+					threshold -= numOfSnaps*3;
+									
 					threshold += (Math.abs(par.getPolicy()-50)/2) + (Math.abs(par.getPolicy()-mostRadical));
+					
+					if(rulingCoalition.containsRadicals() && (par.getPolicy() < 75 || par.getPolicy() > 25)){
+						threshold += threshold/2;
+					}
 					
 						if(points >= threshold){
 							toleration.add(par);
@@ -1836,8 +1868,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             resonance = (100-Math.abs(gro.getIdeology()-par.getPolicy()))/4;
             resonance += (100-(par.supportGroups.size()*8))/4;
 			resonance+= (100-Math.abs(gro.leader.getIdeology()-par.leader.getIdeology()))/2;
-            
-            
+            resonance += par.getUnity()/10;
             boolean isAlienated = resonance<threshold;
             
             if(gro.getAlienated()){
@@ -2042,7 +2073,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
                 lostseats += par.getSeats();
                 par.setSeats(0);
 				par.addFailCount();
-				if(par.getFailCount() > ra.nextInt(20)){
+				if(par.getFailCount() > (ra.nextInt(20)+1)){
 					toRemove.add(par);
 				}
             }else{
@@ -2698,7 +2729,7 @@ public static void updateEcoHealth(){
 		}
 		totShift /=10;
 		trendstrength--;
-		if(trendstrength <=0){
+		if(trendstrength <1){
 			ideoTrend = !ideoTrend;
 			trendstrength = (ra.nextInt(10)+4)*3;
 		}
@@ -3116,11 +3147,15 @@ public static void displayAllArchives(){
 	    Scanner sc = new Scanner(System.in);
 		generateGroups();
 		generateParties();
-		
+		int arrangeCountdown = 6;
 		
 		while(true){
-		    
-		arrangeGroups();     // (1) Assigns groups to parties based on current party policies
+		
+		arrangeCountdown--;
+		//if(arrangeCountdown == 0){
+			arrangeGroups();     // (1) Assigns groups to parties based on current party policies
+		//	arrangeCountdown = 6;
+		//}
         checkAlienation();   // (2) Identifies unrepresented groups and may create new parties
         checkNoGroups();     // (3) Cleans up parties with no support groups (needed after new parties may be created)
         for(Party par: allParties){
