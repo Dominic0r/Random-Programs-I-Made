@@ -546,34 +546,34 @@ allGroups.add(new Group(75, 90, "Socialists", 35));            //11 – radical 
 allGroups.add(new Group(85, 100, "Radicals", 15));          //12 – chaotic, often uncooperative*/
 
 // Radical Right (0–15)
-allGroups.add(new Group(0, 10, "Nationalists", getranNumbetween100and1())); // 35
-allGroups.add(new Group(5, 15, "Reactionaries", getranNumbetween100and1())); // 25
+allGroups.add(new Group(0, 10, "Nationalists", getranNumbetween100and1(50))); // 35
+allGroups.add(new Group(5, 15, "Reactionaries", getranNumbetween100and1(50))); // 25
 
 // Dissident Right (15–30)
-allGroups.add(new Group(15, 25, "Conservatives", getranNumbetween100and1())); //40
-allGroups.add(new Group(20, 30, "Traditional Right", getranNumbetween100and1())); //30
+allGroups.add(new Group(15, 25, "Conservatives", getranNumbetween100and1(75))); //40
+allGroups.add(new Group(20, 30, "Traditional Right", getranNumbetween100and1(75))); //30
 
 // Establishment Right (30–45)
-allGroups.add(new Group(30, 40, "Capitalists", getranNumbetween100and1())); // 60
-allGroups.add(new Group(35, 45, "Defense Industry", getranNumbetween100and1())); //50
+allGroups.add(new Group(30, 40, "Capitalists", getranNumbetween100and1(100))); // 60
+allGroups.add(new Group(35, 45, "Defense Industry", getranNumbetween100and1(100))); //50
 
 // Establishment Left (55–70)
-allGroups.add(new Group(55, 65, "Administratic Progressives", getranNumbetween100and1())); // 55
-allGroups.add(new Group(60, 70, "Labor Moderates", getranNumbetween100and1())); // 50
+allGroups.add(new Group(55, 65, "Administratic Progressives", getranNumbetween100and1(100))); // 55
+allGroups.add(new Group(60, 70, "Labor Moderates", getranNumbetween100and1(100))); // 50
 
 // Dissident Left (70–85)
-allGroups.add(new Group(70, 80, "Reformists", getranNumbetween100and1())); // 30
-allGroups.add(new Group(75, 85, "Grassroots Progressives", getranNumbetween100and1())); //35
+allGroups.add(new Group(70, 80, "Reformists", getranNumbetween100and1(75))); // 30
+allGroups.add(new Group(75, 85, "Grassroots Progressives", getranNumbetween100and1(75))); //35
 
 // Radical Left (85–100)
-allGroups.add(new Group(85, 95, "Socialists", getranNumbetween100and1())); // 25
-allGroups.add(new Group(90, 100, "Communists", getranNumbetween100and1())); // 20
+allGroups.add(new Group(85, 95, "Socialists", getranNumbetween100and1(50))); // 25
+allGroups.add(new Group(90, 100, "Communists", getranNumbetween100and1(50))); // 20
 
 
     }
 	
-	public static int getranNumbetween100and1(){
-		return ra.nextInt(99)+1;
+	public static int getranNumbetween100and1(int num){
+		return ra.nextInt(num)+1;
 	}
     
     
@@ -1661,7 +1661,7 @@ String[] lastNames = {
 			elecCount = 2;
 			numOfSnaps++;
 			if(presCdown < 6){
-				presCdown+=2;
+				//presCdown+=2;
 			}
 			//changeRad(5);
 		}else{
@@ -2164,7 +2164,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         elecCount = 5*12;
         sortParties();
         confidenceVote();
-        
+        electSpeaker();
         
     }
     
@@ -2320,7 +2320,7 @@ if(policeControl == 100){
             hasTrig = true;
             cooldown = cdownnum;
             snapElec = false;
-			confidenceVote();
+			
         }
         
         
@@ -2355,7 +2355,7 @@ if(policeControl == 100){
         
         if(!hasTrig && !snapElec&& rulingParty!=null && rulingCoalition != null){
             if(ra.nextInt(80)> rulingCoalition.stability+ (rulingCoalition.stability/2)){
-                formCoalitions(rulingParty);
+                //formCoalitions(rulingParty);
 				confidenceVote();
 				
             }
@@ -2488,7 +2488,7 @@ if(policeControl == 100){
 		}
 	}
 	
-    public static void electPresident(){
+    public static void electPresidentOld(){
 	Person oldPres= null;
 	if(president != null){
 		oldPres = president;
@@ -2609,6 +2609,259 @@ if(policeControl == 100){
 	appointVP();
 }
 
+
+public static Person speaker = null;
+public static void electSpeaker(){
+	Person oldPres= null;
+	if(speaker != null){
+		oldPres = speaker;
+	}
+    int rounds = 1;
+    List<Person> candidates = new ArrayList<>();
+    for (Group par : allGroups) {
+        if (par.getLeader() != null && par.getLeader()!= president & par.getLeader() !=primeMinister && par.getLeader()!= vicePresident ) {
+            //System.out.println("Leader of "+ par.getName());
+            
+            candidates.add(par.getLeader());
+        }
+    }
+
+    Person winner = null;
+    boolean hasGotMajority = false;
+
+    while (!hasGotMajority && candidates.size() > 0) {
+        Map<Person, Integer> voteCount = new HashMap<>();  // <--- RESET VOTES EACH ROUND
+        for (Person candidate : candidates) {
+            voteCount.put(candidate, 0);
+        }
+        
+        // Voting
+        for (Party votingParty : allParties) {
+            Person bestCandidate = null;
+            int minDiff = Integer.MAX_VALUE;
+            List<Person> tiedCandidates = new ArrayList<>();
+            for (Person candidate : candidates) {
+                int diff = Math.abs(votingParty.getPolicy() - candidate.getIdeology());
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    tiedCandidates.clear();
+                    tiedCandidates.add(candidate);
+                } else if (diff == minDiff) {
+                    tiedCandidates.add(candidate);
+                }
+            }
+            // If there's a tie, choose randomly among best candidates
+            if (tiedCandidates.size()>1) {
+                bestCandidate = tiedCandidates.get(ra.nextInt(tiedCandidates.size()));
+            } else{
+                bestCandidate = tiedCandidates.get(0);
+            }
+            // Party votes for candidate with closest ideology, weighted by seats
+            voteCount.put(bestCandidate,  voteCount.getOrDefault(bestCandidate, 0) + votingParty.getSeats());
+        }
+
+        // Find winner
+        winner = null;
+        int maxVotes = 0;
+        for (Map.Entry<Person, Integer> entry : voteCount.entrySet()) {
+            if (entry.getValue() > maxVotes) {
+                maxVotes = entry.getValue();
+                winner = entry.getKey();
+            }
+        }
+
+        /*System.out.println("Round " + rounds);
+        for (Person pe : voteCount.keySet()) {
+            //System.out.println(pe.getName() + ": " + voteCount.get(pe) + " votes");
+            System.out.println(
+            pe.getName() +
+            " (Ideology: " + pe.disIdeo() + "): " +
+            voteCount.get(pe) + " votes"
+            );
+        }*/
+        
+        System.out.println("Round " + rounds);
+        for(Person pe : candidates){
+            
+            System.out.println(
+            pe.getName() +
+            " (Ideology: " + pe.disIdeo() + "): " +
+            voteCount.get(pe) + "%"
+            );
+        }
+
+        int totalVotes = 0;
+        for (int v : voteCount.values()) totalVotes += v;
+        
+        
+        if (maxVotes > totalVotes / 2) { // Use majority of total votes, not just >50
+            hasGotMajority = true;
+        } else {
+            rounds++;
+            int minVotes = Collections.min(voteCount.values());
+            List<Person> lowestCandidates = new ArrayList<>();
+            List<Person> zeroVotes = new ArrayList<>();
+            for (Map.Entry<Person, Integer> entry : voteCount.entrySet()) {
+                if (entry.getValue() == minVotes) {
+                    lowestCandidates.add(entry.getKey());
+                }
+                
+                if(entry.getValue() == 0){
+                    zeroVotes.add(entry.getKey());
+                }
+            }
+            // If more than one has the lowest, randomly pick one to eliminate
+            Person toRemove = lowestCandidates.get(ra.nextInt(lowestCandidates.size()));
+            candidates.remove(toRemove);
+            candidates.removeAll(zeroVotes);
+        }
+    }
+    speaker = winner;
+	
+}
+
+
+public static void electPresident(){
+	Person oldPres= null;
+	if(president != null){
+		oldPres = president;
+	}
+    int rounds = 1;
+    List<Person> candidates = new ArrayList<>();
+    for (Party par : allParties) {
+		for(Group gro: par.supportGroups){
+			if (gro.getLeader() != null && gro.getLeader()!=primeMinister&& gro.getLeader()!=speaker && ra.nextBoolean()) {
+				//System.out.println("Leader of "+ gro.getName());
+				
+				candidates.add(gro.getLeader());
+			}
+		}
+    }
+
+    Person winner = null;
+    boolean hasGotMajority = false;
+
+    while (!hasGotMajority && candidates.size() > 0) {
+        Map<Person, Integer> voteCount = new HashMap<>();  // <--- RESET VOTES EACH ROUND
+        for (Person candidate : candidates) {
+            voteCount.put(candidate, 0);
+        }
+        
+        // Voting
+        for (Group votingParty : allGroups) {
+            Person bestCandidate = null;
+            int minDiff = Integer.MAX_VALUE;
+            List<Person> tiedCandidates = new ArrayList<>();
+            for (Person candidate : candidates) {
+                int diff = Math.abs(votingParty.getIdeology() - candidate.getIdeology());
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    tiedCandidates.clear();
+                    tiedCandidates.add(candidate);
+                } else if (diff == minDiff) {
+                    tiedCandidates.add(candidate);
+                }
+            }
+            // If there's a tie, choose randomly among best candidates
+            if (tiedCandidates.size()>1) {
+                bestCandidate = tiedCandidates.get(ra.nextInt(tiedCandidates.size()));
+            } else{
+                bestCandidate = tiedCandidates.get(0);
+            }
+            // Party votes for candidate with closest ideology, weighted by seats
+            voteCount.put(bestCandidate,  voteCount.getOrDefault(bestCandidate, 0) + votingParty.getPoints());
+        }
+
+        // Find winner
+        winner = null;
+        int maxVotes = 0;
+        for (Map.Entry<Person, Integer> entry : voteCount.entrySet()) {
+            if (entry.getValue() > maxVotes) {
+                maxVotes = entry.getValue();
+                winner = entry.getKey();
+            }
+        }
+
+        /*System.out.println("Round " + rounds);
+        for (Person pe : voteCount.keySet()) {
+            //System.out.println(pe.getName() + ": " + voteCount.get(pe) + " votes");
+            System.out.println(
+            pe.getName() +
+            " (Ideology: " + pe.disIdeo() + "): " +
+            voteCount.get(pe) + " votes"
+            );
+        }*/
+        int totalVotes = 0;
+for (int v : voteCount.values()) totalVotes += v;
+        System.out.println("Round " + rounds);
+        for(Person pe : candidates){
+            if(voteCount.get(pe)>0){
+            int votes = voteCount.get(pe);
+    double percent = (votes * 100.0) / totalVotes;  // Convert to percentage
+    System.out.printf("%s (Ideology: %s): %.2f%%\n", 
+                      pe.getName(), 
+                      pe.disIdeo(), 
+                      percent);
+			}
+        }
+
+        totalVotes = 0;
+        for (int v : voteCount.values()) totalVotes += v;
+        
+        
+        if (maxVotes > totalVotes / 2) { // Use majority of total votes, not just >50
+            hasGotMajority = true;
+        } else {
+            rounds++;
+
+    // If this is the first round, narrow down to the top 2 candidates
+    if (rounds == 2) {
+        // Sort candidates by their votes (descending order)
+        List<Map.Entry<Person, Integer>> sortedVotes = new ArrayList<>(voteCount.entrySet());
+        sortedVotes.sort((a, b) -> b.getValue() - a.getValue());
+
+        // Keep only the top two
+        candidates.clear();
+        for (int i = 0; i < Math.min(2, sortedVotes.size()); i++) {
+            candidates.add(sortedVotes.get(i).getKey());
+        }
+
+        System.out.println("\nProceeding to second round with:");
+        for (Person p : candidates) {
+            System.out.println("- " + p.getName());
+        }
+
+    } else {
+        // From second round onwards, normal elimination (in case no majority again)
+        int minVotes = Collections.min(voteCount.values());
+        List<Person> lowestCandidates = new ArrayList<>();
+        for (Map.Entry<Person, Integer> entry : voteCount.entrySet()) {
+            if (entry.getValue() == minVotes) {
+                lowestCandidates.add(entry.getKey());
+            }
+        }
+
+        Person toRemove = lowestCandidates.get(ra.nextInt(lowestCandidates.size()));
+        candidates.remove(toRemove);
+    }
+        }
+    }
+    president = winner;
+	if(oldPres != null){
+		if(president != oldPres){
+			addToPresArchive(oldPres);
+			presStartYear = year;
+		}
+		
+		
+	}else{
+		
+		presStartYear = year;
+	}
+	
+	appointVP();
+}
+
 public static int presStartYear = year;
 
 
@@ -2637,9 +2890,9 @@ public static void appointVP(){
 	int maxnum = 0;
 	Group maxGroup = null;
 	int factor = 0;
-	
+	if(president!=null){
 	for(Group gro : allGroups){
-			if(gro.leader != president){
+			if(gro.leader != president && gro.leader !=primeMinister && gro.leader!=speaker){
 			factor = 100-Math.abs(president.getIdeology()-gro.leader.getIdeology());
 			if(factor > maxnum){
 				maxnum = factor;
@@ -2649,6 +2902,7 @@ public static void appointVP(){
 	}
 	
 	vicePresident = maxGroup.leader;
+	}
 }
 
 public static boolean boombums = true; // boom = true, bust = false
@@ -3217,18 +3471,19 @@ public static void displayAllArchives(){
 		
 		
 		if(president != null){
-		    System.out.println("President: "+ president.getName()+ " ("+ president.disIdeo()+ ")");
-			System.out.println("Vice-President: "+ vicePresident.getName()+ " ("+ vicePresident.disIdeo()+ ")");
+		    System.out.println("\nPresident: "+ president.getName()+ " ("+ president.disIdeo()+ ")");
+			System.out.println("	Vice-President: "+ vicePresident.getName()+ " ("+ vicePresident.disIdeo()+ ")");
+		}
+		if(speaker !=null){
+			System.out.println("Speaker: "+ speaker.getName() + " ("+ speaker.disIdeo()+ ")");
 		}
 		if(rulingParty != null){
 		    if(rulingParty.getLeader() != null){
 		    System.out.println("Prime Minister: " + primeMinister.getName()+ " ("+ primeMinister.disIdeo()+ ")");
 		    }
-		    
 		System.out.println("\nRuling Party: "+ rulingParty.getName());
-		
-		
 		}
+		
         /*System.out.println("\nThe Governing Coalition: ");
         for(Party par: government){
                 System.out.println(par.getName());
