@@ -201,10 +201,12 @@ public class Main
                 }
             }
             
-            ideounity = (100-Math.abs(maxide-minide))/2;
+            ideounity = (100-Math.abs(maxide-minide))/4;
             
-            int numpar = 50- (supportGroups.size()*5);
-            unity = ideounity + numpar;
+            int numpar = 25- (supportGroups.size()*5);
+			int seatadd = seats/4;
+			int failed = (failcount==0)? 25:25-(failcount*5);
+            unity = ideounity + numpar+seatadd+failed;
         }
         
         public int getUnity(){
@@ -545,29 +547,61 @@ allGroups.add(new Group(70, 85, "Environmentalists", 20));      //10 – passion
 allGroups.add(new Group(75, 90, "Socialists", 35));            //11 – radical but infighting-prone
 allGroups.add(new Group(85, 100, "Radicals", 15));          //12 – chaotic, often uncooperative*/
 
-// Radical Right (0–15)
-allGroups.add(new Group(0, 10, "Nationalists", getranNumbetween100and1(50))); // 35
-allGroups.add(new Group(5, 15, "Reactionaries", getranNumbetween100and1(50))); // 25
+/*// Radical Right (0–15)
+allGroups.add(new Group(0, 10, "Nationalists", getranNumbetween100and1(25))); // 35
+allGroups.add(new Group(5, 15, "Reactionaries", getranNumbetween100and1(25))); // 25
 
 // Dissident Right (15–30)
-allGroups.add(new Group(15, 25, "Conservatives", getranNumbetween100and1(75))); //40
-allGroups.add(new Group(20, 30, "Traditional Right", getranNumbetween100and1(75))); //30
+allGroups.add(new Group(15, 25, "Conservatives", getranNumbetween100and1(25)+25)); //40
+allGroups.add(new Group(20, 30, "Traditional Right", getranNumbetween100and1(25)+25)); //30
 
 // Establishment Right (30–45)
-allGroups.add(new Group(30, 40, "Capitalists", getranNumbetween100and1(100))); // 60
-allGroups.add(new Group(35, 45, "Defense Industry", getranNumbetween100and1(100))); //50
+allGroups.add(new Group(30, 40, "Capitalists", getranNumbetween100and1(25)+50)); // 60
+allGroups.add(new Group(35, 45, "Defense Industry", getranNumbetween100and1(25)+50)); //50
 
 // Establishment Left (55–70)
-allGroups.add(new Group(55, 65, "Administratic Progressives", getranNumbetween100and1(100))); // 55
-allGroups.add(new Group(60, 70, "Labor Moderates", getranNumbetween100and1(100))); // 50
+allGroups.add(new Group(55, 65, "Administratic Progressives", getranNumbetween100and1(25)+50)); // 55
+allGroups.add(new Group(60, 70, "Labor Moderates", getranNumbetween100and1(25)+50)); // 50
 
 // Dissident Left (70–85)
-allGroups.add(new Group(70, 80, "Reformists", getranNumbetween100and1(75))); // 30
-allGroups.add(new Group(75, 85, "Grassroots Progressives", getranNumbetween100and1(75))); //35
+allGroups.add(new Group(70, 80, "Reformists", getranNumbetween100and1(25)+25)); // 30
+allGroups.add(new Group(75, 85, "Grassroots Progressives", getranNumbetween100and1(25)+25)); //35
 
 // Radical Left (85–100)
-allGroups.add(new Group(85, 95, "Socialists", getranNumbetween100and1(50))); // 25
-allGroups.add(new Group(90, 100, "Communists", getranNumbetween100and1(50))); // 20
+allGroups.add(new Group(85, 95, "Socialists", getranNumbetween100and1(25))); // 25
+allGroups.add(new Group(90, 100, "Communists", getranNumbetween100and1(25))); // 20*/
+
+allGroups.add(new Group(0, 25, "Traditional Conservatives", 70));      // old elite, nobles, landowners
+allGroups.add(new Group(20, 45, "Moderate Right Reformers", 50));     // constitutional monarchists, pragmatists
+allGroups.add(new Group(40, 60, "Centrist Liberals", 65));            // business liberals, rule-of-law advocates
+allGroups.add(new Group(55, 80, "Social Democrats", 75));             // moderate left, union-friendly
+allGroups.add(new Group(75, 100, "Radical Socialists", 55));          // socialist activists, syndicalists
+allGroups.add(new Group(85, 100, "Communist Vanguard", 40));          // revolutionaries, foreign-aligned communists
+
+allGroups.add(new Group(0, 30, "Industrial Magnates", 80));           // major industrialists
+allGroups.add(new Group(25, 50, "Small Business Owners", 60));        // shopkeepers, local entrepreneurs
+allGroups.add(new Group(40, 70, "Urban Working Class", 90));          // factory workers, laborers
+allGroups.add(new Group(60, 90, "Trade Unions", 85));                 // organized labor
+allGroups.add(new Group(10, 40, "Agrarian Landowners", 65));          // rural landlords, estate owners
+allGroups.add(new Group(50, 80, "Tenant Farmers & Peasants", 75));    // smallholders, sharecroppers
+
+allGroups.add(new Group(0, 25, "Officer Corps", 75));                 // professional military elites
+allGroups.add(new Group(20, 45, "Veterans' Leagues", 60));            // disillusioned ex-soldiers, paramilitaries
+allGroups.add(new Group(45, 70, "Military Workers & Quartermasters", 40)); // rank-and-file soldiers
+
+allGroups.add(new Group(0, 30, "Clergy & Church Establishment", 70)); // traditional moral authority
+allGroups.add(new Group(40, 65, "Urban Middle Class", 80));           // bureaucrats, teachers, professionals
+allGroups.add(new Group(55, 85, "Intellectuals & Academics", 60));    // artists, writers, professors
+allGroups.add(new Group(20, 50, "Traditional Media Owners", 55));     // press barons, conservative journalists
+allGroups.add(new Group(60, 90, "Progressive Journalists", 45));      // liberal and socialist press
+
+allGroups.add(new Group(20, 60, "City Voters", 85));                  // urban electorate
+allGroups.add(new Group(10, 50, "Rural Voters", 90));                 // agrarian communities
+allGroups.add(new Group(50, 90, "Racial Minorities", 50));            // marginalized ethnic groups
+allGroups.add(new Group(35, 70, "Immigrant Communities", 55));        // recent arrivals, labor migrants
+allGroups.add(new Group(25, 60, "Women’s Organizations", 65));        // suffragists, homemakers
+allGroups.add(new Group(15, 45, "Traditional Families", 70));         // moral conservatives, family associations
+
 
 
     }
@@ -1869,6 +1903,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
             resonance += (100-(par.supportGroups.size()*8))/4;
 			resonance+= (100-Math.abs(gro.leader.getIdeology()-par.leader.getIdeology()))/2;
             resonance += par.getUnity()/10;
+			
             boolean isAlienated = resonance<threshold;
             
             if(gro.getAlienated()){
@@ -2062,7 +2097,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
     
     
     public static void checkSeats(){
-        int threshold = allParties.size()/2;
+        int threshold = 5;
 		if(!isFair){
 			threshold = -1;
 		}
@@ -2108,6 +2143,26 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         
     }
 	
+	public static void redistribInverse(int toredis){
+        int maxval=10000;
+        Party maxPar = null;
+        for(int i=0; i< toredis;i++){
+            maxval = 10000;
+                maxPar = null;
+            for(Party par: allParties){
+                
+                if(((par.getSeats()*100)/(par.getSeats()+1))< maxval){
+                    maxval = ((par.getSeats()*100)/(par.getSeats()+1));
+                    maxPar = par;
+                }
+            }
+            
+            maxPar.setSeats(maxPar.getSeats()+1);
+        }
+        
+        
+    }
+	
 	public static void showResults(){
 		for(Party par : allParties){
                 System.out.println(par.getName()+ ": "+ par.getSeats()+"%");
@@ -2118,7 +2173,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
         List<Party> toRemove = new ArrayList<>();
 		int lostseats = 0;
         for(Party par : allParties){
-            if(par.supportGroups.size() == 0){
+            if(par.supportGroups.size() == 0 && par.getSeats()==0){
                 toRemove.add(par);
 				if(par.getSeats()> 0){
 					lostseats += par.getSeats();
@@ -2140,7 +2195,7 @@ for (Map.Entry<Party, Integer> entry : sortedPartners) {
                 toRemove.remove(rulingParty);
             }
         }
-        redistrib(lostseats);
+        redistribInverse(lostseats);
         allParties.removeAll(toRemove);
         toRemove.clear();
         
@@ -3538,7 +3593,7 @@ public static void displayAllArchives(){
 		        System.out.print(" - "+gro.getName());
 		        totsup += gro.getPoints();
 		    }
-		    //System.out.println(par.getUnity());
+		    System.out.println(par.getUnity());
 		    //System.out.println("Support Points: "+ totsup);
 		    
 		}
