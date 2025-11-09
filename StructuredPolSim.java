@@ -13,7 +13,7 @@ public class Main{
 			this.economic = economic; // from 1 to 10 with 1 being the most rightist and 10 being the most leftist
 			this.autho = autho;
 			this.name = name;
-		
+			}
 		public int getSocial(){
 			return social;
 		}
@@ -24,6 +24,7 @@ public class Main{
 		
 		public int getAutho(){
 			return autho;
+		}
 		
 		public String getName(){
 			return name;
@@ -33,7 +34,7 @@ public class Main{
 			int ds = this.social - other.social;
 			int de = this.economic - other.economic;
 			int da = this.autho - other.autho;
-			return Math.sqrt((ds*ds) + (de*de) + (da*da));
+			return (Math.sqrt((ds*ds) + (de*de) + (da*da)))/17.3205081; // <- max distance
 		}
 	}
 	
@@ -60,56 +61,30 @@ public class Main{
 		}
 	}
 	
-	public static class person{
-		ideology Ideology;
-		String name;
-		int age;
-		
-		public person(ideology Ideology, String name, int age){
-			this.Ideology = Ideology;
-			this.name = name;
-			this.age = age;
-		}
-		
-		public ideology getIdeo(){
-			return Ideology;
-		}
-		
-		public String getName(){
-			return name;
-		}
-		
-		public int getAge(){
-			return age;
-		}
-		
-		
-	}
+	
 	
 	public static class party{
 		ideology Ideology;
-		person Leader;
+		
 		String name;
 		int age;
-		int seats;
-		double percentageOfSeats;
+		double seats;
 		
-		public party(String name, ideology Ideology, person Leader){
+		
+		public party(String name, ideology Ideology){
 			this.name = name;
 			this.Ideology = Ideology;
-			this.Leader = Leader;
+			
 			this.age = 0;
 			this.seats = 0;
-			this.percentageOfSeats = 0.0;
+			
 		}
 		
 		public ideology getIdeo(){
 			return Ideology;
 		}
 		
-		public person getLeader(){
-			return Leader;
-		}
+		
 		
 		public String getName(){
 			return name;
@@ -119,12 +94,12 @@ public class Main{
 			return age;
 		}
 		
-		public int getSeats(){
+		public double getSeats(){
 			return seats;
 		}
 		
-		public String getPercentageOfSeats(){
-			return String.format("%.2f", percentageOfSeats); // 
+		public String displaySeats(){
+			return String.format("%.2f", seats); // 
 			
 		}
 		
@@ -134,11 +109,8 @@ public class Main{
 		public void clearSeats(){
 			seats = 0;
 		}
-		public void addSeats(){
-			seats++;
-		}
-		public void setPercentage(int totSeats){
-			percentageOfSeats = (seats*100.0)/totSeats; 
+		public void setSeats(double seat){
+			seats = seat;
 		}
 		
 	}
@@ -161,10 +133,72 @@ public class Main{
 	public static socialClass upperClass = new socialClass(NeoCon,"Upper Class",100);
 	
 	
+	public static party democrats = new party("Democatic Party",SocLib);
+	public static party republicans = new party("Republican Party",NeoCon);
+	
+	public static List<party> allParties = new ArrayList<>();
+	public static List<socialClass> allClasses =new ArrayList<>();
+	
+	public static void partyListMake(){
+		party kpd = new party("KPD",LeftPop);
+		party spd = new party("SPD",SocDem);
+		party ddp = new party("DDP",SocLib);
+		party dvp = new party("DVP",MarkLib);
+		party z = new party("Z",ModCon);
+		party dnvp= new party("DNVP",NeoCon);
+		party nsdap = new party("NSDAP",RightPop);
+		
+		allParties.add(kpd);
+		allParties.add(spd);
+		allParties.add(ddp);
+		allParties.add(dvp);
+		allParties.add(z);
+		allParties.add(dnvp);
+		allParties.add(nsdap);
+	}
+	
+	public static void classListMake(){
+		allClasses.add(workingClass);
+		allClasses.add(newMidClass);
+		allClasses.add(oldMidClass);
+		allClasses.add(rural);
+		allClasses.add(upperClass);
+	}
 	
 	
+	public static void election(){
+		HashMap<party, Integer> parties = new HashMap<>();
+		int toAdd = 0;
+		for(party par: allParties){
+			toAdd = 0;
+			System.out.println("\n"+par.getName());
+			for(socialClass cla : allClasses){
+				double ideodif =cla.getSize()-((par.getIdeo().distanceTo(cla.getIdeo()))*cla.getSize());
+				toAdd += ideodif;
+				System.out.println(cla.getName()+ ": "+ideodif);
+			}
+			
+			parties.put(par, toAdd);
+		}
+		
+		int total = 0;
+		for(party par: allParties){
+			total += parties.get(par);
+		}
+		
+		for(party par: allParties){
+			par.setSeats((double) (parties.get(par)*100)/total);
+		}
+		
+		for(party par: allParties){
+			System.out.println(par.getName()+ ": "+ par.displaySeats()+ "% of Seats");
+		}
+	}
 	
 	
 	public static void main(String[] args){
+		classListMake();
+		partyListMake();
+		election();
 	}
 }
