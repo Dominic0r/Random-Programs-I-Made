@@ -33,7 +33,7 @@ public class Main{
 			int ds = this.social - other.social;
 			int de = this.economic - other.economic;
 			int da = this.autho - other.autho;
-			return Math.sqrt(ds*ds + de*de + da*da);
+			return Math.sqrt((ds*ds) + (de*de) + (da*da));
 		}
 	}
 	
