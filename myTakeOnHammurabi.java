@@ -270,7 +270,7 @@ public static final String WHITE = "\u001B[37m";
     
     public static void bribeElites(int giveMon){
         loyalty += giveMon/10;
-        
+        money -= giveMon;
         if(loyalty > 110){
             loyalty = 110;
         }
