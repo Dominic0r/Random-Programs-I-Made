@@ -370,7 +370,7 @@ public static final String WHITE = "\u001B[37m";
             maxdisasters++;
         }
         
-        if(ra.nextBoolean() && disasters<maxdisasters){// corruption
+        if(ra.nextBoolean() && disasters<maxdisasters && !deficit){// corruption
             int stolen = ra.nextInt((money/divisor)+1);
             //System.out.println("A corrupt member of your government has stolen "+ stolen+ " PZH");
             //System.out.println(droughtQuotes[ra.nextInt(corruptionQuotes.length)]);
@@ -536,7 +536,11 @@ public static final String WHITE = "\u001B[37m";
                     passed = true;
                 }
             }while(!passed);
-            
+            if(deficit){
+                if(money >=0){
+                    deficit = false;
+                }
+            }
             System.out.print("\033[H\033[2J");
         System.out.flush();
         kingdomStats();
@@ -545,7 +549,20 @@ public static final String WHITE = "\u001B[37m";
                 System.out.println("How much acres of land would you like to buy? ("+ landPrice+" PZH per acre of land)");
                 uput = sc.nextInt();
                 if(uput*landPrice > money){
-                    System.out.println("I'm afraid you do not have that much amount of money");
+                    if(!deficit){
+                        System.out.println("I'm afraid you do not have that much amount of money");
+                        if(enterDeficit()){
+                            buyLand(uput);
+                            deficit = true;
+                            passed = true;
+                        }
+                    } else{
+                        if(uput == 0){
+                            passed = true;
+                        }else{
+                        System.out.println("You are in deficit spending.");
+                        }
+                    }
                 }else{
                     buyLand(uput);
                     passed = true;
@@ -559,7 +576,20 @@ public static final String WHITE = "\u001B[37m";
                 System.out.println("How much soldiers do you want to raise this year? (10 PZH per soldier)");
                 uput = sc.nextInt();
                 if(uput*10 > money){
-                    System.out.println("I'm afraid you do not have that much amount of grain");
+                    if(!deficit){
+                        System.out.println("I'm afraid you do not have that much amount of money");
+                        if(enterDeficit()){
+                            buySoldiers(uput);
+                            deficit = true;
+                            passed = true;
+                        }
+                    } else{
+                        if(uput == 0){
+                            passed = true;
+                        }else{
+                        System.out.println("You are in deficit spending.");
+                        }
+                    }
                 }else{
                     buySoldiers(uput);
                     passed = true;
@@ -573,7 +603,20 @@ public static final String WHITE = "\u001B[37m";
                 System.out.println("How much money would you like to donate to the Nobility?");
                 uput = sc.nextInt();
                 if(uput > money){
-                    System.out.println("I'm afraid you do not have that much amount of money");
+                    if(!deficit){
+                        System.out.println("I'm afraid you do not have that much amount of money");
+                        if(enterDeficit()){
+                            bribeElites(uput);
+                            deficit = true;
+                            passed = true;
+                        }
+                    } else{
+                        if(uput == 0){
+                            passed = true;
+                        }else{
+                        System.out.println("You are in deficit spending.");
+                        }
+                    }
                 }else{
                     bribeElites(uput);
                     passed = true;
@@ -592,10 +635,11 @@ public static final String WHITE = "\u001B[37m";
             kingdomStats();
             passed = false;
             do{
-                System.out.println("A larger kingdom sees your weath and demands tribute");
+                System.out.println("A larger kingdom sees your wealth and demands tribute");
                 uput = sc.nextInt();
                 if(uput > money){
                     System.out.println("I'm afraid you do not have that much amount of money");
+                    
                 }else{
                     if(ra.nextInt(money)<uput){
                         System.out.println("They were satisfied by the tribute");
@@ -610,6 +654,44 @@ public static final String WHITE = "\u001B[37m";
                 }
             }while(!passed);
             
+            passed = false;
+            if(ra.nextInt(1000)<20){
+            do{
+                System.out.println("A wealthy prince from a neighboring kingdom has offered to play a little game with you. it's a simple gambling game in which each player rolls two six-sided dice. Whoever has the highest roll wins, but if a players total score is greater than 26, they lose.");
+                System.out.println("Would you like to play a game?");
+                System.out.println("1- yes, 2- No");
+                boolean validInput = false;
+                int uuput = sc.nextInt();
+                sc.nextLine();
+                do{
+                    switch(uuput){
+                        case 1:
+                            
+                            System.out.println("How much money would you like to bet?");
+                            uput = sc.nextInt();
+                            
+                            
+                            if(gamblingMinigame()){
+                                System.out.println("You doubled your money!");
+                                money += uput*2;
+                            }else{
+                                System.out.println("You lost "+uput+ " PZH!");
+                                money -= uput;
+                                if(money< 0 && !deficit){
+                                    System.out.println("You lost so much money you went into debt!");
+                                    deficit = true;
+                                }
+                            }
+                            
+                        case 2:
+                            
+                            validInput = true;
+                        default:
+                        System.out.println("Invalid input");
+                    }
+                }while(!validInput);
+            }while(!passed);
+            }
             if(checkLossConditions()){
                 System.exit(0);
             }
@@ -617,6 +699,9 @@ public static final String WHITE = "\u001B[37m";
         System.out.flush();
         }
         
+        if(deficit){
+            loyalty -= 10;
+        }
         
         fillWhiteScreen();
             updates();
@@ -625,6 +710,115 @@ public static final String WHITE = "\u001B[37m";
         }
     }
     
+    public static boolean deficit = false;
+    
+    public static boolean enterDeficit(){
+        boolean validInput = true;
+        System.out.println("...However, a neighboring kingdom is willing to cover the costs. This would, of course, lead us to entering deficit spending, which will make ruling considerably more difficult");
+        System.out.println("Would you like to enter deficit spending?");
+        System.out.println("1- yes, 2- No");
+        int uput = sc.nextInt();
+        sc.nextLine();
+        do{
+            switch(uput){
+                case 1:
+                    return true;
+                    
+                case 2:
+                    return false;
+                    
+                default:
+                System.out.println("Invalid input");
+            }
+        }while(!validInput);
+        return false;
+    }
+    
+    
+    public static boolean gamblingMinigame(){
+        int yourscore=0, enemyscore = yourscore;
+		int princeBoldness = ra.nextInt(2)+1;
+        boolean winnerFound = false;
+        boolean playerwon = false;
+        boolean validInput = false;
+        int curdiceRoll = 0;
+        boolean princeStopped = false;
+        do{
+            System.out.println("\n==========\nYou: "+ yourscore);
+            System.out.println("1- Roll Again, 2- Stop Rolling");
+            
+            int uput = sc.nextInt();
+            sc.nextLine();
+            do{
+                validInput = true;
+                switch(uput){
+                    case 1:
+                        curdiceRoll = ra.nextInt(10)+2;
+                        System.out.println("You rolled: "+ curdiceRoll);
+                        yourscore+= curdiceRoll;
+                        break;
+                    case 2:
+                        System.out.println("Prince turn");
+                        
+                        boolean satisfied = false;
+                        do{
+                            
+                            if(26-enemyscore > ra.nextInt(12/princeBoldness)){
+                                curdiceRoll = ra.nextInt(10)+2;
+                                
+                                System.out.println("\n==========\nPrince rolled: "+ curdiceRoll);
+                                
+                                enemyscore+=curdiceRoll;
+                                System.out.println("Prince: "+ enemyscore);
+                            } else{
+                                System.out.println("Prince stopped rolling");
+                                princeStopped = true;
+                                satisfied = true;
+                            }
+                        }while(!satisfied);
+                        break;
+                    default:
+                    System.out.println("Invalid input");
+                    validInput = false;
+                }
+            }while(!validInput);
+            
+            if(princeStopped){
+                boolean noneOver26 = true;
+                if(yourscore >26){
+                    noneOver26  =false;
+                    System.out.println("You lost!");
+                    playerwon = false;
+                }
+                
+                else if(enemyscore > 26){
+                    noneOver26 = false;
+                    System.out.println("You won!");
+                    playerwon = true;
+                }
+                if(noneOver26){
+                    if(yourscore > enemyscore){
+                        System.out.println("You won!");
+                        playerwon = true;
+                    } else if(enemyscore > yourscore){
+                        System.out.println("You lost!");
+                        playerwon = false;
+                    }else if(enemyscore == yourscore){
+                        System.out.println("The winner will be decided by a coin flip");
+                        if(ra.nextBoolean()){
+                            System.out.println("You won!");
+                        playerwon = true;
+                        }else{
+                            System.out.println("You lost!");
+                        playerwon = false;
+                        }
+                    }
+                }
+                winnerFound = true;
+            }
+        }while(!winnerFound);
+        return playerwon;
+    }
     public static final String BLACK_TEXT = "\u001B[30m";
 public static final String WHITE_BG = "\u001B[47m";
 public static final String CLEAR_SCREEN = "\u001B[2J\u001B[H";
