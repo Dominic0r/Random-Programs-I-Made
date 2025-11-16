@@ -309,11 +309,12 @@ public static final String WHITE = "\u001B[37m";
         System.out.println("Your population increased by "+newpops);
         population+= newpops;
         
-        int delaylength = 25;
+        int delaylength = (performance)? 1:25;
         
         if(ra.nextBoolean() && disasters<maxdisasters){ // drought
             int destroyedLand = ra.nextInt((land/divisor)+1);
             //System.out.println("A drought has destroyed "+ destroyedLand+ " acres of arable land");
+            
             
             slowPrint(droughtQuotes[ra.nextInt(droughtQuotes.length)], delaylength,YELLOW);
             //System.out.println(droughtQuotes[ra.nextInt(droughtQuotes.length)]);
@@ -834,10 +835,20 @@ public static void fillWhiteScreen() {
 
     System.out.print("\u001B[H"); // Move cursor to top-left
 }
-    
+    public static boolean performance = false;
 	public static void main(String[] args) throws Exception {
 	    fillWhiteScreen();
 		System.out.println("OLDKINGDOM\npress Enter to start");
+		sc.nextLine();
+		
+		System.out.println("Disable Scrolling?\n1- Yes | 2- No (Default)");
+		switch(sc.nextInt()){
+		    case 1:
+		        performance = true;
+		        break;
+		    default:
+		    
+		}
 		sc.nextLine();
 		fillWhiteScreen();
 		game();
