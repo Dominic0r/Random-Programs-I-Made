@@ -342,12 +342,14 @@ public static final String WHITE = "\u001B[37m";
             maxdisasters++;
         }
         
-        if((population>= 2000 && ra.nextBoolean() && disasters<maxdisasters) || !satisfied){
+        if((population>= 1000 && ra.nextBoolean() && disasters<maxdisasters) || !satisfied){
             int raiders = ra.nextInt(population/3);
             if(raiders > army|| !satisfied){
                 population-= ra.nextInt((population/divisor)+1);
                 grain-= ra.nextInt((grain/divisor)+1);
-                money -= ra.nextInt((money/divisor)+1);
+                if(!deficit){
+                    money -= ra.nextInt((money/divisor)+1);
+                }
                 army = 0;
                 
                 if(!satisfied){
