@@ -56,6 +56,31 @@ public class Main
     Person premiere;
     Person comms;
     
+    public static String generateRandomEasternName() {
+         String[] SURNAMES = {
+        "Li", "Wang", "Zhang", "Liu", "Chen", "Yang", "Huang", "Zhao", "Wu", "Zhou",
+        "Xu", "Sun", "Ma", "Zhu", "Guo", "He", "Lin", "Gao", "Zheng", "Luo", "Shen"
+    };
+
+    String[] GIVEN_NAME_SYLLABLES = {
+        "Wei", "Feng", "Jian", "Min", "Lei", "Yan", "Hua", "Jun", "Qing", "Mei",
+        "Rong", "Hao", "Bo", "Ting", "Yi", "Xiu", "Shi", "Kai", "Chun", "Jing",
+        "Shan", "Tao", "Zhi", "Long", "Fei", "Yu", "Wen", "Zhen", "Ming", "Xing"
+    };
+
+        String surname = SURNAMES[ra.nextInt(SURNAMES.length)];
+
+        int givenNameLength = ra.nextInt(3) < 2 ? 2 : 1; 
+
+        StringBuilder givenName = new StringBuilder();
+        for (int i = 0; i < givenNameLength; i++) {
+            String syllable = GIVEN_NAME_SYLLABLES[ra.nextInt(GIVEN_NAME_SYLLABLES.length)];
+            givenName.append(syllable);
+        }
+
+        return surname + " " + givenName.toString();
+    }
+    
     
 	public static void main(String[] args) {
 		System.out.println("Hello World");
