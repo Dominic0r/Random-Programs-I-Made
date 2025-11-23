@@ -48,6 +48,43 @@ public class Main
             }
             ideo += ra.nextInt(10)-ra.nextInt(10);
         }
+        
+        public void checkNums(){
+            if(influence>100){
+                influence = 100;
+            }
+            if(influence<0){
+                influence = 0;
+            }
+            
+            if(polpower>100){
+                polpower = 100;
+            }
+            if(polpower<0){
+                polpower = 0;
+            }
+            
+            if(military>100){
+                military = 100;
+            }
+            if(military<0){
+                military = 0;
+            }
+            
+            if(admin>100){
+                admin = 100;
+            }
+            if(admin<0){
+                admin = 0;
+            }
+            
+            if(ideo>100){
+                ideo = 100;
+            }
+            if(ideo<0){
+                ideo = 0;
+            }
+        }
     }
     
     Person president;
