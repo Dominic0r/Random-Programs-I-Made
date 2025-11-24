@@ -12,6 +12,16 @@ public class Main
             this.name = name;
             this.age = ra.nextInt(20)+30;
             this.personality = ra.nextInt(100);
+            switch(ra.nextInt(4)){
+                case 1: ideology = "Reformer";
+                    break;
+                case 2:ideology = "Moderate";
+                    break;
+                case 3:ideology = "Conservative";
+                    break;
+                default:ideology = "Radical";
+            }
+            
         }
         
         public void updateInf(){
@@ -85,15 +95,22 @@ public class Main
                 ideo = 0;
             }
         }
+        
+        @Override
+        public String toString(){
+            return name + ", "+ age+ " ("+ ideology+ ")";
+        }
     }
     
-    Person president;
-    Person chairman;
-    Person chief;
-    Person premiere;
-    Person comms;
+    public static String trending ="";
     
-    public static String generateRandomEasternName() {
+    public static Person president;
+    public static Person chairman;
+    public static Person chief;
+    public static Person premiere;
+    public static Person comms;
+    
+    public static String nameGen() {
          String[] SURNAMES = {
         "Li", "Wang", "Zhang", "Liu", "Chen", "Yang", "Huang", "Zhao", "Wu", "Zhou",
         "Xu", "Sun", "Ma", "Zhu", "Guo", "He", "Lin", "Gao", "Zheng", "Luo", "Shen"
@@ -104,6 +121,12 @@ public class Main
         "Rong", "Hao", "Bo", "Ting", "Yi", "Xiu", "Shi", "Kai", "Chun", "Jing",
         "Shan", "Tao", "Zhi", "Long", "Fei", "Yu", "Wen", "Zhen", "Ming", "Xing"
     };
+    
+    String[] GIVEN_NAME_SYLLABLES_NOCAP = {
+        "wei", "feng", "jian", "min", "lei", "yan", "hua", "jun", "qing", "mei",
+        "rong", "hao", "bo", "ting", "yi", "xiu", "shi", "kai", "chun", "jing",
+        "shan", "tao", "zhi", "long", "fei", "yu", "wen", "zhen", "ming", "xing"
+    };
 
         String surname = SURNAMES[ra.nextInt(SURNAMES.length)];
 
@@ -111,15 +134,24 @@ public class Main
 
         StringBuilder givenName = new StringBuilder();
         for (int i = 0; i < givenNameLength; i++) {
-            String syllable = GIVEN_NAME_SYLLABLES[ra.nextInt(GIVEN_NAME_SYLLABLES.length)];
+            String syllable =(i == 0)? GIVEN_NAME_SYLLABLES[ra.nextInt(GIVEN_NAME_SYLLABLES.length)]:GIVEN_NAME_SYLLABLES_NOCAP[ra.nextInt(GIVEN_NAME_SYLLABLES_NOCAP.length)];
+            if(syllable.equalsIgnoreCase(givenName.toString())){
+                break;
+            }
             givenName.append(syllable);
         }
 
         return surname + " " + givenName.toString();
     }
     
-    
+    public static List<Person> standingCommittee = new ArrayList<>();
 	public static void main(String[] args) {
-		System.out.println("Hello World");
+		for(int i=0; i<10;i++){
+		    standingCommittee.add(new Person(nameGen()));
+		}
+		
+		for(Person per : standingCommittee){
+		    System.out.println(per);
+		}
 	}
 }
