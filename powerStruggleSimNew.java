@@ -22,6 +22,12 @@ public class Main
                 default:ideology = "Radical";
             }
             
+            influence = ra.nextInt(100);
+            polpower = ra.nextInt(100);
+            military = ra.nextInt(100);
+            admin = ra.nextInt(100);
+            ideo = ra.nextInt(100);
+            
         }
         
         public void updateInf(){
@@ -96,6 +102,10 @@ public class Main
             }
         }
         
+        public String leadDisplay(){
+            return name + " ("+ ideology+ ")";
+        }
+        
         @Override
         public String toString(){
             return name + ", "+ age+ " ("+ ideology+ ")";
@@ -105,10 +115,19 @@ public class Main
     public static String trending ="";
     
     public static Person president;
+    public static Person vicePres;
+    
     public static Person chairman;
+    public static Person depChair;
+    
     public static Person chief;
+    public static Person second;
+    
     public static Person premiere;
+    public static Person depPrem;
+    
     public static Person comms;
+    public static Person viceCom;
     
     public static String nameGen() {
          String[] SURNAMES = {
@@ -145,13 +164,201 @@ public class Main
     }
     
     public static List<Person> standingCommittee = new ArrayList<>();
+    
+    
+    public static int relationCalc(Person per1, Person per2){
+        int finalrel = Math.abs(per1.personality - per2.personality)/3;
+        finalrel += Math.abs(per1.age-per2.age);
+        finalrel+= (per1.ideology.equalsIgnoreCase(per2.ideology))? finalrel/50:0;
+        //System.out.println(finalrel);
+        return finalrel;
+    }
+    
+    public static void electPres(){
+        int topNum = 0;
+        Person winner = null;
+        
+        for(Person per : standingCommittee){
+            if(per.polpower > topNum){
+                topNum = per.polpower;
+                winner = per;
+                
+            }
+            
+        }
+        
+        president = winner;
+    }
+    
+    public static void appointVP(){
+        int topnum = 0;
+        Person winner = null;
+        
+        for(Person per : standingCommittee){
+            if(relationCalc(president, per)> topnum && per!=president){
+                topnum = relationCalc(president,per);
+                winner = per;
+            }
+        }
+        
+        vicePres = winner;
+    }
+    
+    public static void electChair(){
+        int topnum = 0;
+        Person winner = null;
+        
+        for(Person per : standingCommittee){
+            if(per.influence > topnum){
+                topnum = per.influence;
+                winner = per;
+            }
+        }
+        
+        chairman = winner;
+    }
+    
+    public static void appointDC(){
+        int topnum = 0;
+        Person winner = null;
+        
+        for(Person per : standingCommittee){
+            if(relationCalc(chairman, per)> topnum && per!=chairman){
+                topnum = relationCalc(chairman,per);
+                winner = per;
+            }
+        }
+        
+        depChair = winner;
+    }
+    
+    
+    public static void electChief(){
+        int topnum = 0;
+        Person winner = null;
+        
+        for(Person per : standingCommittee){
+            if(per.military > topnum){
+                topnum = per.military;
+                winner = per;
+            }
+        }
+        
+        chief = winner;
+    }
+    
+    public static void appointSecond(){
+        int topnum = 0;
+        Person winner = null;
+        
+        for(Person per : standingCommittee){
+            if(relationCalc(chief, per)> topnum && per!=chief){
+                topnum = relationCalc(chief,per);
+                winner = per;
+            }
+        }
+        
+        second = winner;
+    }
+    
+    
+    public static void electPrem(){
+        int topnum = 0;
+        Person winner = null;
+        
+        for(Person per : standingCommittee){
+            if(per.admin > topnum){
+                topnum = per.admin;
+                winner = per;
+            }
+        }
+        
+        premiere = winner;
+    }
+    
+    public static void appointDPM(){
+        int topnum = 0;
+        Person winner = null;
+        
+        for(Person per : standingCommittee){
+            if(relationCalc(premiere, per)> topnum && per!=premiere){
+                topnum = relationCalc(premiere,per);
+                winner = per;
+            }
+        }
+        
+        depPrem = winner;
+    }
+    
+    
+    public static void electCom(){
+        int topnum = 0;
+        Person winner = null;
+        
+        for(Person per : standingCommittee){
+            if(per.ideo > topnum){
+                topnum = per.ideo;
+                winner = per;
+            }
+        }
+        
+        comms = winner;
+    }
+    
+    public static void appointViceCom(){
+        int topnum = 0;
+        Person winner = null;
+        
+        for(Person per : standingCommittee){
+            if(relationCalc(comms, per)> topnum && per!=comms){
+                topnum = relationCalc(comms,per);
+                winner = per;
+            }
+        }
+        
+        viceCom = winner;
+    }
+    
+    
+    
+    
 	public static void main(String[] args) {
-		for(int i=0; i<10;i++){
+	    for(int i=0; i<20;i++){
 		    standingCommittee.add(new Person(nameGen()));
 		}
+	    electPres();
+	    appointVP();
+	    
+	    electChair();
+	    appointDC();
+	    
+	    electChief();
+	    appointSecond();
+	    
+	    electPrem();
+	    appointDPM();
+	    
+	    electCom();
+	    appointViceCom();
+	    
+	    System.out.println("President: "+ president.leadDisplay());
+	    System.out.println("    Vice-President: "+ vicePres.leadDisplay());
+	    
+	    System.out.println("\nParty Chairman: "+ chairman.leadDisplay());
+	    System.out.println("    Deputy Chairman: "+ depChair.leadDisplay());
+	    
+	    System.out.println("\nPrime Minister: "+ premiere.leadDisplay());
+	    System.out.println("    Deputy PM: "+ depPrem.leadDisplay());
+	    
+	    System.out.println("\nDefense Chief: "+ chief.leadDisplay());
+	    System.out.println("    Second Chief: "+ second.leadDisplay());
+	    
+	    System.out.println("\nCommunications Head: "+ comms.leadDisplay());
+	    System.out.println("    Vice Head: "+ viceCom.leadDisplay());
+		
 		
 		for(Person per : standingCommittee){
-		    System.out.println(per);
+		//    System.out.println(per);
 		}
 	}
 }
