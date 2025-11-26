@@ -118,7 +118,7 @@ public class Main
         }
     }
     
-    public static String trending ="";
+    
     
     public static Person president;
     public static Person vicePres;
@@ -378,12 +378,20 @@ public class Main
                 per.ideo+=20;
             }
             
-            if(per.age < 40 || per.age > 70){
+            if(per.age < 40 || per.age > 75){
                 per.polpower-=10;
                 per.influence-=10;
                 per.military-=10;
                 per.admin-=10;
                 per.ideo-=10;
+            }
+            
+            if(per.ideology.equalsIgnoreCase(trending)){
+                per.polpower+=5;
+                per.influence+=5;
+                per.military+=5;
+                per.admin+=5;
+                per.ideo+=5;
             }
             
             if(checkAge(per)){
@@ -481,7 +489,7 @@ public class Main
         if(month== 12){
             year++;
             month = 0;
-            
+            detTrend();
             for(Person per: standingCommittee){
                 per.age++;
             }
@@ -490,7 +498,7 @@ public class Main
     
     
     public static boolean checkAge(Person per){
-        int points = per.age-60;
+        int points = per.age-70;
         if(points > ra.nextInt(30)){
             return true;
         }else{
@@ -500,6 +508,40 @@ public class Main
     
     public static boolean hasNoPosition(Person per){
         return (president == per || chairman == per || chief == per || premiere == per || comms == per || vicePres == per || depChair == per || second == per || depPrem == per || viceCom == per)? false:true;
+    }
+    
+    
+    public static void paramountLeader(){
+        int winnum = 500;
+        Person winner = null;
+        for(Person per: standingCommittee){
+            int totPoints = per.influence+per.polpower+per.military+per.admin+per.ideo;
+            
+            if(totPoints > winnum*2){
+                winnum = totPoints;
+                winner = per;
+            }
+        }
+        
+        if(winner != null){
+            System.out.println("Paramount Leader: "+ winner.leadDisplay());
+        }
+    }
+    
+    public static String trending = "";
+    
+    public static void detTrend(){
+        switch(ra.nextInt(5)){
+            case 1:trending = "Reformer";
+                break;
+            case 2:trending =  "Moderate";
+                break;
+            case 3:trending = "Conservative";
+                break;
+            case 4:trending = "Radical";
+            break;
+            default:trending = "None";
+        }
     }
     
     public static int presCdown = 84;
@@ -532,6 +574,7 @@ public class Main
 	    while(true){
 	    System.out.println(Months[month]+ ", "+ year);
 	    
+	    paramountLeader();
 	    System.out.println("\n\nPresident: "+ president.leadDisplay());
 	    System.out.println("    Vice-President: "+ vicePres.leadDisplay());
 	    
@@ -547,7 +590,7 @@ public class Main
 	    System.out.println("\nCommunications Head: "+ comms.leadDisplay());
 	    System.out.println("    Vice Head: "+ viceCom.leadDisplay());
 		
-		
+		System.out.println(standingCommittee.size());
 		for(Person per : standingCommittee){
 		//    System.out.println(per);
 		}
