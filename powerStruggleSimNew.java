@@ -3,6 +3,12 @@ public class Main
 {
     public static Random ra = new Random();
     public static Scanner sc = new Scanner(System.in);
+    
+    
+    public static int month=0;
+    public static String[] Months = {"January", "February","March", "April", "May", "June","July","August","September","October","November","December"};
+    public static int year = 1920;
+    
     public static class Person{
         String name, ideology;
         int age;
@@ -195,7 +201,7 @@ public class Main
         Person winner = null;
         
         for(Person per : standingCommittee){
-            if(relationCalc(president, per)> topnum && per!=president){
+            if(relationCalc(president, per)> topnum && per!=president && hasNoPosition(per)){
                 topnum = relationCalc(president,per);
                 winner = per;
             }
@@ -223,7 +229,7 @@ public class Main
         Person winner = null;
         
         for(Person per : standingCommittee){
-            if(relationCalc(chairman, per)> topnum && per!=chairman){
+            if(relationCalc(chairman, per)> topnum && per!=chairman && hasNoPosition(per)){
                 topnum = relationCalc(chairman,per);
                 winner = per;
             }
@@ -252,7 +258,7 @@ public class Main
         Person winner = null;
         
         for(Person per : standingCommittee){
-            if(relationCalc(chief, per)> topnum && per!=chief){
+            if(relationCalc(chief, per)> topnum && per!=chief && hasNoPosition(per)){
                 topnum = relationCalc(chief,per);
                 winner = per;
             }
@@ -281,7 +287,7 @@ public class Main
         Person winner = null;
         
         for(Person per : standingCommittee){
-            if(relationCalc(premiere, per)> topnum && per!=premiere){
+            if(relationCalc(premiere, per)> topnum && per!=premiere && hasNoPosition(per)){
                 topnum = relationCalc(premiere,per);
                 winner = per;
             }
@@ -310,7 +316,7 @@ public class Main
         Person winner = null;
         
         for(Person per : standingCommittee){
-            if(relationCalc(comms, per)> topnum && per!=comms){
+            if(relationCalc(comms, per)> topnum && per!=comms && hasNoPosition(per)){
                 topnum = relationCalc(comms,per);
                 winner = per;
             }
@@ -319,8 +325,190 @@ public class Main
         viceCom = winner;
     }
     
+    public static void updateAllThings(Person per){
+        per.updateIdeo();
+        per.updateAdmin();
+        per.updateMil();
+        per.updatePol();
+        per.updateInf();
+    }
+    
+    public static void monthly(){
+        List<Person> toRemove = new ArrayList<>();
+        for(Person per: standingCommittee){
+            updateAllThings(per);
+            
+            if(per == president){
+                per.polpower += 20;
+                per.influence+=10;
+                per.military+=10;
+                per.admin+=10;
+                per.ideo+=10;
+            }
+            
+            if(per == chairman){
+                per.polpower += 10;
+                per.influence+=20;
+                per.military+=10;
+                per.admin+=10;
+                per.ideo+=10;
+            }
+            
+            if(per == chief){
+                per.polpower += 10;
+                per.influence+=10;
+                per.military+=20;
+                per.admin+=10;
+                per.ideo+=10;
+            }
+            
+            if(per == premiere){
+                per.polpower += 10;
+                per.influence+=10;
+                per.military+=10;
+                per.admin+=20;
+                per.ideo+=10;
+            }
+            
+            if(per == comms){
+                per.polpower += 10;
+                per.influence+=10;
+                per.military+=10;
+                per.admin+=10;
+                per.ideo+=20;
+            }
+            
+            if(per.age < 40 || per.age > 70){
+                per.polpower-=10;
+                per.influence-=10;
+                per.military-=10;
+                per.admin-=10;
+                per.ideo-=10;
+            }
+            
+            if(checkAge(per)){
+                toRemove.add(per);
+            }
+            
+        }
+        
+        standingCommittee.removeAll(toRemove);
+        
+        if(toRemove.contains(president)){
+            president = vicePres;
+            appointVP();
+        }
+        
+        if(toRemove.contains(chairman)){
+            chairman = depChair;
+            appointDC();
+        }
+        
+        if(toRemove.contains(chief)){
+            chief = second;
+            appointSecond();
+        }
+        
+        if(toRemove.contains(premiere)){
+            premiere = depPrem;
+            appointDPM();
+        }
+        
+        if(toRemove.contains(comms)){
+            comms = viceCom;
+            appointViceCom();
+        }
+        
+        if(toRemove.contains(vicePres)){
+            appointVP();
+        }
+        if(toRemove.contains(depChair)){
+            appointDC();
+        }
+        if(toRemove.contains(second)){
+            appointSecond();
+        }
+        if(toRemove.contains(depPrem)){
+            appointDPM();
+        }
+        if(toRemove.contains(viceCom)){
+            appointViceCom();
+        }
+        
+        for(int i=0; i<toRemove.size(); i++){
+            standingCommittee.add(new Person(nameGen()));
+        }
+        
+        toRemove.clear();
+        
+        presCdown--;
+        chairCdown--;
+        chiefCdown--;
+        PMCdown--;
+        comCdown--;
+        
+        if(presCdown == 0){
+            electPres();
+            appointVP();
+            presCdown = 84;
+        }
+        
+        if(chairCdown == 0){
+            electChair();
+            appointDC();
+            chairCdown = 36;
+        }
+        
+        if(chiefCdown == 0){
+            electChief();
+            appointSecond();
+            chiefCdown = 48;
+        }
+        
+        if(PMCdown == 0){
+            electPrem();
+            appointDPM();
+            PMCdown = 60;
+        }
+        
+        if(comCdown == 0){
+            electCom();
+            appointViceCom();
+            comCdown = 24;
+        }
+        
+        month++;
+        if(month== 12){
+            year++;
+            month = 0;
+            
+            for(Person per: standingCommittee){
+                per.age++;
+            }
+        }
+    }
     
     
+    public static boolean checkAge(Person per){
+        int points = per.age-60;
+        if(points > ra.nextInt(30)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+    public static boolean hasNoPosition(Person per){
+        return (president == per || chairman == per || chief == per || premiere == per || comms == per || vicePres == per || depChair == per || second == per || depPrem == per || viceCom == per)? false:true;
+    }
+    
+    public static int presCdown = 84;
+    public static int chairCdown = 36;
+    public static int chiefCdown = 48;
+    public static int PMCdown = 60;
+    public static int comCdown = 24;
+    
+    public static String uput="";
     
 	public static void main(String[] args) {
 	    for(int i=0; i<20;i++){
@@ -341,7 +529,10 @@ public class Main
 	    electCom();
 	    appointViceCom();
 	    
-	    System.out.println("President: "+ president.leadDisplay());
+	    while(true){
+	    System.out.println(Months[month]+ ", "+ year);
+	    
+	    System.out.println("\n\nPresident: "+ president.leadDisplay());
 	    System.out.println("    Vice-President: "+ vicePres.leadDisplay());
 	    
 	    System.out.println("\nParty Chairman: "+ chairman.leadDisplay());
@@ -360,5 +551,9 @@ public class Main
 		for(Person per : standingCommittee){
 		//    System.out.println(per);
 		}
+		
+		sc.nextLine();
+		monthly();
+	    }
 	}
 }
