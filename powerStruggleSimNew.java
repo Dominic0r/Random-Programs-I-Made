@@ -173,8 +173,8 @@ public class Main
     
     
     public static int relationCalc(Person per1, Person per2){
-        int finalrel = Math.abs(per1.personality - per2.personality)/3;
-        finalrel += Math.abs(per1.age-per2.age);
+        int finalrel = (100-Math.abs(per1.personality - per2.personality))/2;
+        finalrel += (100-Math.abs(per1.age-per2.age))/3;
         finalrel+= (per1.ideology.equalsIgnoreCase(per2.ideology))? finalrel/50:0;
         //System.out.println(finalrel);
         return finalrel;
@@ -287,8 +287,10 @@ public class Main
         Person winner = null;
         
         for(Person per : standingCommittee){
+            //System.out.println(relationCalc(premiere,per));
             if(relationCalc(premiere, per)> topnum && per!=premiere && hasNoPosition(per)){
                 topnum = relationCalc(premiere,per);
+                
                 winner = per;
             }
         }
@@ -331,6 +333,16 @@ public class Main
         per.updateMil();
         per.updatePol();
         per.updateInf();
+    }
+    
+    public static int noOfSupport(Person per1){
+        int sup = 0;
+        for(Person per: standingCommittee){
+            if(relationCalc(per1,per) > 70){
+                sup++;
+            }
+        }
+        return sup;
     }
     
     public static void monthly(){
@@ -392,6 +404,16 @@ public class Main
                 per.military+=5;
                 per.admin+=5;
                 per.ideo+=5;
+            }
+            
+            int pctgSupport = noOfSupport(per)*5;
+            
+            if(pctgSupport<40){
+                per.polpower-=20;
+                per.influence-=20;
+                per.military-=20;
+                per.admin-=20;
+                per.ideo-=20;
             }
             
             if(checkAge(per)){
@@ -593,7 +615,7 @@ public class Main
 		
 		System.out.println(standingCommittee.size());
 		for(Person per : standingCommittee){
-		//    System.out.println(per);
+		   // System.out.println(noOfSupport(per));
 		}
 		
 		sc.nextLine();
