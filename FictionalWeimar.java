@@ -20,6 +20,7 @@ public class Main
     public static class Party{
         Map<socialClass, int> classSup = new HashMap<>();
         String name, ideology;
+        int seats = 0;
         public Party(String name, String ideology){
             this.name = name;
             this.ideology = ideology;
@@ -70,6 +71,23 @@ public class Main
         LRP.addClass(rural, 2);
         
     }
+    
+    public static List<socialClass> allClasses = new ArrayList<>();
+    allClasses.add(upper);
+    allClasses.add(newMid);
+    allClasses.add(oldMid);
+    allClasses.add(urban);
+    allClasses.add(rural);
+    
+    public static List<Party> allParties = new ArrayList<>();
+    allParties.add(NUP);
+    allParties.add(REP);
+    allParties.add(LRP);
+    
+    public static void election(){
+        
+    }
+    
 	public static void main(String[] args) {
 		System.out.println("Hello World");
 	}
