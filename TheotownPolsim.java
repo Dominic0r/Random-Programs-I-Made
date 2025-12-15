@@ -13,7 +13,7 @@ public class Main
             return name;
         }
         public int Popularity(){
-            return popu;
+            return popu*100;
         }
     }
     
@@ -115,34 +115,34 @@ public class Main
         }
     }
     
-    public static Issue culture = new Issue("Culture",50);
-    public static Issue environment= new Issue("Environemnt",6);
-    public static Issue police= new Issue("Police",7);
-    public static Issue parks= new Issue("Parks",6);
-    public static Issue wasteDisposal= new Issue("Waste Disposal",7);
-    public static Issue health= new Issue("Health",8);
-    public static Issue fireBrigade= new Issue("Fire Brigades",11);
-    public static Issue education= new Issue("Education",32);
-    public static Issue sport= new Issue("Sport",19);
-    public static Issue religion= new Issue("Religion",34);
-    public static Issue transportation= new Issue("Transportation",26);
-    public static Issue taxes= new Issue("Taxes",8);
+    public static Issue culture = new Issue("Culture",0);
+    public static Issue environment= new Issue("Environemnt",0);
+    public static Issue police= new Issue("Police",0);
+    public static Issue parks= new Issue("Parks",0);
+    public static Issue wasteDisposal= new Issue("Waste Disposal",0);
+    public static Issue health= new Issue("Health",9);
+    public static Issue fireBrigade= new Issue("Fire Brigades",0);
+    public static Issue education= new Issue("Education",0);
+    public static Issue sport= new Issue("Sport",0);
+    public static Issue religion= new Issue("Religion",0);
+    public static Issue transportation= new Issue("Transportation",0);
+    public static Issue taxes= new Issue("Taxes",0);
     
     
     
     //                                                 Residential, Commercial, Industrial
-    public static Party Cons = new Party ("Conservative Party",1,3,2, 1,0,2);
+    public static Party Cons = new Party ("Conservative Party",1,3,2, 1,1,2);
     public static Party Libs = new Party ("Liberal Party", 2,3,1, 0,2,1);
     public static Party Greens = new Party ("Green Party", 1,0,1, 1,2,0);
     public static Party SocDems = new Party ("Social Democratic Party", 3,1,2, 2,1,0);
     
     
-    public static int resiDemand = -1, commDemand = 1, induDemand = 1;
+    public static int resiDemand = 0, commDemand = 0, induDemand = 0;
     
-    public static int lowPercent = 2320, medPercent = 2656, upPercent=0;
+    public static int lowPercent = 0, medPercent = 0, upPercent=0;
     
-    public static Party ruling = SocDems;
-    public static int approvalrating = 78;
+    public static Party ruling = null;
+    public static int approvalrating = 0;
     public static void addIssuesToParties(){
         Cons.addToHigh(taxes);
         Cons.addToHigh(religion);
