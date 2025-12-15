@@ -290,5 +290,50 @@ public class Main
 		}
 		
 		System.out.println("Government Formed: "+ governmentFormed);
+		Map<Party, Integer> CoalitionMembers = new HashMap<>();
+		if(governmentFormed.equals("Conservative-Liberal Coalition")){
+		    CoalitionMembers.put(Cons,0);
+		    CoalitionMembers.put(Libs,0);
+		}
+		
+		if(governmentFormed.equals("Liberal-Green Coalition")){
+		    CoalitionMembers.put(Greens,0);
+		    CoalitionMembers.put(Libs,0);
+		}
+		
+		if(governmentFormed.equals("Red-Green Coalition")){
+		    CoalitionMembers.put(Greens,0);
+		    CoalitionMembers.put(SocDems,0);
+		}
+		
+		if(!governmentFormed.equals("")){
+		    for(int i=0; i< 5;i++){
+		        Party maxpar = null;
+		        maxnum = 0;
+		        
+		        for(Party par: CoalitionMembers.keySet()){
+		            if((par.Seats()*5)/(CoalitionMembers.get(par)+1)> maxnum){
+		                maxnum = (par.Seats()*5)/(CoalitionMembers.get(par)+1);
+		                maxpar = par;
+		            }
+		        }
+		        
+		        switch(i){
+		            case 0: System.out.print("Tax Policy: ");
+		            break;
+		            case 1: System.out.print("Income Policy: ");
+		            break;
+		            case 2: System.out.print("Zoning Policy: ");
+		            break;
+		            case 3: System.out.print("Energy Policy: ");
+		            break;
+		            case 4: System.out.print("Treasury Policy: ");
+		            break;
+		        }
+		        System.out.println(maxpar.Name());
+		        CoalitionMembers.put(maxpar, CoalitionMembers.get(maxpar)+1);
+		        
+		    }
+		}
 	}
 }
