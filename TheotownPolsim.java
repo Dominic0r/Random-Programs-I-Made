@@ -115,18 +115,18 @@ public class Main
         }
     }
     
-    public static Issue culture = new Issue("Culture",3);
-    public static Issue environment= new Issue("Environemnt",3);
-    public static Issue police= new Issue("Police",3);
-    public static Issue parks= new Issue("Parks",3);
-    public static Issue wasteDisposal= new Issue("Waste Disposal",3);
-    public static Issue health= new Issue("Health",3);
-    public static Issue fireBrigade= new Issue("Fire Brigades",6);
-    public static Issue education= new Issue("Education",6);
-    public static Issue sport= new Issue("Sport",8);
-    public static Issue religion= new Issue("Religion",12);
-    public static Issue transportation= new Issue("Transportation",19);
-    public static Issue taxes= new Issue("Taxes",31);
+    public static Issue culture = new Issue("Culture",50);
+    public static Issue environment= new Issue("Environemnt",6);
+    public static Issue police= new Issue("Police",12);
+    public static Issue parks= new Issue("Parks",5);
+    public static Issue wasteDisposal= new Issue("Waste Disposal",6);
+    public static Issue health= new Issue("Health",8);
+    public static Issue fireBrigade= new Issue("Fire Brigades",11);
+    public static Issue education= new Issue("Education",40);
+    public static Issue sport= new Issue("Sport",30);
+    public static Issue religion= new Issue("Religion",18);
+    public static Issue transportation= new Issue("Transportation",11);
+    public static Issue taxes= new Issue("Taxes",13);
     
     
     
@@ -137,9 +137,11 @@ public class Main
     public static Party SocDems = new Party ("Social Democratic Party", 3,1,2, 2,1,0);
     
     
-    public static int resiDemand = 5, commDemand = 5, induDemand = 1;
+    public static int resiDemand = 1, commDemand = 1, induDemand = 1;
     
-    public static int lowPercent = 310, medPercent = 11406, upPercent=31013;
+    public static int lowPercent = 2362, medPercent = 926, upPercent=0;
+    
+    public static Party ruling = null;
     
     public static void addIssuesToParties(){
         Cons.addToHigh(taxes);
@@ -236,7 +238,10 @@ public class Main
 		    int toAdd = (par.lowerClassPopularity()*lowPercent)+ (par.mediumClassPopularity()*medPercent)+ (par.upperClassPriority()*upPercent);
 		    par.addPoints(toAdd);
 		}
-		
+		int approvalrating = 0;
+		if(ruling!=null){
+		    ruling.addPoints(ruling.Points()/(100-approvalrating));
+		}
 		//Seat Distribution via D'hondt
 		int maxnum = 0;
 		Party maxPar = null;
