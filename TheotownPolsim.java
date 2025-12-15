@@ -117,16 +117,16 @@ public class Main
     
     public static Issue culture = new Issue("Culture",50);
     public static Issue environment= new Issue("Environemnt",6);
-    public static Issue police= new Issue("Police",12);
-    public static Issue parks= new Issue("Parks",5);
-    public static Issue wasteDisposal= new Issue("Waste Disposal",6);
+    public static Issue police= new Issue("Police",7);
+    public static Issue parks= new Issue("Parks",6);
+    public static Issue wasteDisposal= new Issue("Waste Disposal",7);
     public static Issue health= new Issue("Health",8);
     public static Issue fireBrigade= new Issue("Fire Brigades",11);
-    public static Issue education= new Issue("Education",40);
-    public static Issue sport= new Issue("Sport",30);
-    public static Issue religion= new Issue("Religion",18);
-    public static Issue transportation= new Issue("Transportation",11);
-    public static Issue taxes= new Issue("Taxes",13);
+    public static Issue education= new Issue("Education",32);
+    public static Issue sport= new Issue("Sport",19);
+    public static Issue religion= new Issue("Religion",34);
+    public static Issue transportation= new Issue("Transportation",26);
+    public static Issue taxes= new Issue("Taxes",8);
     
     
     
@@ -137,12 +137,12 @@ public class Main
     public static Party SocDems = new Party ("Social Democratic Party", 3,1,2, 2,1,0);
     
     
-    public static int resiDemand = 1, commDemand = 1, induDemand = 1;
+    public static int resiDemand = -1, commDemand = 1, induDemand = 1;
     
-    public static int lowPercent = 2362, medPercent = 926, upPercent=0;
+    public static int lowPercent = 2320, medPercent = 2656, upPercent=0;
     
-    public static Party ruling = null;
-    
+    public static Party ruling = SocDems;
+    public static int approvalrating = 78;
     public static void addIssuesToParties(){
         Cons.addToHigh(taxes);
         Cons.addToHigh(religion);
@@ -238,9 +238,9 @@ public class Main
 		    int toAdd = (par.lowerClassPopularity()*lowPercent)+ (par.mediumClassPopularity()*medPercent)+ (par.upperClassPriority()*upPercent);
 		    par.addPoints(toAdd);
 		}
-		int approvalrating = 0;
+		
 		if(ruling!=null){
-		    ruling.addPoints(ruling.Points()/(100-approvalrating));
+		    ruling.addPoints((ruling.Points()/((approvalrating+1)))*-1);
 		}
 		//Seat Distribution via D'hondt
 		int maxnum = 0;
