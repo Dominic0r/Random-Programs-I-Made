@@ -115,34 +115,34 @@ public class Main
         }
     }
     
-    public static Issue culture = new Issue("Culture",20);
-    public static Issue environment= new Issue("Environemnt",1);
-    public static Issue police= new Issue("Police",0);
-    public static Issue parks= new Issue("Parks",1);
-    public static Issue wasteDisposal= new Issue("Waste Disposal",0);
-    public static Issue health= new Issue("Health",1);
-    public static Issue fireBrigade= new Issue("Fire Brigades",0);
-    public static Issue education= new Issue("Education",23);
-    public static Issue sport= new Issue("Sport",35);
-    public static Issue religion= new Issue("Religion",22);
-    public static Issue transportation= new Issue("Transportation",31);
-    public static Issue taxes= new Issue("Taxes",5);
+    public static Issue culture = new Issue("Culture",33);
+    public static Issue environment= new Issue("Environemnt",13);
+    public static Issue police= new Issue("Police",5);
+    public static Issue parks= new Issue("Parks",11);
+    public static Issue wasteDisposal= new Issue("Waste Disposal",6);
+    public static Issue health= new Issue("Health",5);
+    public static Issue fireBrigade= new Issue("Fire Brigades",5);
+    public static Issue education= new Issue("Education",29);
+    public static Issue sport= new Issue("Sport",36);
+    public static Issue religion= new Issue("Religion",32);
+    public static Issue transportation= new Issue("Transportation",39);
+    public static Issue taxes= new Issue("Taxes",13);
     
     
     
     //                                                 Residential, Commercial, Industrial
-    public static Party Cons = new Party ("Conservative Party",1,3,2, 1,0,2);
-    public static Party Libs = new Party ("Liberal Party", 2,3,1, 0,2,1);
+    public static Party Cons = new Party ("Conservative Party",1,3,2, 1,0,3);
+    public static Party Libs = new Party ("Liberal Party", 2,3,1, 0,3,1);
     public static Party Greens = new Party ("Green Party", 1,0,1, 1,2,0);
-    public static Party SocDems = new Party ("Social Democratic Party", 3,1,2, 2,1,0);
+    public static Party SocDems = new Party ("Social Democratic Party", 3,1,2, 3,1,0);
     
     
-    public static int resiDemand = -5, commDemand = -2, induDemand = 3;
+    public static int resiDemand = -0, commDemand = -1, induDemand = 1;
     
-    public static int lowPercent = 46, medPercent = 54, upPercent=0;
+    public static int lowPercent = 58, medPercent = 42, upPercent=0;
     
-    public static Party ruling = Cons;
-    public static int approvalrating = 79;
+    public static Party ruling = Libs;
+    public static int approvalrating = 75;
     public static void addIssuesToParties(){
         Cons.addToHigh(taxes);
         Cons.addToHigh(religion);
@@ -215,13 +215,13 @@ public class Main
 		for(Party par: allParties){
 		    for(Issue i : allIssues){
 		        if(par.highList().contains(i)){
-		            par.addPoints(i.Popularity()*3);
-		        }
-		        if(par.medList().contains(i)){
 		            par.addPoints(i.Popularity()*2);
 		        }
-		        if(par.lowList().contains(i)){
+		        if(par.medList().contains(i)){
 		            par.addPoints(i.Popularity());
+		        }
+		        if(par.lowList().contains(i)){
+		            par.addPoints(i.Popularity()/2);
 		        }
 		    }
 		}
@@ -231,12 +231,15 @@ public class Main
 		    int toAdd = ((par.resiPriority()*resiDemand)+ (par.induPriority()*induDemand)+ (par.comPriority()*commDemand))*100;
 		    par.addPoints(toAdd);
 		    
+		        //System.out.println(par.Name()+ " " +toAdd);
+		    
 		}
 		
 		//  Class
 		for(Party par: allParties){
 		    int toAdd = (par.lowerClassPopularity()*lowPercent)+ (par.mediumClassPopularity()*medPercent)+ (par.upperClassPriority()*upPercent);
 		    par.addPoints(toAdd);
+		    //System.out.println(par.Name()+ " "+ toAdd);
 		}
 		
 		if(ruling!=null){
@@ -249,7 +252,7 @@ public class Main
 		    maxnum = 0;
 		    maxPar = null;
 		    for(Party par: allParties){
-		        if((par.Points()*100)/(par.Seats()+1) > maxnum){
+		        if((par.Points()*100)/((par.Seats()/1.5)+2) > maxnum){
 		            maxnum = (par.Points()*100)/(par.Seats()+1);
 		            maxPar = par;
 		        }
@@ -277,8 +280,8 @@ public class Main
 		        
 		        for(Party par: CoalitionMembers.keySet()){
 		            curpoints =0;
-		            curpoints = (par.Seats()*5)/(CoalitionMembers.get(par)+1);
-		            curpoints+= par.Seats()/2;
+		            curpoints = (par.Seats()*5)/((CoalitionMembers.get(par)/2)+1);
+		            //curpoints+= par.Seats()/2;
 		            if(curpoints> maxnum){
 		                maxnum = curpoints;
 		                maxpar = par;
