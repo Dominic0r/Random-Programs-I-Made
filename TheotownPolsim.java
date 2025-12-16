@@ -325,6 +325,40 @@ public class Main
 		            System.out.println(i.Name()+ " - " +seatsup + "% of Parliament Supports");
 		        }
 		    }
+		    
+		    System.out.println("\nAllowed Zones:");
+		    int resiSupport = 0, commSupport = 0, induSupport=0;
+		    // Residential
+		    seatsup =0;
+		    for(Party par: allParties){
+		        
+		        int divider = 4-par.resiPriority();
+		        seatsup+= par.Seats()/divider;
+		    }
+		    if(seatsup>=50){
+		        System.out.println("Residential Zones - "+ seatsup +"% of Parliament Suports");
+		    }
+		    //Commercial
+		    seatsup =0;
+		    for(Party par: allParties){
+		        
+		        int divider = 4-par.comPriority();
+		        seatsup+= par.Seats()/divider;
+		    }
+		    if(seatsup>=50){
+		        System.out.println("Commercial Zones - "+ seatsup +"% of Parliament Suports");
+		    }
+		    
+		    //Industrial
+		    seatsup =0;
+		    for(Party par: allParties){
+		        
+		        int divider = 4-par.induPriority();
+		        seatsup+= par.Seats()/divider;
+		    }
+		    if(seatsup>=50){
+		        System.out.println("Industrial Zones - "+ seatsup +"% of Parliament Suports");
+		    }
 		
 	}
 }
