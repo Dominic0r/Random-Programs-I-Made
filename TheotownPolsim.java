@@ -131,16 +131,16 @@ public class Main
     
     
     //                                                 Residential, Commercial, Industrial
-    public static Party National = new Party ("National Party", 3,1,2, 2,1,2);
+    public static Party National = new Party ("National Party", 3,1,2, 3,2,2);
     public static Party Cons = new Party ("Conservative Party",1,3,2, 1,0,3);
-    public static Party Peoples = new Party ("Peoples Party",1,2,3, 2,1,2);
-    public static Party Libs = new Party ("Liberal Party", 2,3,1, 0,3,1);
+    public static Party Peoples = new Party ("Peoples Party",1,2,3, 2,1,3);
+    public static Party Libs = new Party ("Liberal Party", 2,3,1, 0,3,2);
     public static Party Greens = new Party ("Green Party", 1,0,1, 1,2,0);
     public static Party Progress = new Party ("Progressive Party", 2, 2, 1, 1, 3, 0);
-    public static Party SocDems = new Party ("Social Democratic Party", 3,1,2, 3,1,0);
+    public static Party SocDems = new Party ("Social Democratic Party", 2,1,2, 3,1,0);
     
     
-    public static int resiDemand = -1, commDemand = -1, induDemand =1;
+    public static int resiDemand = -4, commDemand = -1, induDemand =1;
     
     public static int lowPercent = 58, medPercent = 42, upPercent=0;
     
@@ -291,8 +291,9 @@ public class Main
 		    maxnum = 0;
 		    maxPar = null;
 		    for(Party par: allParties){
-		        if((par.Points()*100)/((par.Seats()/1.5)+2) > maxnum){
-		            maxnum = (par.Points()*100)/(par.Seats()+1);
+		        int curpoints = (int) ((par.Points()*100)/((par.Seats()/2)+1));
+		        if(curpoints> maxnum){
+		            maxnum =curpoints;
 		            maxPar = par;
 		        }
 		    }
@@ -319,7 +320,7 @@ public class Main
 		        
 		        for(Party par: CoalitionMembers.keySet()){
 		            curpoints =0;
-		            curpoints = (par.Seats()*5)/((CoalitionMembers.get(par)/2)+1);
+		            curpoints =(int) ((par.Seats()*5)/((CoalitionMembers.get(par)/2)+1));
 		            //curpoints+= par.Seats()/2;
 		            if(curpoints> maxnum){
 		                maxnum = curpoints;
