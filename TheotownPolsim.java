@@ -270,7 +270,7 @@ public class Main
 		
 		
 		int curpoints = 0;
-		
+		System.out.println("\nGovernment Formed:");
 		    for(int i=0; i< 5;i++){
 		        Party maxpar = null;
 		        maxnum = 0;
