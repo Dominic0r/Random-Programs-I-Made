@@ -115,35 +115,49 @@ public class Main
         }
     }
     
-    public static Issue culture = new Issue("Culture",33);
-    public static Issue environment= new Issue("Environemnt",13);
-    public static Issue police= new Issue("Police",5);
-    public static Issue parks= new Issue("Parks",11);
-    public static Issue wasteDisposal= new Issue("Waste Disposal",6);
-    public static Issue health= new Issue("Health",5);
-    public static Issue fireBrigade= new Issue("Fire Brigades",5);
-    public static Issue education= new Issue("Education",29);
-    public static Issue sport= new Issue("Sport",36);
-    public static Issue religion= new Issue("Religion",32);
-    public static Issue transportation= new Issue("Transportation",39);
-    public static Issue taxes= new Issue("Taxes",13);
+    public static Issue culture = new Issue("Culture",50);
+    public static Issue environment= new Issue("Environemnt",16);
+    public static Issue police= new Issue("Police",10);
+    public static Issue parks= new Issue("Parks",12);
+    public static Issue wasteDisposal= new Issue("Waste Disposal",5);
+    public static Issue health= new Issue("Health",4);
+    public static Issue fireBrigade= new Issue("Fire Brigades",9);
+    public static Issue education= new Issue("Education",33);
+    public static Issue sport= new Issue("Sport",37);
+    public static Issue religion= new Issue("Religion",50);
+    public static Issue transportation= new Issue("Transportation",17);
+    public static Issue taxes= new Issue("Taxes",7);
     
     
     
     //                                                 Residential, Commercial, Industrial
+    public static Party National = new Party ("National Party", 3,1,2, 2,1,2);
     public static Party Cons = new Party ("Conservative Party",1,3,2, 1,0,3);
+    public static Party Peoples = new Party ("Peoples Party",1,2,3, 2,1,2);
     public static Party Libs = new Party ("Liberal Party", 2,3,1, 0,3,1);
     public static Party Greens = new Party ("Green Party", 1,0,1, 1,2,0);
+    public static Party Progress = new Party ("Progressive Party", 2, 2, 1, 1, 3, 0);
     public static Party SocDems = new Party ("Social Democratic Party", 3,1,2, 3,1,0);
     
     
-    public static int resiDemand = -0, commDemand = -1, induDemand = 1;
+    public static int resiDemand = -1, commDemand = -1, induDemand =1;
     
     public static int lowPercent = 58, medPercent = 42, upPercent=0;
     
-    public static Party ruling = Libs;
-    public static int approvalrating = 75;
+    public static Party ruling = SocDems;
+    public static int approvalrating = 72;
     public static void addIssuesToParties(){
+        National.addToHigh(religion);
+        National.addToHigh(police);
+        National.addToHigh(culture);
+        
+        National.addToMed(sport);
+        National.addToMed(environment);
+        National.addToMed(health);
+        
+        National.addToLow(wasteDisposal);
+        National.addToLow(parks);
+        
         Cons.addToHigh(taxes);
         Cons.addToHigh(religion);
         Cons.addToHigh(police);
@@ -152,6 +166,15 @@ public class Main
         Cons.addToMed(sport);
         
         Cons.addToLow(wasteDisposal);
+        
+        Peoples.addToHigh(taxes);
+        Peoples.addToHigh(transportation);
+        
+        Peoples.addToMed(police);
+        Peoples.addToMed(wasteDisposal);
+        
+        Peoples.addToLow(religion);
+        Peoples.addToLow(parks);
         
         
         Libs.addToHigh(education);
@@ -174,6 +197,17 @@ public class Main
         
         Greens.addToLow(transportation);
         
+        Progress.addToHigh(education);
+        Progress.addToHigh(culture);
+        Progress.addToHigh(wasteDisposal);
+        
+        Progress.addToMed(health);
+        Progress.addToMed(environment);
+        Progress.addToMed(transportation);
+        
+        Progress.addToLow(fireBrigade);
+        Progress.addToLow(sport);
+        
         SocDems.addToHigh(health);
         SocDems.addToHigh(education);
         SocDems.addToHigh(transportation);
@@ -188,10 +222,15 @@ public class Main
     
 	public static void main(String[] args) {
 	    List<Party> allParties = new ArrayList<>();
+	    allParties.add(National);
 	    allParties.add(Cons);
+	    allParties.add(Peoples);
 	    allParties.add(Libs);
 	    allParties.add(Greens);
+	    allParties.add(Progress);
 	    allParties.add(SocDems);
+	    
+	    
 	    
 	    List<Issue> allIssues = new ArrayList<>();
 	    allIssues.add(culture);
