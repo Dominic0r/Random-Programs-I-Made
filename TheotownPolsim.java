@@ -262,58 +262,25 @@ public class Main
 		
 		
 		System.out.println("Results:");
+		Map<Party, Integer> CoalitionMembers = new HashMap<>();
 		for(Party par: allParties){
 		    System.out.println(par);
-		}
-		String governmentFormed ="";
-		for(Party par: allParties){
-		    if(par.Seats()>50){
-		        governmentFormed = par.Name()+ " Government";
-		    }
-		}
-		int maxseats = 0;
-		if(governmentFormed.equals("")){
-		    if(Cons.Seats()+Libs.Seats() > 50 && Cons.Seats()+Libs.Seats()> maxseats){
-		        maxseats = Cons.Seats()+Libs.Seats();
-		        governmentFormed = "Conservative-Liberal Coalition";
-		    }
-		    
-		    if(Libs.Seats()+Greens.Seats()> 50 && Libs.Seats()+Greens.Seats()> maxseats){
-		        maxseats = Libs.Seats()+Greens.Seats();
-		        governmentFormed = "Liberal-Green Coalition";
-		    }
-		    
-		    if(Greens.Seats()+SocDems.Seats()> 50 && Greens.Seats()+SocDems.Seats() >maxseats){
-		        maxseats = Greens.Seats()+SocDems.Seats();
-		        governmentFormed = "Red-Green Coalition";
-		    }
+		    CoalitionMembers.put(par, 0);
 		}
 		
-		System.out.println("Government Formed: "+ governmentFormed);
-		Map<Party, Integer> CoalitionMembers = new HashMap<>();
-		if(governmentFormed.equals("Conservative-Liberal Coalition")){
-		    CoalitionMembers.put(Cons,0);
-		    CoalitionMembers.put(Libs,0);
-		}
 		
-		if(governmentFormed.equals("Liberal-Green Coalition")){
-		    CoalitionMembers.put(Greens,0);
-		    CoalitionMembers.put(Libs,0);
-		}
+		int curpoints = 0;
 		
-		if(governmentFormed.equals("Red-Green Coalition")){
-		    CoalitionMembers.put(Greens,0);
-		    CoalitionMembers.put(SocDems,0);
-		}
-		
-		if(!governmentFormed.equals("")){
 		    for(int i=0; i< 5;i++){
 		        Party maxpar = null;
 		        maxnum = 0;
 		        
 		        for(Party par: CoalitionMembers.keySet()){
-		            if((par.Seats()*5)/(CoalitionMembers.get(par)+1)> maxnum){
-		                maxnum = (par.Seats()*5)/(CoalitionMembers.get(par)+1);
+		            curpoints =0;
+		            curpoints = (par.Seats()*5)/(CoalitionMembers.get(par)+1);
+		            curpoints+= par.Seats()/2;
+		            if(curpoints> maxnum){
+		                maxnum = curpoints;
 		                maxpar = par;
 		            }
 		        }
@@ -334,6 +301,6 @@ public class Main
 		        CoalitionMembers.put(maxpar, CoalitionMembers.get(maxpar)+1);
 		        
 		    }
-		}
+		
 	}
 }
