@@ -116,17 +116,17 @@ public class Main
     }
     
     public static Issue culture = new Issue("Culture",50);
-    public static Issue environment= new Issue("Environemnt",7);
-    public static Issue police= new Issue("Police",5);
-    public static Issue parks= new Issue("Parks",5);
-    public static Issue wasteDisposal= new Issue("Waste Disposal",5);
-    public static Issue health= new Issue("Health",4);
-    public static Issue fireBrigade= new Issue("Fire Brigades",4);
-    public static Issue education= new Issue("Education",40);
-    public static Issue sport= new Issue("Sport",36);
-    public static Issue religion= new Issue("Religion",35);
-    public static Issue transportation= new Issue("Transportation",11);
-    public static Issue taxes= new Issue("Taxes",16);
+    public static Issue environment= new Issue("Environemnt",15);
+    public static Issue police= new Issue("Police",1);
+    public static Issue parks= new Issue("Parks",13);
+    public static Issue wasteDisposal= new Issue("Waste Disposal",0);
+    public static Issue health= new Issue("Health",1);
+    public static Issue fireBrigade= new Issue("Fire Brigades",1);
+    public static Issue education= new Issue("Education",25);
+    public static Issue sport= new Issue("Sport",28);
+    public static Issue religion= new Issue("Religion",19);
+    public static Issue transportation= new Issue("Transportation",15);
+    public static Issue taxes= new Issue("Taxes",13);
     
     
     
@@ -137,11 +137,11 @@ public class Main
     public static Party SocDems = new Party ("Social Democratic Party", 3,1,2, 2,1,0);
     
     
-    public static int resiDemand = 5, commDemand = -1, induDemand = 4;
+    public static int resiDemand = 1, commDemand = 0, induDemand = 4;
     
-    public static int lowPercent = 3942, medPercent = 5002, upPercent=0;
+    public static int lowPercent = 73, medPercent = 27, upPercent=0;
     
-    public static Party ruling = Libs;
+    public static Party ruling = null;
     public static int approvalrating = 76;
     public static void addIssuesToParties(){
         Cons.addToHigh(taxes);
