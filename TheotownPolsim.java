@@ -115,18 +115,18 @@ public class Main
         }
     }
     
-    public static Issue culture = new Issue("Culture",50);
-    public static Issue environment= new Issue("Environemnt",15);
-    public static Issue police= new Issue("Police",1);
-    public static Issue parks= new Issue("Parks",13);
+    public static Issue culture = new Issue("Culture",20);
+    public static Issue environment= new Issue("Environemnt",1);
+    public static Issue police= new Issue("Police",0);
+    public static Issue parks= new Issue("Parks",1);
     public static Issue wasteDisposal= new Issue("Waste Disposal",0);
     public static Issue health= new Issue("Health",1);
-    public static Issue fireBrigade= new Issue("Fire Brigades",1);
-    public static Issue education= new Issue("Education",25);
-    public static Issue sport= new Issue("Sport",28);
-    public static Issue religion= new Issue("Religion",19);
-    public static Issue transportation= new Issue("Transportation",15);
-    public static Issue taxes= new Issue("Taxes",13);
+    public static Issue fireBrigade= new Issue("Fire Brigades",0);
+    public static Issue education= new Issue("Education",23);
+    public static Issue sport= new Issue("Sport",35);
+    public static Issue religion= new Issue("Religion",22);
+    public static Issue transportation= new Issue("Transportation",31);
+    public static Issue taxes= new Issue("Taxes",5);
     
     
     
@@ -137,12 +137,12 @@ public class Main
     public static Party SocDems = new Party ("Social Democratic Party", 3,1,2, 2,1,0);
     
     
-    public static int resiDemand = 1, commDemand = 0, induDemand = 4;
+    public static int resiDemand = -5, commDemand = -2, induDemand = 3;
     
-    public static int lowPercent = 73, medPercent = 27, upPercent=0;
+    public static int lowPercent = 46, medPercent = 54, upPercent=0;
     
-    public static Party ruling = null;
-    public static int approvalrating = 76;
+    public static Party ruling = Cons;
+    public static int approvalrating = 79;
     public static void addIssuesToParties(){
         Cons.addToHigh(taxes);
         Cons.addToHigh(religion);
@@ -228,7 +228,7 @@ public class Main
 		
 		//  infrastructure
 		for(Party par: allParties){
-		    int toAdd = (par.resiPriority()*resiDemand)+ (par.induPriority()*induDemand)+ (par.comPriority()*commDemand);
+		    int toAdd = ((par.resiPriority()*resiDemand)+ (par.induPriority()*induDemand)+ (par.comPriority()*commDemand))*100;
 		    par.addPoints(toAdd);
 		    
 		}
@@ -359,6 +359,23 @@ public class Main
 		    if(seatsup>=50){
 		        System.out.println("Industrial Zones - "+ seatsup +"% of Parliament Suports");
 		    }
+		    
+		    //Farms 
+		    seatsup =0;
+		    for(Party par: allParties){
+		        
+		        int divider = 4-par.induPriority();
+		        divider = (divider/2)+1;
+		        if(par!=Greens){
+		            seatsup+= par.Seats()/divider;
+		        }else{
+		            seatsup += par.Seats();
+		        }
+		    }
+		    if(seatsup>=50){
+		        System.out.println("Farm Zones - "+ seatsup +"% of Parliament Suports");
+		    }
+		    
 		
 	}
 }
