@@ -6,7 +6,8 @@ public class Main
         int popu; // the issue's popularity
         public Issue(String name, int popu){
             this.name = name;
-            this.popu = popu;
+            this.popu = 125-popu;
+            
         }
         
         public String Name(){
@@ -115,23 +116,23 @@ public class Main
         }
     }
     
-    public static Issue culture = new Issue("Culture",50);
-    public static Issue environment= new Issue("Environemnt",16);
-    public static Issue police= new Issue("Police",10);
-    public static Issue parks= new Issue("Parks",12);
-    public static Issue wasteDisposal= new Issue("Waste Disposal",5);
-    public static Issue health= new Issue("Health",4);
-    public static Issue fireBrigade= new Issue("Fire Brigades",9);
-    public static Issue education= new Issue("Education",33);
-    public static Issue sport= new Issue("Sport",37);
+    public static Issue culture = new Issue("Culture",86);
+    public static Issue environment= new Issue("Environemnt",96);
+    public static Issue police= new Issue("Police",96);
+    public static Issue parks= new Issue("Parks",96);
+    public static Issue wasteDisposal= new Issue("Waste Disposal",98);
+    public static Issue health= new Issue("Health",75);
+    public static Issue fireBrigade= new Issue("Fire Brigades",77);
+    public static Issue education= new Issue("Education",95);
+    public static Issue sport= new Issue("Sport",61);
     public static Issue religion= new Issue("Religion",50);
-    public static Issue transportation= new Issue("Transportation",17);
-    public static Issue taxes= new Issue("Taxes",7);
+    public static Issue transportation= new Issue("Transportation",47);
+    public static Issue taxes= new Issue("Taxes",79);
     
     
     
     //                                                 Residential, Commercial, Industrial
-    public static Party National = new Party ("National Party", 3,1,2, 3,2,2);
+    public static Party National = new Party ("National Party", 3,1,2, 3,0,1);
     public static Party Cons = new Party ("Conservative Party",1,3,2, 1,0,3);
     public static Party Peoples = new Party ("Peoples Party",1,2,3, 2,1,3);
     public static Party Libs = new Party ("Liberal Party", 2,3,1, 0,3,2);
@@ -140,12 +141,12 @@ public class Main
     public static Party SocDems = new Party ("Social Democratic Party", 2,1,2, 3,1,0);
     
     
-    public static int resiDemand = -4, commDemand = -1, induDemand =1;
+    public static int resiDemand = 5, commDemand = 3, induDemand =-1;
     
-    public static int lowPercent = 58, medPercent = 42, upPercent=0;
+    public static int lowPercent = 45, medPercent = 55, upPercent=0;
     
-    public static Party ruling = SocDems;
-    public static int approvalrating = 72;
+    public static Party ruling = Libs;
+    public static int approvalrating = 64;
     public static void addIssuesToParties(){
         National.addToHigh(religion);
         National.addToHigh(police);
@@ -157,6 +158,7 @@ public class Main
         
         National.addToLow(wasteDisposal);
         National.addToLow(parks);
+        National.addToLow(fireBrigade);
         
         Cons.addToHigh(taxes);
         Cons.addToHigh(religion);
@@ -166,6 +168,7 @@ public class Main
         Cons.addToMed(sport);
         
         Cons.addToLow(wasteDisposal);
+        Cons.addToLow(fireBrigade);
         
         Peoples.addToHigh(taxes);
         Peoples.addToHigh(transportation);
@@ -173,9 +176,10 @@ public class Main
         Peoples.addToMed(police);
         Peoples.addToMed(wasteDisposal);
         
+        
         Peoples.addToLow(religion);
         Peoples.addToLow(parks);
-        
+        Peoples.addToLow(fireBrigade);
         
         Libs.addToHigh(education);
         Libs.addToHigh(culture);
@@ -282,11 +286,16 @@ public class Main
 		}
 		
 		if(ruling!=null){
-		    ruling.addPoints((ruling.Points()/((approvalrating+1)))*-1);
+		    ruling.addPoints((ruling.Points()/((approvalrating+1)))*-2);
 		}
 		//Seat Distribution via D'hondt
 		int maxnum = 0;
 		Party maxPar = null;
+		
+		int total = 0;
+		for(Party par: allParties){
+		    total+=par.Points();
+		}
 		for(int i=0; i!=100;i++){
 		    maxnum = 0;
 		    maxPar = null;
@@ -302,6 +311,8 @@ public class Main
 		        maxPar.addSeat();
 		    }
 		}
+		
+		
 		
 		
 		System.out.println("Results:");
@@ -320,7 +331,7 @@ public class Main
 		        
 		        for(Party par: CoalitionMembers.keySet()){
 		            curpoints =0;
-		            curpoints =(int) ((par.Seats()*5)/((CoalitionMembers.get(par)/2)+1));
+		            curpoints =(int) ((par.Seats()*5)/((CoalitionMembers.get(par))+1));
 		            //curpoints+= par.Seats()/2;
 		            if(curpoints> maxnum){
 		                maxnum = curpoints;
@@ -359,6 +370,11 @@ public class Main
 		            }
 		            if(par.lowList().contains(i)){
 		                issueval = 3;
+		            }
+		            if(i == fireBrigade || i== police || i==health){
+		                if(issueval>1){
+		                    issueval--;
+		                }
 		            }
 		            
 		            seatsup += (par.Seats()/issueval);
