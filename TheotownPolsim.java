@@ -389,7 +389,7 @@ public class Main
 		                }
 		            }
 		            
-		            issueval -= i.Popularity()/100;
+		            issueval -= i.Popularity()/75;
 		            if(issueval<=0){
 		                issueval = 1;
 		            }
