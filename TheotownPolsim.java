@@ -263,6 +263,9 @@ public class Main
 	    
 		addIssuesToParties();
 		
+		int noOfDistricts = total/250;
+		int majority = noOfDistricts/2;
+		
 		// Section to give points
 		//  Issues
 		for(Party par: allParties){
@@ -308,11 +311,14 @@ public class Main
 		for(Party par: allParties){
 		    total+=par.Points();
 		}
-		for(int i=0; i!=100;i++){
+		Random ra = new Random();
+		for(int i=0; i!=noOfDistricts;i++){
 		    maxnum = 0;
 		    maxPar = null;
 		    for(Party par: allParties){
-		        int curpoints = (int) ((par.Points()*100)/((par.Seats()/2)+1));
+		        //int curpoints = (int) ((par.Points()*100)/((par.Seats()/2)+1));
+		        int curpoints = par.Points();
+		        curpoints += ra.nextInt((curpoints)+1);
 		        if(curpoints> maxnum){
 		            maxnum =curpoints;
 		            maxPar = par;
@@ -344,6 +350,7 @@ public class Main
 		        for(Party par: CoalitionMembers.keySet()){
 		            curpoints =0;
 		            curpoints =(int) ((par.Seats()*5)/((CoalitionMembers.get(par))+1));
+		            
 		            //curpoints+= par.Seats()/2;
 		            if(curpoints> maxnum){
 		                maxnum = curpoints;
@@ -368,7 +375,7 @@ public class Main
 		        
 		    }
 		    
-		    System.out.println("\nIssue Support in Government (Requires 50 to pass):");
+		    System.out.println("\nIssue Support in Government (Requires "+ majority + " to pass):");
 		    int seatsup = 0;
 		    for(Issue i: allIssues){
 		        seatsup = 0;
@@ -397,8 +404,8 @@ public class Main
 		            seatsup += (par.Seats()/issueval);
 		            
 		        }
-		        if(seatsup>=50){
-		            System.out.println(i.Name()+ " - " +seatsup + "% of Parliament Supports");
+		        if(seatsup>=majority){
+		            System.out.println(i.Name()+ " - " +seatsup + " of "+ majority+ " needed");
 		        }
 		    }
 		    
@@ -411,8 +418,8 @@ public class Main
 		        int divider = 4-par.resiPriority();
 		        seatsup+= par.Seats()/divider;
 		    }
-		    if(seatsup>=50){
-		        System.out.println("Dense Residential Zones - "+ seatsup +"% of Parliament Suports");
+		    if(seatsup>=majority){
+		        System.out.println("Dense Residential Zones - "+ seatsup +" of "+ majority+ " needed");
 		    }
 		    
 		    seatsup =0;
@@ -422,8 +429,8 @@ public class Main
 		        divider -= (divider >1)? 1:0;
 		        seatsup+= par.Seats()/divider;
 		    }
-		    if(seatsup>=50){
-		        System.out.println("Residential Zones - "+ seatsup +"% of Parliament Suports");
+		    if(seatsup>=majority){
+		        System.out.println("Residential Zones - "+ seatsup +" of "+ majority+ " needed");
 		    }
 		    
 		    
@@ -435,8 +442,8 @@ public class Main
 		        int divider = 4-par.comPriority();
 		        seatsup+= par.Seats()/divider;
 		    }
-		    if(seatsup>=50){
-		        System.out.println("Dense Commercial Zones - "+ seatsup +"% of Parliament Suports");
+		    if(seatsup>=majority){
+		        System.out.println("Dense Commercial Zones - "+ seatsup +" of "+ majority+ " needed");
 		    }
 		    seatsup =0;
 		    for(Party par: allParties){
@@ -445,8 +452,8 @@ public class Main
 		        divider -= (divider >1)? 1:0;
 		        seatsup+= par.Seats()/divider;
 		    }
-		    if(seatsup>=50){
-		        System.out.println("Commercial Zones - "+ seatsup +"% of Parliament Suports");
+		    if(seatsup>=majority){
+		        System.out.println("Commercial Zones - "+ seatsup +" of "+ majority+ " needed");
 		    }
 		    
 		    //Industrial
@@ -456,8 +463,8 @@ public class Main
 		        int divider = 4-par.induPriority();
 		        seatsup+= par.Seats()/divider;
 		    }
-		    if(seatsup>=50){
-		        System.out.println("Dense Industrial Zones - "+ seatsup +"% of Parliament Suports");
+		    if(seatsup>=majority){
+		        System.out.println("Dense Industrial Zones - "+ seatsup +" of "+ majority+ " needed");
 		    }
 		    
 		    seatsup =0;
@@ -467,8 +474,8 @@ public class Main
 		        divider -= (divider >1)? 1:0;
 		        seatsup+= par.Seats()/divider;
 		    }
-		    if(seatsup>=50){
-		        System.out.println("Industrial Zones - "+ seatsup +"% of Parliament Suports");
+		    if(seatsup>=majority){
+		        System.out.println("Industrial Zones - "+ seatsup +" of "+ majority+ " needed");
 		    }
 		    
 		    //Farms 
@@ -483,8 +490,8 @@ public class Main
 		            seatsup += par.Seats();
 		        }
 		    }
-		    if(seatsup>=50){
-		        System.out.println("Farm Zones - "+ seatsup +"% of Parliament Suports");
+		    if(seatsup>=majority){
+		        System.out.println("Farm Zones - "+ seatsup +" of "+ majority+ " needed");
 		    }
 		    
 		    for(Party par: allParties){
