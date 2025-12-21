@@ -116,18 +116,18 @@ public class Main
         }
     }
     
-    public static Issue culture = new Issue("Culture",50);
-    public static Issue environment= new Issue("Environemnt",80);
+    public static Issue culture = new Issue("Culture",97);
+    public static Issue environment= new Issue("Environemnt",97);
     public static Issue police= new Issue("Police",97);
-    public static Issue parks= new Issue("Parks",87);
-    public static Issue wasteDisposal= new Issue("Waste Disposal",95);
-    public static Issue health= new Issue("Health",96);
+    public static Issue parks= new Issue("Parks",97);
+    public static Issue wasteDisposal= new Issue("Waste Disposal",97);
+    public static Issue health= new Issue("Health",97);
     public static Issue fireBrigade= new Issue("Fire Brigades",97);
-    public static Issue education= new Issue("Education",68);
-    public static Issue sport= new Issue("Sport",75);
-    public static Issue religion= new Issue("Religion",50);
-    public static Issue transportation= new Issue("Transportation",73);
-    public static Issue taxes= new Issue("Taxes",84);
+    public static Issue education= new Issue("Education",96);
+    public static Issue sport= new Issue("Sport",92);
+    public static Issue religion= new Issue("Religion",88);
+    public static Issue transportation= new Issue("Transportation",82);
+    public static Issue taxes= new Issue("Taxes",69);
     
     
     
@@ -143,9 +143,9 @@ public class Main
     public static Party Peoples = new Party ("Peoples Party",1,2,3, 2,1,3);
     public static Party Progress = new Party ("Progressive Party", 2, 2, 1, 1, 3, 0);
     
-    public static int resiDemand = 4, commDemand = 1, induDemand =1;
+    public static int resiDemand = 5, commDemand = 5, induDemand =-1;
     
-    public static int lowPercent = 3072, medPercent = 470, upPercent=0;
+    public static int lowPercent = 308, medPercent = 11410, upPercent=19298;
     public static int total = lowPercent+medPercent+upPercent;
     
     public static Party ruling = null;
@@ -319,6 +319,7 @@ public class Main
 		        //int curpoints = (int) ((par.Points()*100)/((par.Seats()/2)+1));
 		        int curpoints = par.Points();
 		        curpoints += ra.nextInt((curpoints)+1);
+		        curpoints /= ra.nextInt(4)+1;
 		        if(curpoints> maxnum){
 		            maxnum =curpoints;
 		            maxPar = par;
