@@ -116,18 +116,18 @@ public class Main
         }
     }
     
-    public static Issue culture = new Issue("Culture",94);
-    public static Issue environment= new Issue("Environemnt",99);
-    public static Issue police= new Issue("Police",99);
-    public static Issue parks= new Issue("Parks",99);
-    public static Issue wasteDisposal= new Issue("Waste Disposal",99);
-    public static Issue health= new Issue("Health",99);
-    public static Issue fireBrigade= new Issue("Fire Brigades",99);
-    public static Issue education= new Issue("Education",96);
-    public static Issue sport= new Issue("Sport",91);
-    public static Issue religion= new Issue("Religion",91);
-    public static Issue transportation= new Issue("Transportation",74);
-    public static Issue taxes= new Issue("Taxes",95);
+    public static Issue culture = new Issue("Culture",50);
+    public static Issue environment= new Issue("Environemnt",87);
+    public static Issue police= new Issue("Police",98);
+    public static Issue parks= new Issue("Parks",94);
+    public static Issue wasteDisposal= new Issue("Waste Disposal",98);
+    public static Issue health= new Issue("Health",97);
+    public static Issue fireBrigade= new Issue("Fire Brigades",98);
+    public static Issue education= new Issue("Education",69);
+    public static Issue sport= new Issue("Sport",67);
+    public static Issue religion= new Issue("Religion",76);
+    public static Issue transportation= new Issue("Transportation",46);
+    public static Issue taxes= new Issue("Taxes",87);
     
     
     
@@ -143,12 +143,12 @@ public class Main
     public static Party Peoples = new Party ("Peoples Party",1,2,3, 2,1,3);
     public static Party Progress = new Party ("Progressive Party", 2, 2, 1, 1, 3, 0);
     
-    public static int resiDemand = 5, commDemand = 1, induDemand =-3;
+    public static int resiDemand = 5, commDemand = 0, induDemand =3;
     
-    public static int lowPercent = 2168, medPercent = 9151, upPercent=17320;
+    public static int lowPercent = 2718, medPercent = 1831, upPercent=0;
     public static int total = lowPercent+medPercent+upPercent;
     
-    public static Party ruling = Cons;
+    public static Party ruling = null;
     public static int approvalrating = 79;
     public static void addIssuesToParties(){
         National.addToHigh(religion);
@@ -271,9 +271,11 @@ public class Main
 	    //System.out.println(upPercent);
 	    
 		addIssuesToParties();
+		double dvdr = (Math.log(total)*10)+1;
+		int dvdrint = 250 + (int) (total*0.02);
 		
-		int noOfDistricts = total/250;
-		int majority = noOfDistricts/2;
+		int noOfDistricts =(int) (total/dvdrint);
+		int majority = (noOfDistricts/2)+1;
 		
 		// Section to give points
 		//  Issues
