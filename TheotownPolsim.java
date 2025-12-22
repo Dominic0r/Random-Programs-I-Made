@@ -229,12 +229,12 @@ public class Main
     
 	public static void main(String[] args) {
 	    List<Party> allParties = new ArrayList<>();
-	    //allParties.add(National);
+	    allParties.add(National);
 	    allParties.add(Cons);
-	    //allParties.add(Peoples);
+	    allParties.add(Peoples);
 	    allParties.add(Libs);
 	    allParties.add(Greens);
-	    //allParties.add(Progress);
+	    allParties.add(Progress);
 	    allParties.add(SocDems);
 	    
 	    
@@ -252,6 +252,15 @@ public class Main
 	    allIssues.add(religion);
 	    allIssues.add(transportation);
 	    allIssues.add(taxes);
+	    
+	    for(Issue i : allIssues){
+	        if(i.Popularity()> 95){
+	            String name = "Pro-"+ i.Name()+ " Independents";
+	            Party singleIssue = new Party(name, 0,0,0, 2,3,1);
+	            singleIssue.addToHigh(i);
+	            allParties.add(singleIssue);
+	        }
+	    }
 	    
 	    
 	    lowPercent = (lowPercent*100)/total;
@@ -335,11 +344,17 @@ public class Main
 		
 		
 		System.out.println("Results:");
+		int indepSeats = 0;
 		Map<Party, Integer> CoalitionMembers = new HashMap<>();
 		for(Party par: allParties){
+		    if(!par.Name().contains("Independents")){
 		    System.out.println(par);
 		    CoalitionMembers.put(par, 0);
+		    }else{
+		        indepSeats+= par.Seats();
+		    }
 		}
+		System.out.println("\nIndependents - "+ indepSeats+ " Seats" );
 		
 		
 		int curpoints = 0;
@@ -353,7 +368,7 @@ public class Main
 		            curpoints =(int) ((par.Seats()*5)/((CoalitionMembers.get(par))+1));
 		            
 		            //curpoints+= par.Seats()/2;
-		            if(curpoints> maxnum){
+		            if(curpoints> maxnum && !par.Name().contains("Independents")){
 		                maxnum = curpoints;
 		                maxpar = par;
 		            }
