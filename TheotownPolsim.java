@@ -116,18 +116,18 @@ public class Main
         }
     }
     
-    public static Issue culture = new Issue("Culture",50);
-    public static Issue environment= new Issue("Environemnt",87);
+    public static Issue culture = new Issue("Culture",62);
+    public static Issue environment= new Issue("Environemnt",91);
     public static Issue police= new Issue("Police",98);
-    public static Issue parks= new Issue("Parks",94);
-    public static Issue wasteDisposal= new Issue("Waste Disposal",98);
+    public static Issue parks= new Issue("Parks",95);
+    public static Issue wasteDisposal= new Issue("Waste Disposal",97);
     public static Issue health= new Issue("Health",97);
     public static Issue fireBrigade= new Issue("Fire Brigades",98);
-    public static Issue education= new Issue("Education",69);
-    public static Issue sport= new Issue("Sport",67);
-    public static Issue religion= new Issue("Religion",76);
-    public static Issue transportation= new Issue("Transportation",46);
-    public static Issue taxes= new Issue("Taxes",87);
+    public static Issue education= new Issue("Education",96);
+    public static Issue sport= new Issue("Sport",62);
+    public static Issue religion= new Issue("Religion",89);
+    public static Issue transportation= new Issue("Transportation",95);
+    public static Issue taxes= new Issue("Taxes",42);
     
     
     
@@ -143,13 +143,13 @@ public class Main
     public static Party Peoples = new Party ("Peoples Party",1,2,3, 2,1,3);
     public static Party Progress = new Party ("Progressive Party", 2, 2, 1, 1, 3, 0);
     
-    public static int resiDemand = 5, commDemand = 0, induDemand =3;
+    public static int resiDemand = 5, commDemand = 5, induDemand =1;
     
-    public static int lowPercent = 2718, medPercent = 1831, upPercent=0;
+    public static int lowPercent = 13273, medPercent = 16968, upPercent=98;
     public static int total = lowPercent+medPercent+upPercent;
     
-    public static Party ruling = null;
-    public static int approvalrating = 79;
+    public static Party ruling = National;
+    public static int approvalrating = 71;
     public static void addIssuesToParties(){
         National.addToHigh(religion);
         National.addToHigh(police);
@@ -256,12 +256,15 @@ public class Main
 	    for(Issue i : allIssues){
 	        if(i.Popularity()> 95){
 	            String name = "Pro-"+ i.Name()+ " Independents";
-	            Party singleIssue = new Party(name, 0,0,0, 2,3,1);
+	            Party singleIssue = new Party(name, 1,1,1, 2,3,1);
 	            singleIssue.addToHigh(i);
 	            allParties.add(singleIssue);
 	        }
 	    }
 	    
+	    int loans = 75000;
+	    
+	    int loansPerCapita = loans/total;
 	    
 	    lowPercent = (lowPercent*100)/total;
 	    //System.out.println(lowPercent);
@@ -313,6 +316,7 @@ public class Main
 		
 		if(ruling!=null){
 		    ruling.addPoints((ruling.Points()/((approvalrating+1)))*-2);
+		    ruling.addPoints(loansPerCapita*-1);
 		}
 		//Seat Distribution via D'hondt
 		int maxnum = 0;
