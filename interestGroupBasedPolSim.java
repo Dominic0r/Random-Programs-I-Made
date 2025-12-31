@@ -442,7 +442,7 @@ public class Main
                         extremeideoright = par.getPolicy();
                     }
             }
-            ideodif /= members.size();
+            ideodif /= (members.size())+1;
             ideodif = 50- (ideodif/2);
             
             int extremedif = Math.abs(extremeideoright-extremeideoleft);
