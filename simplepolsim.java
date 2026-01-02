@@ -183,7 +183,9 @@ String[] farLeftParties = {
     
     public static void updateAllMomentum(){
         for(Party par: allParties){
-            par.updateMomentum();
+            if(par.getMomentum()< ra.nextInt(5)){
+                par.updateMomentum();
+            }
         }
     }
     
@@ -272,7 +274,6 @@ String[] farLeftParties = {
 		}
 		
 		while(true){
-    		
     		
     		System.out.println(monthName[month]+", "+ year);
     		
