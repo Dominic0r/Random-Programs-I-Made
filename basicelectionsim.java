@@ -8,17 +8,20 @@ public class Main
         String name;
         int size;
         int ideology;
+        int satisfaction;
         
         
         public ideoGroup(String name, int size, int ideology){
             this.name = name;
             this.size = size;
             this.ideology = ideology;
+            this.satisfaction = 100;
         }
         
         public String getName(){return name;}
         public int getSize(){return size;}
         public int getIdeology(){return ideology;}
+        public int getSatisfaction(){return satisfaction;}
         
         public int proximityWith(Party par){
             return 100-Math.abs(par.getIdeology()-ideology);
@@ -26,6 +29,10 @@ public class Main
         
         public void updateSize(int toAdd){
             size+= toAdd;
+        }
+        
+        public void updateSatisfaction(int toAdd){
+            satisfaction += toAdd;
         }
         
     }
@@ -73,6 +80,10 @@ public class Main
             popularity = newVal;
         }
         
+        public void updateApproval(int newVal){
+            popularity += newVal;
+        }
+        
         public void resetElectionData(){
             score = 0;
             demographics.clear();
@@ -85,7 +96,7 @@ public class Main
             score+= toAdd;
         }
         
-        public void ideoDrift(){
+        public void ideoDriftOld(){
             if(score == 0) return;
             double weightedIdeologySum = 0;
             for(Map.Entry<ideoGroup,Integer> entry : demographics.entrySet()){
@@ -99,8 +110,56 @@ public class Main
             int driftspeed = 5;
             if(this.ideology < targetIdeo) this.ideology+= driftspeed;
             if(this.ideology> targetIdeo) this.ideology-= driftspeed;
+            if(this.ideology> 100){
+                this.ideology = 100;
+            }
+            if(this.ideology< 0){
+                this.ideology = 0;
+            }
         }
         
+        
+        public void ideoDrift(){
+            if(score == 0) return;
+            double weightedIdeologySum = 0;
+            ideoGroup maxGroup = null;
+            int maxnum=0;
+            for(Map.Entry<ideoGroup,Integer> entry : demographics.entrySet()){
+                ideoGroup gro = entry.getKey();
+                int votesGot = entry.getValue();
+                if(entry.getValue()> maxnum){
+                    maxGroup = entry.getKey();
+                    maxnum = entry.getValue();
+                }
+            }
+            
+            int targetIdeo = maxGroup.getIdeology();
+            int driftspeed = 3;
+            if(this.ideology < targetIdeo) this.ideology+= driftspeed;
+            if(this.ideology> targetIdeo) this.ideology-= driftspeed;
+            
+            this.ideology += ra.nextInt(10)-ra.nextInt(10);
+            
+            int minsat = 1000;
+            ideoGroup minGroup = null;
+            for(ideoGroup gro : allGroups){
+                if(gro.getSatisfaction()< minsat){
+                    minsat = gro.getSatisfaction();
+                    minGroup = gro;
+                }
+            }
+            targetIdeo = minGroup.getIdeology();
+            driftspeed = 2;
+            if(this.ideology < targetIdeo) this.ideology+= driftspeed;
+            if(this.ideology> targetIdeo) this.ideology-= driftspeed;
+            
+            if(this.ideology> 100){
+                this.ideology = 100;
+            }
+            if(this.ideology< 0){
+                this.ideology = 0;
+            }
+        }
     }
     
     public static class Coalition{
@@ -114,6 +173,8 @@ public class Main
             members.add(leader);
         }
         
+        public Party getLeader(){return leader;}
+        
         public int getSize(){ return size;}
         
         public void addSize(int toAdd){
@@ -121,7 +182,7 @@ public class Main
         }
         
         public boolean invitation(Party other){
-            if(leader.proximityWith(other)> 70){
+            if(leader.proximityWith(other)> 50){
                 return true;
             }else{
                 return false;
@@ -131,24 +192,31 @@ public class Main
         public void addParty(Party toAdd){
             members.add(toAdd);
         }
+        
+        public List<Party> getMemberList(){
+            return members;
+        }
     }
     
     public static Coalition rulingCoalition;
     
+    public static int approvalRatingChange;
+    
     public static List<ideoGroup> allGroups = new ArrayList<>();
     public static void addGroups(){
-        allGroups.add(new ideoGroup("Communists",2,95));
-        allGroups.add(new ideoGroup("Socialists",10,80));
+        allGroups.add(new ideoGroup("Communists",20,95));
+        allGroups.add(new ideoGroup("Socialists",20,80));
         allGroups.add(new ideoGroup("Progressives",20,65));
-        allGroups.add(new ideoGroup("Liberals",30,50));
+        allGroups.add(new ideoGroup("Liberals",20,50));
         allGroups.add(new ideoGroup("Conservatives",20,35));
-        allGroups.add(new ideoGroup("Nationalists",10,20));
-        allGroups.add(new ideoGroup("Fascists",2,5));
+        allGroups.add(new ideoGroup("Nationalists",20,20));
+        allGroups.add(new ideoGroup("Fascists",20,5));
     }
     
     public static List<Party> allParties = new ArrayList<>();
     
     public static void addParties(){
+        allParties.add(new Party("Socialist Party", 85,true));
         allParties.add(new Party("Democratic Party", 65, true));
         allParties.add(new Party("Republican Party", 45, true));
     }
@@ -165,13 +233,31 @@ public class Main
         }
         
         for(ideoGroup gro: allGroups){
+            boolean hasvoted = false;
+            int maxProximity = 0;
+            
             for(Party par: allParties){
                 if(gro.proximityWith(par)>40){
+                    hasvoted = true;
+                    if(gro.proximityWith(par)>maxProximity){
+                        maxProximity = gro.proximityWith(par);
+                    }
                     int toAdd = (gro.getSize()*gro.proximityWith(par))/100;
-                    par.addVotes(toAdd);
+                    if(rulingCoalition!= null){
+                        if(rulingCoalition.getMemberList().contains(par)){
+                            toAdd -= (int) (toAdd*Math.abs(approvalRatingChange))/1000;
+                        }
+                    }
+                    par.addVotes(toAdd/(ra.nextInt(3)+1));
+                    //par.addVotes(toAdd);
                     par.recordVotes(gro,toAdd);
                 }
             }
+            int satischange = 5-(maxProximity/20);
+            if(!hasvoted){
+                satischange-=5;
+            }
+            
         }
         
         // set percentages
@@ -183,6 +269,7 @@ public class Main
         for(Party par: allParties){
             int pctg = (int) (par.getScore()*100)/ totalVotes;
             par.setPercent(pctg);
+            par.setApproval(pctg);
         }
         
         
@@ -196,8 +283,8 @@ public class Main
                 winner = par;
                 winnum = par.getScore();
             }
+            //System.out.println(par.getScore());
         }
-        
         
         rulingCoalition = new Coalition(winner);
         
@@ -210,13 +297,58 @@ public class Main
                     }
                 }
             }
+            
+            if(rulingCoalition.getSize() <50){
+                for(Party par: allParties){
+                    if(par.getScore() > winnum && par!= rulingCoalition.getLeader()){
+                        winner = par;
+                        winnum = par.getScore();
+                    }
+                    
+                }
+                rulingCoalition = new Coalition(winner);
+            }
         }
+        
+    }
+    
+    public static void updateTick(){
+        approvalRatingChange = ra.nextInt(5)-ra.nextInt(10);
+        for(Party par: rulingCoalition.getMemberList()){
+            approvalRatingChange*= (ra.nextInt(3))+1;
+            par.updateApproval(approvalRatingChange);
+            
+            par.ideoDrift();
+        }
+        
+        for(ideoGroup gro: allGroups){
+            gro.updateSize(ra.nextInt(20));
+        }
+        
     }
     
     
     
-    
 	public static void main(String[] args) {
-		System.out.println("Hello World");
+	    addGroups();
+	    addParties();
+		int year = 1920;
+		int interval  =5;
+		int electionsToSimulate = 22;
+		
+		for(int i=0; i<electionsToSimulate;i++){
+		    election();
+		    coalitionFormation();
+		    System.out.println(year);
+		    System.out.println("Winner: "+ rulingCoalition.getLeader().getName());
+		    
+		    for(Party par: allParties){
+		        System.out.println(par.getName()+ " "+ par.getPercent()+"%");
+		        System.out.println("Ideology: "+ par.getIdeology());
+		        System.out.println("====================");
+		    }
+		    updateTick();
+		    year+=interval;
+		}
 	}
 }
