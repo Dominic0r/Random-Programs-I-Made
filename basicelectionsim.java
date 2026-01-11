@@ -116,7 +116,7 @@ public class Main
         
         public int getSize(){ return size;}
         
-        public void addSize(toAdd){
+        public void addSize(int toAdd){
             size+=toAdd;
         }
         
@@ -206,7 +206,7 @@ public class Main
                 if(par != winner){
                     if(rulingCoalition.invitation(par)){
                         rulingCoalition.addParty(par);
-                        rulingCoalition.addSize(par.getPercent);
+                        rulingCoalition.addSize(par.getPercent());
                     }
                 }
             }
