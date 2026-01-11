@@ -108,7 +108,32 @@ public class Main
         int size;
         List<Party> members = new ArrayList<>();
         
+        public Coalition(Party leader){
+            this.leader = leader;
+            size = leader.getPercent();
+            members.add(leader);
+        }
+        
+        public int getSize(){ return size;}
+        
+        public void addSize(toAdd){
+            size+=toAdd;
+        }
+        
+        public boolean invitation(Party other){
+            if(leader.proximityWith(other)> 70){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        
+        public void addParty(Party toAdd){
+            members.add(toAdd);
+        }
     }
+    
+    public static Coalition rulingCoalition;
     
     public static List<ideoGroup> allGroups = new ArrayList<>();
     public static void addGroups(){
@@ -161,6 +186,31 @@ public class Main
         }
         
         
+    }
+    
+    public static void coalitionFormation(){
+        Party winner = null;
+        int winnum = 0;
+        for(Party par: allParties){
+            if(par.getScore() > winnum){
+                winner = par;
+                winnum = par.getScore();
+            }
+        }
+        
+        
+        rulingCoalition = new Coalition(winner);
+        
+        if(winner.percent<50){
+            for(Party par: allParties){
+                if(par != winner){
+                    if(rulingCoalition.invitation(par)){
+                        rulingCoalition.addParty(par);
+                        rulingCoalition.addSize(par.getPercent);
+                    }
+                }
+            }
+        }
     }
     
     
