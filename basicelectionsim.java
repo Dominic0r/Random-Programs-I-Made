@@ -54,7 +54,7 @@ public class Main
         int percent = 0; // percentage
         int popularity=0; // approval rating
         Map<ideoGroup, Integer> demographics = new HashMap<>();
-        
+        double recognition = 0;// how established a party is
         int failcount = 0;
         
         public Party(String name, int ideology, boolean isActive){
@@ -74,6 +74,12 @@ public class Main
         public int getScore(){return score;}
         public int getPopularity(){return popularity;}
         public int getPercent(){return percent;}
+        
+        public double getRecognition(){return recognition;}
+        
+        public void incrementRecognition(){
+            recognition+=0.05;
+        }
         
         public void setPercent(int newVal){
             percent = newVal;
@@ -154,7 +160,7 @@ public class Main
             if(this.ideology < targetIdeo) this.ideology+= driftspeed;
             if(this.ideology> targetIdeo) this.ideology-= driftspeed;
             
-            this.ideology += ra.nextInt(5)-ra.nextInt(5);
+            this.ideology += ra.nextInt(3)-ra.nextInt(3);
             
             int minsat = 1000;
             ideoGroup minGroup = null;
@@ -235,7 +241,7 @@ public class Main
     allGroups.add(new ideoGroup("Illiberal Republicans", "Nationalist Peoples Assembly", 10, 25));
     
     allGroups.add(new ideoGroup("Unitary Monarchists", "Imperial Restoration Party", 5, 10));
-    allGroups.add(new ideoGroup("Particularists", "National Particularist Peoples Conress", 5, 12));
+    allGroups.add(new ideoGroup("Particularists", "National Particularist Peoples Congress", 5, 12));
     
     allGroups.add(new ideoGroup("Aristocratic Conservatives", "Conservative Peoples Party", 15, 20));
     allGroups.add(new ideoGroup("Corporatists", "National Democratic Conservative Party", 15, 17));
@@ -307,6 +313,7 @@ public class Main
                             toAdd -= (int) (toAdd*Math.abs(approvalRatingChange))/1000;
                         }
                     }
+                    toAdd += (int) toAdd* par.getRecognition();
                     par.addVotes(toAdd/(ra.nextInt(4)+1));
                     //par.addVotes(toAdd);
                     par.recordVotes(gro,toAdd);
@@ -316,6 +323,7 @@ public class Main
             if(!hasvoted){
                 satischange-=5;
             }
+            satischange+= ra.nextInt(3)-ra.nextInt(3);
             gro.updateSatisfaction(satischange);
             
         }
@@ -458,8 +466,9 @@ public class Main
 
     // Assign the winner to your rulingCoalition logic
     if (winningParty != null) {
-        //System.out.println("GOVERNMENT FORMED BY: " + winningParty.getName());
+        System.out.println("GOVERNMENT FORMED BY: " + winningParty.getName());
         rulingCoalition = new Coalition(winningParty);
+        winningParty.incrementRecognition();
     }
 }
     
@@ -479,7 +488,7 @@ public class Main
 
             
             if (!alreadyRepresented&& !gro.hasGroupSplintered()) {
-                String newName = gro.getSplinterName();;
+                String newName = gro.getSplinterName();
                 allParties.add(new Party(newName, gro.getIdeology(), true));
                 System.out.println("!!! NEW PARTY FORMED: " + newName + " !!!");
                 gro.toggleSplinter();
@@ -491,17 +500,18 @@ public class Main
 }
 
 public static String detIdeo(Party par){
-    int ideo = par.getIdeology()/25;
+    int ideo = par.getIdeology()/20;
     switch(ideo){
         case 0: return "Right-Wing";
             
         case 1: return "Center-Right";
             
-        case 2:return "Center-Left";
+        case 2:return "Centrist";
             
-        case 3: return "Left-Wing";
+        case 3: return "Center-Left";
             
         case 4: return "Left-Wing";
+        case 5: return "Left-Wing";
         
     }
     return"";
@@ -524,10 +534,59 @@ public static void checkFails(){
     }
     
     allParties.removeAll(toRemove);
+    
+    
+}
+
+public static void events(){
+    boolean eventHappened = false;
+    if(ra.nextInt(10)<5){
+        if(ra.nextInt(20)<5){
+            eventHappened = true;
+            System.out.println("Economic Crisis!");
+            for(ideoGroup gro : allGroups){
+                if(gro.getIdeology()> 80 || gro.getIdeology()< 20){
+                    gro.updateSize(ra.nextInt(gro.getSize()+1));
+                    approvalRatingChange -= ra.nextInt(5);
+                }
+            }
+        }
+        
+        if(ra.nextInt(20)<5 && !eventHappened){
+            eventHappened = true;
+            System.out.println("Economic Boom!");
+            for(ideoGroup gro : allGroups){
+                if(gro.getIdeology()< 80 || gro.getIdeology()> 20){
+                    gro.updateSize(ra.nextInt(gro.getSize()+1));
+                    approvalRatingChange += ra.nextInt(5);
+                }
+            }
+        }
+        
+        if(ra.nextInt(20)<5 && !eventHappened){
+            eventHappened = true;
+            System.out.println("Labor Strikes!");
+            for(ideoGroup gro : allGroups){
+                if(gro.getIdeology()> 60){
+                    gro.updateSize(ra.nextInt(gro.getSize()+1));
+                }
+            }
+        }
+        
+        if(ra.nextInt(20)<5 && !eventHappened){
+            eventHappened = true;
+            System.out.println("Immigration Crisis!");
+            for(ideoGroup gro : allGroups){
+                if(gro.getIdeology()< 40){
+                    gro.updateSize(ra.nextInt(gro.getSize()+1));
+                }
+            }
+        }
+    }
 }
     
     public static void updateTick(){
-        Collections.sort(allParties, Comparator.comparingInt(Party::getIdeology));
+        events();
         approvalRatingChange = ra.nextInt(5)-ra.nextInt(10);
         for(Party par: rulingCoalition.getMemberList()){
             approvalRatingChange*= (ra.nextInt(3))+1;
@@ -538,7 +597,7 @@ public static void checkFails(){
         checkFails();
         updateGroupSize();
         checkForNewParties();
-        
+        Collections.sort(allParties, Comparator.comparingInt(Party::getIdeology));
     }
     
     
@@ -551,10 +610,11 @@ public static void checkFails(){
 		int electionsToSimulate = 32;
 		
 		for(int i=0; i<electionsToSimulate;i++){
+		    System.out.println(year+ "=========================");
 		    election();
 		    electLeadParty();
-		    System.out.println(year);
-		    System.out.println("Winner: "+ rulingCoalition.getLeader().getName());
+		    
+		    //System.out.println("Winner: "+ rulingCoalition.getLeader().getName());
 		    
 		    for(Party par: allParties){
 		        System.out.println(par.getName()+ " "+ par.getPercent()+"%");
