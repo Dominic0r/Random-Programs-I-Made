@@ -366,6 +366,7 @@ public class Main
                     maxpar = par;
                 }
             }
+            if (totalVotes <= 0) return;
             maxpar.setPercent(maxpar.getPercent()+1); //nullpoiintererror here
         }
         
@@ -593,11 +594,58 @@ public static void events(){
                 break;
             case 4:
                 System.out.println("Populist Wave!");
-                for(Party par: allParties){
-                    par.setRecog(par.getRecognition()*-1);
-                }
+                for(Party par : allParties) {
+        // Establishment parties (high recognition) get their bonus flipped to a penalty
+        if (par.getRecognition() > 0) {
+            par.setRecog(par.getRecognition() * -1.5); // Punish them harder than they were helped
+        } else {
+            // Insurgent/New parties get a massive boost
+            par.setRecog(0.5); 
+        }
+    }
+    // Make the supporters of the ruling coalition particularly angry
+    for(Party member : rulingCoalition.getMemberList()) {
+        for(ideoGroup gro : allGroups) {
+            if(gro.proximityWith(member) > 70) {
+                gro.updateSatisfaction(-20);
+            }
+        }
+    }
                 break;
             
+        }
+    }
+}
+
+public static ideoGroup findClosestGroup(int toFind){
+    int maxnum = 0;
+    ideoGroup maxGroup=null;
+    for(ideoGroup gro: allGroups){
+        int curscore = 100-Math.abs(gro.getIdeology()-toFind);
+        if(curscore> maxnum){
+            maxnum = curscore;
+            maxGroup = gro;
+        }
+    }
+    return maxGroup;
+}
+
+public static void radicalizeVoters() {
+    for (ideoGroup gro : allGroups) {
+        // If a group is very unhappy, some members move toward the extremes
+        if (gro.getSatisfaction() < 25) {
+            int defectors = gro.getSize() / 20; // 5% leave
+            gro.updateSize(-defectors);
+            
+            // If they are on the Left half, they move further Left.
+            // If on the Right half, they move further Right.
+            ideoGroup target = null;
+            if (gro.getIdeology() > 50) {
+                target = findClosestGroup(gro.getIdeology() + 15);
+            } else {
+                target = findClosestGroup(gro.getIdeology() - 15);
+            }
+            if (target != null) target.updateSize(defectors);
         }
     }
 }
@@ -606,6 +654,7 @@ public static void events(){
         events();
         checkFails();
         updateGroupSize();
+        radicalizeVoters();
         checkForNewParties();
         approvalRatingChange = ra.nextInt(5)-ra.nextInt(10);
         for(Party par: rulingCoalition.getMemberList()){
@@ -634,7 +683,69 @@ public static void events(){
         }
     }
     
+    
     public static List<Archive> leaderArchive = new ArrayList<>();
+    
+    
+    
+    
+    public static String getDynamicColor(int ideo) {
+    int colorCode;
+    
+    // RIGHT-WING: Blue/Navy spectrum
+    if (ideo < 20) colorCode = 18;       // Navy Blue (Reactionary/Far-Right)
+    else if (ideo < 35) colorCode = 27;  // Royal Blue (Conservative)
+    
+    // CENTER: Yellow/Gold/Orange spectrum
+    else if (ideo < 45) colorCode = 214; // Orange-Yellow (Liberal/Center-Right)
+    else if (ideo < 55) colorCode = 226; // Bright Yellow (Pure Centrist)
+    else if (ideo < 65) colorCode = 190; // Lime/Yellow-Green (Center-Left/Green)
+    
+    // LEFT-WING: Red/Crimson spectrum
+    else if (ideo < 80) colorCode = 203; // Light Red (Social Democrat)
+    else if (ideo < 95) colorCode = 196; // Pure Red (Socialist)
+    else colorCode = 88;                // Dark Crimson (Communist/Far-Left)
+
+    return "\u001B[38;5;" + colorCode + "m";
+}
+public static final String RESET = "\u001B[0m";
+    
+    public static void visualizeParliament() {
+    Collections.sort(allParties, Comparator.comparingInt(Party::getIdeology));
+
+    System.out.println("\n      --- THE NATIONAL ASSEMBLY ---");
+    
+    List<String> allSeats = new ArrayList<>();
+    for (Party par : allParties) {
+        String color = getDynamicColor(par.getIdeology());
+        for (int i = 0; i < par.getPercent(); i++) {
+            allSeats.add(color + "o" + RESET);
+        }
+    }
+
+    // Fill remaining seats if election math is slightly off 100
+    while (allSeats.size() < 100) allSeats.add("·");
+
+    // Print in a 10x10 block
+    for (int i = 0; i < 100; i++) {
+        System.out.print(allSeats.get(i) + " ");
+        if ((i + 1) % 10 == 0) System.out.println(); // New row every 10 seats
+    }
+
+    System.out.println("-------------------------------------");
+    
+    // Print Legend
+    for (Party par : allParties) {
+        if (par.getPercent() > 0) {
+            System.out.print(getDynamicColor(par.getIdeology()) + "o " + RESET 
+                + par.getName() + " [" + par.getPercent() + "%]  ");
+        }
+    }
+    System.out.println("\n");
+}
+    
+    
+    
 	public static void main(String[] args) {
 	    addGroups();
 	    addParties();
@@ -649,16 +760,30 @@ public static void events(){
 		    
 		    //System.out.println("Winner: "+ rulingCoalition.getLeader().getName());
 		    
-		    for(Party par: allParties){
+		    /*for(Party par: allParties){
 		        System.out.println(par.getName()+ " "+ par.getPercent()+"%");
 		        System.out.println("Ideology: "+ detIdeo(par));
 		        //System.out.println(par.getRecognition());
 		        System.out.println("====================");
 		    }
-		    System.out.println("\n");
+		    System.out.println("\n");*/
+		    
+		    char[] spectrum = new char[21]; // 0 to 100 in blocks of 5
+    Arrays.fill(spectrum, '-');
+    for (Party p : allParties) {
+        int index = p.getIdeology() / 5;
+        if (p.getPercent() > 20) spectrum[index] = 'X'; // Major Party
+        else if (p.getPercent() > 5) spectrum[index] = 'o'; // Minor Party
+    }
+    visualizeParliament();
+    System.out.println("Spectrum: [R] " + String.valueOf(spectrum) + " [L]");
 		    for(ideoGroup gro : allGroups){
 		        //System.out.println(gro.getName()+ " "+ gro.getSize() + " "+ gro.getSatisfaction());
 		    }
+		    double totalRecog = 0;
+for(Party p : allParties) totalRecog += p.getRecognition();
+System.out.println("Establishment Strength: " + String.format("%.2f", totalRecog));
+		    sc.nextLine();
 		    updateTick();
 		    year+=interval;
 		    
