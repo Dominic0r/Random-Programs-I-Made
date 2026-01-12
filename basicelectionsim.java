@@ -218,6 +218,8 @@ public class Main
     
     public static int approvalRatingChange;
     
+    
+    
     public static List<ideoGroup> allGroups = new ArrayList<>();
     public static void addGroups(){
         /*allGroups.add(new ideoGroup("Communist",2,95));
@@ -488,6 +490,23 @@ public class Main
     }
 }
 
+public static String detIdeo(Party par){
+    int ideo = par.getIdeology()/25;
+    switch(ideo){
+        case 0: return "Right-Wing";
+            
+        case 1: return "Center-Right";
+            
+        case 2:return "Center-Left";
+            
+        case 3: return "Left-Wing";
+            
+        case 4: return "Left-Wing";
+        
+    }
+    return"";
+}
+
 public static void checkFails(){
     List<Party> toRemove = new ArrayList<>();
     for(Party par: allParties){
@@ -508,6 +527,7 @@ public static void checkFails(){
 }
     
     public static void updateTick(){
+        Collections.sort(allParties, Comparator.comparingInt(Party::getIdeology));
         approvalRatingChange = ra.nextInt(5)-ra.nextInt(10);
         for(Party par: rulingCoalition.getMemberList()){
             approvalRatingChange*= (ra.nextInt(3))+1;
@@ -538,7 +558,7 @@ public static void checkFails(){
 		    
 		    for(Party par: allParties){
 		        System.out.println(par.getName()+ " "+ par.getPercent()+"%");
-		        System.out.println("Ideology: "+ par.getIdeology());
+		        System.out.println("Ideology: "+ detIdeo(par));
 		        System.out.println("====================");
 		    }
 		    System.out.println("\n");
