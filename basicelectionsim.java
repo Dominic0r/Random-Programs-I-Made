@@ -417,10 +417,11 @@ public class Main
         }
 
         // Display Round Results
-       // System.out.println("--- Election Round " + rounds + " ---");
+        System.out.println("--- Election Round " + rounds + " ---");
         for (Party cand : candidates) {
-           // System.out.println(cand.getName() + ": " + voteCount.get(cand) + " seats support");
+            System.out.print(cand.getName() + ": " + voteCount.get(cand) + "% || ");
         }
+        System.out.println("\n");
 
         // Check for 50%+ Majority (of the 100 seats)
         if (maxVotes > 50) { 
@@ -497,6 +498,7 @@ public static void checkFails(){
         }
         
         if(par.getFailCount()>=5){
+            
             toRemove.add(par);
             System.out.println(par.getName()+ " Removed!");
         }
@@ -524,9 +526,9 @@ public static void checkFails(){
 	public static void main(String[] args) {
 	    addGroups();
 	    addParties();
-		int year = 1920;
+		int year = 1900;
 		int interval  =4;
-		int electionsToSimulate = 27;
+		int electionsToSimulate = 32;
 		
 		for(int i=0; i<electionsToSimulate;i++){
 		    election();
