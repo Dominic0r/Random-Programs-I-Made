@@ -360,7 +360,7 @@ public class Main
             int maxnum =0;
             Party maxpar = null;
             for(Party par: allParties){
-                int curscore = par.getScore()/ (ra.nextInt(9)+1);
+                int curscore = par.getScore()/ (ra.nextInt(4)+1);
                 if(curscore > maxnum){
                     maxnum = curscore;
                     maxpar = par;
