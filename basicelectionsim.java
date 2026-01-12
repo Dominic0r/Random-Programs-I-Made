@@ -324,7 +324,7 @@ public class Main
             }
             int satischange = -1*(5-(maxProximity/20));
             if(!hasvoted){
-                satischange-=5;
+                satischange-=ra.nextInt(10);
             }
             satischange+= ra.nextInt(3)-ra.nextInt(3);
             gro.updateSatisfaction(satischange);
@@ -561,7 +561,7 @@ public static void events(){
                 System.out.println("Economic Crisis!");
             for(ideoGroup gro : allGroups){
                 if(gro.getIdeology()> 80 || gro.getIdeology()< 20){
-                    gro.updateSize(ra.nextInt(gro.getSize()+1));
+                    gro.updateSize(ra.nextInt((gro.getSize()/2)+1));
                     approvalRatingChange -= ra.nextInt(5);
                 }
             }
@@ -570,7 +570,7 @@ public static void events(){
                 System.out.println("Economic Boom!");
             for(ideoGroup gro : allGroups){
                 if(gro.getIdeology()< 80 || gro.getIdeology()> 20){
-                    gro.updateSize(ra.nextInt(gro.getSize()+1));
+                    gro.updateSize(ra.nextInt((gro.getSize()/2)+1));
                     approvalRatingChange += ra.nextInt(5);
                 }
             }
@@ -579,7 +579,7 @@ public static void events(){
                 System.out.println("Labor Strikes!");
             for(ideoGroup gro : allGroups){
                 if(gro.getIdeology()> 60){
-                    gro.updateSize(ra.nextInt(gro.getSize()+1));
+                    gro.updateSize(ra.nextInt((gro.getSize()/2)+1));
                 }
             }
                 break;
@@ -587,7 +587,7 @@ public static void events(){
                 System.out.println("Immigration Crisis!");
             for(ideoGroup gro : allGroups){
                 if(gro.getIdeology()< 40){
-                    gro.updateSize(ra.nextInt(gro.getSize()+1));
+                    gro.updateSize(ra.nextInt((gro.getSize()/2)+1));
                 }
             }
                 break;
@@ -597,12 +597,16 @@ public static void events(){
                     par.setRecog(par.getRecognition()*-1);
                 }
                 break;
+            
         }
     }
 }
     
     public static void updateTick(){
         events();
+        checkFails();
+        updateGroupSize();
+        checkForNewParties();
         approvalRatingChange = ra.nextInt(5)-ra.nextInt(10);
         for(Party par: rulingCoalition.getMemberList()){
             approvalRatingChange*= (ra.nextInt(3))+1;
@@ -610,9 +614,7 @@ public static void events(){
             
             par.ideoDrift();
         }
-        checkFails();
-        updateGroupSize();
-        checkForNewParties();
+        
         Collections.sort(allParties, Comparator.comparingInt(Party::getIdeology));
     }
     
