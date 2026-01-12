@@ -76,9 +76,12 @@ public class Main
         public int getPercent(){return percent;}
         
         public double getRecognition(){return recognition;}
+        public void setRecog(double newVal){
+            recognition = newVal;
+        }
         
         public void incrementRecognition(){
-            recognition+=0.05;
+            recognition+=0.02;
         }
         
         public void setPercent(int newVal){
@@ -369,6 +372,9 @@ public class Main
         
     }
     
+    public static int startyear;
+    public static int year = 1900;
+    
     public static void electLeadParty() {
     int rounds = 1;
     // Every active party starts as a candidate
@@ -467,8 +473,16 @@ public class Main
     // Assign the winner to your rulingCoalition logic
     if (winningParty != null) {
         System.out.println("GOVERNMENT FORMED BY: " + winningParty.getName());
+        
+        if(rulingCoalition!=null){
+            if(winningParty != rulingCoalition.getLeader()){
+                leaderArchive.add(new Archive(rulingCoalition.getLeader().getName(), startyear, year));
+            }
+        }
+        startyear = year;
         rulingCoalition = new Coalition(winningParty);
         winningParty.incrementRecognition();
+        
     }
 }
     
@@ -541,46 +555,48 @@ public static void checkFails(){
 public static void events(){
     boolean eventHappened = false;
     if(ra.nextInt(10)<5){
-        if(ra.nextInt(20)<5){
-            eventHappened = true;
-            System.out.println("Economic Crisis!");
+       
+        switch(ra.nextInt(5)){
+            case 0:
+                System.out.println("Economic Crisis!");
             for(ideoGroup gro : allGroups){
                 if(gro.getIdeology()> 80 || gro.getIdeology()< 20){
                     gro.updateSize(ra.nextInt(gro.getSize()+1));
                     approvalRatingChange -= ra.nextInt(5);
                 }
             }
-        }
-        
-        if(ra.nextInt(20)<5 && !eventHappened){
-            eventHappened = true;
-            System.out.println("Economic Boom!");
+                break;
+            case 1:
+                System.out.println("Economic Boom!");
             for(ideoGroup gro : allGroups){
                 if(gro.getIdeology()< 80 || gro.getIdeology()> 20){
                     gro.updateSize(ra.nextInt(gro.getSize()+1));
                     approvalRatingChange += ra.nextInt(5);
                 }
             }
-        }
-        
-        if(ra.nextInt(20)<5 && !eventHappened){
-            eventHappened = true;
-            System.out.println("Labor Strikes!");
+                break;
+            case 2:
+                System.out.println("Labor Strikes!");
             for(ideoGroup gro : allGroups){
                 if(gro.getIdeology()> 60){
                     gro.updateSize(ra.nextInt(gro.getSize()+1));
                 }
             }
-        }
-        
-        if(ra.nextInt(20)<5 && !eventHappened){
-            eventHappened = true;
-            System.out.println("Immigration Crisis!");
+                break;
+            case 3:
+                System.out.println("Immigration Crisis!");
             for(ideoGroup gro : allGroups){
                 if(gro.getIdeology()< 40){
                     gro.updateSize(ra.nextInt(gro.getSize()+1));
                 }
             }
+                break;
+            case 4:
+                System.out.println("Populist Wave!");
+                for(Party par: allParties){
+                    par.setRecog(par.getRecognition()*-1);
+                }
+                break;
         }
     }
 }
@@ -601,11 +617,26 @@ public static void events(){
     }
     
     
+    public static class Archive{
+        String name;
+        int start, end;
+        public Archive(String name, int start, int end){
+            this.name = name;
+            this.start = start;
+            this.end = end;
+        }
+        
+        @Override
+        public String toString(){
+            return name + " "+start+"-"+end;
+        }
+    }
     
+    public static List<Archive> leaderArchive = new ArrayList<>();
 	public static void main(String[] args) {
 	    addGroups();
 	    addParties();
-		int year = 1900;
+		
 		int interval  =4;
 		int electionsToSimulate = 32;
 		
@@ -619,6 +650,7 @@ public static void events(){
 		    for(Party par: allParties){
 		        System.out.println(par.getName()+ " "+ par.getPercent()+"%");
 		        System.out.println("Ideology: "+ detIdeo(par));
+		        //System.out.println(par.getRecognition());
 		        System.out.println("====================");
 		    }
 		    System.out.println("\n");
@@ -628,7 +660,6 @@ public static void events(){
 		    updateTick();
 		    year+=interval;
 		    
-		    //sc.nextLine();
 		}
 		
 	}
