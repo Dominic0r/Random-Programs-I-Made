@@ -243,7 +243,7 @@ public class Main
     allGroups.add(new ideoGroup("Monarchists", "All-Peoples Congress for Tradition", 15, 10));
     allGroups.add(new ideoGroup("Illiberal Republicans", "Nationalist Peoples Assembly", 10, 25));
     
-    allGroups.add(new ideoGroup("Unitary Monarchists", "Imperial Restoration Party", 5, 10));
+    allGroups.add(new ideoGroup("Unitary Monarchists", "Restoration Party", 5, 10));
     allGroups.add(new ideoGroup("Particularists", "National Particularist Peoples Congress", 5, 12));
     
     allGroups.add(new ideoGroup("Aristocratic Conservatives", "Conservative Peoples Party", 15, 20));
@@ -304,7 +304,7 @@ public class Main
         
         for(ideoGroup gro: allGroups){
             for(Party par: allParties){
-                if(gro.proximityWith(par)> 80){
+                if(gro.proximityWith(par)> 90){
                     if(!acceptables.containsKey(gro)){
                         acceptables.put(gro, 1);
                     }else{
@@ -319,7 +319,7 @@ public class Main
             int maxProximity = 0;
             
             for(Party par: allParties){
-                if(gro.proximityWith(par)>80){
+                if(gro.proximityWith(par)>90){
                     hasvoted = true;
                     if(gro.proximityWith(par)>maxProximity){
                         maxProximity = gro.proximityWith(par);
@@ -567,7 +567,7 @@ public static void checkFails(){
 
 public static void events(){
     boolean eventHappened = false;
-    if(ra.nextInt(10)<5){
+    if(ra.nextInt(25)<5){
        
         switch(ra.nextInt(5)){
             case 0:
