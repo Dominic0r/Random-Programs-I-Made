@@ -336,22 +336,19 @@ public class Main
         for(Party par: allParties){
             par.setPercent(0);
             totalVotes += par.getScore();
-        }
-        
-        /*int votesToRemove = 0;
-        for(Party par: allParties){
-            if(par.getScore()< totalVotes/4){
-                votesToRemove+= par.getScore();
+            if(par.getPercent()>20){
+                par.incrementRecognition();
             }
         }
-        totalVotes-=votesToRemove;
+        // proportional
         
-        for(Party par: allParties){
-            if(par.getScore()> totalVotes/4){
+        
+        /*for(Party par: allParties){
+            
             int pctg = (int) (par.getScore()*100)/ totalVotes;
             par.setPercent(pctg);
             par.setApproval(pctg);
-            }
+            
         }*/
         
         
@@ -564,6 +561,7 @@ public static void events(){
                 if(gro.getIdeology()> 80 || gro.getIdeology()< 20){
                     gro.updateSize(ra.nextInt((gro.getSize()/2)+1));
                     approvalRatingChange -= ra.nextInt(5);
+                    gro.updateSatisfaction(-1*ra.nextInt(25));
                 }
             }
                 break;
@@ -574,6 +572,7 @@ public static void events(){
                     gro.updateSize(ra.nextInt((gro.getSize()/2)+1));
                     approvalRatingChange += ra.nextInt(5);
                 }
+                moderateVoters();
             }
                 break;
             case 2:
@@ -628,6 +627,26 @@ public static ideoGroup findClosestGroup(int toFind){
         }
     }
     return maxGroup;
+}
+
+public static void moderateVoters() {
+    for (ideoGroup gro : allGroups) {
+        // If satisfaction is high (Economic Boom or good governance)
+        if (gro.getSatisfaction() > 70) {
+            int moderates = gro.getSize() / 15; // ~6% move toward center
+            gro.updateSize(-moderates);
+            
+            ideoGroup target;
+            // Move toward the 50 (Center) mark
+            if (gro.getIdeology() > 50) {
+                target = findClosestGroup(gro.getIdeology() - 15);
+            } else {
+                target = findClosestGroup(gro.getIdeology() + 15);
+            }
+            
+            if (target != null) target.updateSize(moderates);
+        }
+    }
 }
 
 public static void radicalizeVoters() {
