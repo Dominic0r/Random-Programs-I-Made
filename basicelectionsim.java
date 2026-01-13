@@ -300,12 +300,26 @@ public class Main
             par.resetElectionData();
         }
         
+        Map<ideoGroup, Integer> acceptables = new HashMap<>();
+        
+        for(ideoGroup gro: allGroups){
+            for(Party par: allParties){
+                if(gro.proximityWith(par)> 80){
+                    if(!acceptables.containsKey(gro)){
+                        acceptables.put(gro, 1);
+                    }else{
+                        acceptables.put(gro, acceptables.get(gro)+1);
+                    }
+                }
+            }
+        }
+        
         for(ideoGroup gro: allGroups){
             boolean hasvoted = false;
             int maxProximity = 0;
             
             for(Party par: allParties){
-                if(gro.proximityWith(par)>90){
+                if(gro.proximityWith(par)>80){
                     hasvoted = true;
                     if(gro.proximityWith(par)>maxProximity){
                         maxProximity = gro.proximityWith(par);
@@ -317,6 +331,7 @@ public class Main
                         }
                     }
                     toAdd += (int) toAdd* par.getRecognition();
+                    toAdd/= (acceptables.get(gro))+1;
                     par.addVotes(toAdd/(ra.nextInt(4)+1));
                     //par.addVotes(toAdd);
                     par.recordVotes(gro,toAdd);
