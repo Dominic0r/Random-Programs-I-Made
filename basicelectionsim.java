@@ -301,10 +301,10 @@ public class Main
         }
         
         Map<ideoGroup, Integer> acceptables = new HashMap<>();
-        
+        int tresh = 80;
         for(ideoGroup gro: allGroups){
             for(Party par: allParties){
-                if(gro.proximityWith(par)> 90){
+                if(gro.proximityWith(par)> tresh){
                     if(!acceptables.containsKey(gro)){
                         acceptables.put(gro, 1);
                     }else{
@@ -319,7 +319,7 @@ public class Main
             int maxProximity = 0;
             
             for(Party par: allParties){
-                if(gro.proximityWith(par)>90){
+                if(gro.proximityWith(par)>tresh){
                     hasvoted = true;
                     if(gro.proximityWith(par)>maxProximity){
                         maxProximity = gro.proximityWith(par);
@@ -567,7 +567,7 @@ public static void checkFails(){
 
 public static void events(){
     boolean eventHappened = false;
-    if(ra.nextInt(25)<5){
+    if(ra.nextInt(10)<5){
        
         switch(ra.nextInt(5)){
             case 0:
