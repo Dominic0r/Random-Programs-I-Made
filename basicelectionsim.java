@@ -302,7 +302,7 @@ public class Main
         }
         
         Map<ideoGroup, Integer> acceptables = new HashMap<>();
-        int tresh = 80;
+        int tresh = 50;
         for(ideoGroup gro: allGroups){
             for(Party par: allParties){
                 if(gro.proximityWith(par)> tresh){
@@ -387,7 +387,7 @@ public class Main
     }
     
     public static int startyear;
-    public static int year = 1880;
+    public static int year = 1852;
     
     public static void electLeadParty() {
     int rounds = 1;
@@ -786,7 +786,7 @@ public static final String RESET = "\u001B[0m";
 	    addParties();
 		
 		int interval  =4;
-		int electionsToSimulate = 37;
+		int electionsToSimulate = 44;
 		
 		for(int i=0; i<electionsToSimulate;i++){
 		    System.out.println(year+ "=========================");
