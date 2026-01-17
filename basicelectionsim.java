@@ -285,6 +285,7 @@ public class Main
         //allParties.add(new Party("Republican Party", 45, true));
         //allParties.add(new Party("Nationalist Party",15,true));
         allParties.add(new Party("National Unity Party", 15, true)); // Reactionary
+        //allParties.add(new Party("Moderate Conservative Party", 45, true));     // Republican
     allParties.add(new Party("Republican Party", 50, true));     // Republican
     allParties.add(new Party("Left Republican Party", 85, true)); // Revolutionary
     }
@@ -386,7 +387,7 @@ public class Main
     }
     
     public static int startyear;
-    public static int year = 1900;
+    public static int year = 1880;
     
     public static void electLeadParty() {
     int rounds = 1;
@@ -785,7 +786,7 @@ public static final String RESET = "\u001B[0m";
 	    addParties();
 		
 		int interval  =4;
-		int electionsToSimulate = 32;
+		int electionsToSimulate = 37;
 		
 		for(int i=0; i<electionsToSimulate;i++){
 		    System.out.println(year+ "=========================");
