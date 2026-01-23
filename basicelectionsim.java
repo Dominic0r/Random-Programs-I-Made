@@ -798,12 +798,14 @@ public static void nationalLean(){
     }
     
     System.out.print("The Nation leans towards");
-    if(reaction> republic && reaction> revolution){
+    if(reaction> republic +revolution){
         System.out.println("\u001B[38;5;18m Reaction \u001B[0m");
-    }else if(republic>= reaction && republic>= revolution){
+    }else if(republic>= reaction+revolution){
         System.out.println("\u001B[38;5;226m Republic \u001B[0m");
-    }else if(revolution> reaction && revolution > republic){
+    }else if(revolution> reaction+republic){
         System.out.println("\u001B[38;5;88m Revolution \u001B[0m");
+    }else{
+        System.out.println("\u001B[38;5;226m Republic \u001B[0m");
     }
 }
 
@@ -812,7 +814,7 @@ public static void seeDominant(){
     Party maxpar = null;
     // Dominant on right 
     for(Party par: allParties){
-        if(par.getIdeology()<35){
+        if(par.getIdeology()<=35){
             if(par.getPercent()> maxnum){
                 maxnum = par.getPercent();
                 maxpar = par;
@@ -831,7 +833,7 @@ public static void seeDominant(){
     maxpar = null;
     // Dominant on center 
     for(Party par: allParties){
-        if(par.getIdeology()>=35 && par.getIdeology()<=65){
+        if(par.getIdeology()>35 && par.getIdeology()<65){
             if(par.getPercent()> maxnum){
                 maxnum = par.getPercent();
                 maxpar = par;
@@ -849,7 +851,7 @@ public static void seeDominant(){
     maxpar = null;
     // Dominant on left 
     for(Party par: allParties){
-        if(par.getIdeology()> 65){
+        if(par.getIdeology()>= 65){
             if(par.getPercent()> maxnum){
                 maxnum = par.getPercent();
                 maxpar = par;
@@ -870,6 +872,7 @@ public static void seeDominant(){
 	public static void main(String[] args) {
 	    addGroups();
 	    addParties();
+	    
 		
 		int interval  =4;
 		int electionsToSimulate = 44;
