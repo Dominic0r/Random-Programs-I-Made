@@ -302,7 +302,7 @@ public class Main
         }
         
         Map<ideoGroup, Integer> acceptables = new HashMap<>();
-        int tresh = 50;
+        int tresh = 65;
         for(ideoGroup gro: allGroups){
             for(Party par: allParties){
                 if(gro.proximityWith(par)> tresh){
@@ -353,6 +353,11 @@ public class Main
             par.setPercent(0);
             totalVotes += par.getScore();
             if(par.getPercent()>20){
+                par.incrementRecognition();
+            }
+            
+            int notoadd = par.getPercent()/20;
+            for(int i =0; i<notoadd;i++){
                 par.incrementRecognition();
             }
         }
@@ -778,6 +783,87 @@ public static final String RESET = "\u001B[0m";
     }
     System.out.println("\n");
 }
+
+public static void nationalLean(){
+    int reaction =0,republic =0, revolution=0;
+    int total =0;
+    for(ideoGroup gro : allGroups){
+        if(gro.getIdeology() <= 35){
+            reaction+= gro.getSize();
+        } else if(gro.getIdeology()>=65 ){
+            revolution+=gro.getSize();
+        }else{
+            republic += gro.getSize();
+        }
+    }
+    
+    System.out.print("The Nation leans towards");
+    if(reaction> republic && reaction> revolution){
+        System.out.println("\u001B[38;5;18m Reaction \u001B[0m");
+    }else if(republic>= reaction && republic>= revolution){
+        System.out.println("\u001B[38;5;226m Republic \u001B[0m");
+    }else if(revolution> reaction && revolution > republic){
+        System.out.println("\u001B[38;5;88m Revolution \u001B[0m");
+    }
+}
+
+public static void seeDominant(){
+    int maxnum=0;
+    Party maxpar = null;
+    // Dominant on right 
+    for(Party par: allParties){
+        if(par.getIdeology()<35){
+            if(par.getPercent()> maxnum){
+                maxnum = par.getPercent();
+                maxpar = par;
+            }
+        }
+    }
+    
+    System.out.print("Largest Party on the Right: ");
+    
+    if(maxpar != null){
+        System.out.println(getDynamicColor(maxpar.getIdeology())+ maxpar.getName()+RESET);
+    }else{
+        System.out.println("None");
+    }
+    maxnum = -1;
+    maxpar = null;
+    // Dominant on center 
+    for(Party par: allParties){
+        if(par.getIdeology()>35 && par.getIdeology()< 65){
+            if(par.getPercent()> maxnum){
+                maxnum = par.getPercent();
+                maxpar = par;
+            }
+        }
+    }
+    
+    System.out.print("Largest Party on the Center: ");
+    if(maxpar != null){
+        System.out.println(getDynamicColor(maxpar.getIdeology())+ maxpar.getName()+RESET);
+    }else{
+        System.out.println("None");
+    }
+    maxnum = -1;
+    maxpar = null;
+    // Dominant on left 
+    for(Party par: allParties){
+        if(par.getIdeology()> 65){
+            if(par.getPercent()> maxnum){
+                maxnum = par.getPercent();
+                maxpar = par;
+            }
+        }
+    }
+    
+    System.out.print("Largest Party on the Left: ");
+    if(maxpar != null){
+        System.out.println(getDynamicColor(maxpar.getIdeology())+ maxpar.getName()+RESET);
+    }else{
+        System.out.println("None");
+    }
+}
     
     
     
@@ -818,6 +904,8 @@ public static final String RESET = "\u001B[0m";
 		    double totalRecog = 0;
 for(Party p : allParties) totalRecog += p.getRecognition();
 System.out.println("Establishment Strength: " + String.format("%.2f", totalRecog));
+nationalLean();
+seeDominant();
 		    sc.nextLine();
 		    updateTick();
 		    year+=interval;
