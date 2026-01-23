@@ -827,11 +827,11 @@ public static void seeDominant(){
     }else{
         System.out.println("None");
     }
-    maxnum = -1;
+    maxnum = 0;
     maxpar = null;
     // Dominant on center 
     for(Party par: allParties){
-        if(par.getIdeology()>35 && par.getIdeology()< 65){
+        if(par.getIdeology()>=35 && par.getIdeology()<=65){
             if(par.getPercent()> maxnum){
                 maxnum = par.getPercent();
                 maxpar = par;
@@ -845,7 +845,7 @@ public static void seeDominant(){
     }else{
         System.out.println("None");
     }
-    maxnum = -1;
+    maxnum = 0;
     maxpar = null;
     // Dominant on left 
     for(Party par: allParties){
