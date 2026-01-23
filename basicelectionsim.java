@@ -613,6 +613,9 @@ public static void events(){
             }
                 break;
             case 4:
+                double totalRecog = 0;
+for(Party p : allParties) totalRecog += p.getRecognition();
+if(totalRecog > 0.1){
                 System.out.println("Populist Wave!");
                 for(Party par : allParties) {
         // Establishment parties (high recognition) get their bonus flipped to a penalty
@@ -631,6 +634,7 @@ public static void events(){
             }
         }
     }
+        }
                 break;
             
         }
