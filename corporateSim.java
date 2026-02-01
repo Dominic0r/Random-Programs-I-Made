@@ -36,7 +36,9 @@ public class Main
             return momentum;
         }
         
-        public static int setStocks
+        public static int addStocks(){
+            stockSupport++;
+        }
     }
     
 	public static void main(String[] args) {
