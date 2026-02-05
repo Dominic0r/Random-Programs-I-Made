@@ -553,7 +553,7 @@ public static String detIdeo(Party par){
 public static void checkFails(){
     List<Party> toRemove = new ArrayList<>();
     for(Party par: allParties){
-        if(par.getPercent()<15){
+        if(par.getPercent()<5){
             par.incrementFail();
         }else{
             par.resetFail();
