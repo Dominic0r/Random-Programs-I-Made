@@ -57,6 +57,8 @@ public class Main
         double recognition = 0;// how established a party is
         int failcount = 0;
         
+        double fatigue = 0;
+        
         public Party(String name, int ideology, boolean isActive){
             this.name = name;
             this.ideology = ideology;
@@ -74,6 +76,19 @@ public class Main
         public int getScore(){return score;}
         public int getPopularity(){return popularity;}
         public int getPercent(){return percent;}
+        
+        public double getFatigue(){
+            return fatigue;
+        }
+        
+        public void addFatigue(){
+            fatigue +=0.05;
+        }
+        public void decreaseFatigue(){
+            if(fatigue>0){
+            fatigue -= 0.01;
+            }
+        }
         
         public double getRecognition(){return recognition;}
         public void setRecog(double newVal){
@@ -307,9 +322,9 @@ public class Main
             for(Party par: allParties){
                 if(gro.proximityWith(par)> tresh){
                     if(!acceptables.containsKey(gro)){
-                        acceptables.put(gro, 1);
+                        acceptables.put(gro, par.getPercent()+1);
                     }else{
-                        acceptables.put(gro, acceptables.get(gro)+1);
+                        acceptables.put(gro, acceptables.get(gro)+(par.getPercent()+1));
                     }
                 }
             }
@@ -332,7 +347,9 @@ public class Main
                         }
                     }
                     toAdd += (int) toAdd* par.getRecognition();
-                    toAdd/= (acceptables.get(gro))+1;
+                    toAdd-=(int) toAdd*par.getFatigue();
+                    int pctginAccept = ((par.getPercent()+1)*100)/(acceptables.get(gro)+1);
+                    toAdd = (toAdd*pctginAccept)/100;
                     par.addVotes(toAdd/(ra.nextInt(4)+1));
                     //par.addVotes(toAdd);
                     par.recordVotes(gro,toAdd);
@@ -372,9 +389,25 @@ public class Main
             
         }*/
         
+        //dhondt
+        for(int i=0; i<100;i++){
+            int maxnum=-1;
+            Party maxpar=null;
+            for(Party par: allParties){
+                int parscore = par.getScore()/(par.getPercent()+1);
+                if(parscore>maxnum){
+                    maxnum=parscore;
+                    maxpar = par;
+                    
+                }
+            }
+            
+            maxpar.setPercent(maxpar.getPercent()+1);
+        }
+        
         
         //seat distribution
-        for(int i=0; i<100;i++){ // simulation of first past the post
+        /*for(int i=0; i<100;i++){ // simulation of first past the post
             int maxnum =0;
             Party maxpar = null;
             for(Party par: allParties){
@@ -386,7 +419,7 @@ public class Main
             }
             if (totalVotes <= 0) return;
             maxpar.setPercent(maxpar.getPercent()+1); //nullpoiintererror here
-        }
+        }*/
         
         
     }
@@ -501,7 +534,12 @@ public class Main
         startyear = year;
         rulingCoalition = new Coalition(winningParty);
         winningParty.incrementRecognition();
-        
+        winningParty.addFatigue();
+        for(Party par: allParties){
+            if(par !=winningParty){
+                par.decreaseFatigue();
+            }
+        }
     }
 }
     
