@@ -9,14 +9,14 @@ public class Main
 	    String PINK = "\u001B[38;5;212m";
 	    
 		String[] Rose={
-		    GREEN+"               __",
-		    GREEN+"          _   / /|",
-		    GREEN+"         |\\\\  \\/_/",
-		    GREEN+"         \\_\\| / __",
-		    GREEN+"            \\/_/__\\           "+RED+".-=='/~\\",
-		    GREEN+"     ____,__/__,_____,______)"+RED+"/   /{~}}}",
-		    GREEN+"     =,======,====,=====,===,"+RED+"\\'-' {{~}}",
-		      RED+"                              '-==.\\}/",
+		    GREEN+"                        __",
+		    GREEN+"                   _   / /|",
+		    GREEN+"                  |\\\\  \\/_/",
+		    GREEN+"                  \\_\\| / __",
+		    GREEN+"                     \\/_/__\\           "+RED+".-=='/~\\",
+		    GREEN+"              ____,__/__,_____,______)"+RED+"/   /{~}}}",
+		    GREEN+"              =,======,====,=====,===,"+RED+"\\'-' {{~}}",
+		      RED+"                                       '-==.\\}/",
 		     PINK+"============================================================",
 		     PINK+" | "+RESET+"Happy "+PINK+"Valentine's Day"+RESET+", Baby Kooo~~ <3                 "+PINK+" |",
 		     PINK+" | "+RESET+"Thank "+PINK+"you"+RESET+" so much talaga po for this past year. "+PINK+"You    |",
