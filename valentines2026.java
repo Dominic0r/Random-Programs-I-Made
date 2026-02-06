@@ -1,12 +1,31 @@
 import java.util.*;
 public class Main
 {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception{
 	    //Colors:
 	    String RED = "\u001B[38;5;196m";
 	    String GREEN = "\u001B[32m";
 	    String RESET = "\u001B[0m";
 	    String PINK = "\u001B[38;5;212m";
+	    
+	    String[]Envelope={
+	      PINK+"______________________________",
+	      PINK+"|\\                          /|  ",
+	      PINK+"| \\       PRESS ENTER      / |",
+	      PINK+"|  \\        TO OPEN       /  |  ",
+	      PINK+"|   \\____________________/   |",
+	      PINK+"|                            |",
+	      PINK+"|                            |",
+	      PINK+"|____________________________|",
+	    };
+	    Scanner sc = new Scanner(System.in);
+	    
+	    for(int i=0; i<Envelope.length;i++){
+	        System.out.println(Envelope[i]);
+	    }
+	    sc.nextLine();
+	    System.out.print("\033[H\033[2J");
+    System.out.flush();
 	    
 		String[] Rose={
 		    GREEN+"                        __",
@@ -42,6 +61,7 @@ public class Main
 		
 		for(int i=0; i<Rose.length; i++){
 		    System.out.println(Rose[i]);
+		    Thread.sleep(500);
 		}
 	}
 }
