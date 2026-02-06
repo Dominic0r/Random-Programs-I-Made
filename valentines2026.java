@@ -34,6 +34,8 @@ public class Main
 		     PINK+" | "+RESET+"na I wouldn't want to spend my "+PINK+"Valentine's Day"+RESET+" with   "+PINK+" |",
 		     PINK+" | "+RESET+"anyone except "+PINK+"you.                                     |",
 		          " | Happy Valentine's Day po, Fiona, my one and only love  |",
+		          " | Thanks for making 2026 the first year I'll spend       |",
+		          " | Valentine's Day with someone.                          |",
 		          " |                                 -Alfred <3             |",
 		          "============================================================"
 		};
