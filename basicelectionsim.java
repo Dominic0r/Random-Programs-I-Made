@@ -1,5 +1,5 @@
 import java.util.*;
-public class Main
+public class Main // Don't tell mom I use java
 {
     public static Scanner sc = new Scanner(System.in);
     public static Random ra = new Random();
@@ -430,28 +430,23 @@ public class Main
     
     public static void electLeadParty() {
     int rounds = 1;
-    // Every active party starts as a candidate
     List<Party> candidates = new ArrayList<>(allParties);
     
     Party winningParty = null;
     boolean hasGotMajority = false;
 
-    // Run-off election logic
     while (!hasGotMajority && candidates.size() > 0) {
-        // Reset the vote count for this round
         Map<Party, Integer> voteCount = new HashMap<>();
         for (Party candidate : candidates) {
             voteCount.put(candidate, 0);
         }
 
-        // Voting Phase: Every party in the parliament votes
         for (Party votingParty : allParties) {
             Party bestCandidate = null;
             int minDiff = Integer.MAX_VALUE;
             List<Party> tiedCandidates = new ArrayList<>();
 
             for (Party candidate : candidates) {
-                // Calculate ideological distance
                 int diff = Math.abs(votingParty.getIdeology() - candidate.getIdeology());
                 
                 if (diff < minDiff) {
@@ -463,19 +458,16 @@ public class Main
                 }
             }
 
-            // Handle ties randomly
             if (tiedCandidates.size() > 1) {
                 bestCandidate = tiedCandidates.get(ra.nextInt(tiedCandidates.size()));
             } else {
                 bestCandidate = tiedCandidates.get(0);
             }
 
-            // Weight the vote by the party's parliamentary percentage (seats)
             int currentVotes = voteCount.getOrDefault(bestCandidate, 0);
             voteCount.put(bestCandidate, currentVotes + votingParty.getPercent());
         }
 
-        // Find the current round leader
         winningParty = null;
         int maxVotes = -1;
         for (Map.Entry<Party, Integer> entry : voteCount.entrySet()) {
@@ -485,7 +477,6 @@ public class Main
             }
         }
 
-        // Display Round Results
         System.out.println("--- Election Round " + rounds + " ---");
         for (Party cand : candidates) {
             System.out.print(cand.getName() + ": " + voteCount.get(cand) + "% || ");
@@ -657,15 +648,15 @@ for(Party p : allParties) totalRecog += p.getRecognition();
 if(totalRecog > 0.1){
                 System.out.println("Populist Wave!");
                 for(Party par : allParties) {
-        // Establishment parties (high recognition) get their bonus flipped to a penalty
+       
         if (par.getRecognition() > 0) {
-            par.setRecog(par.getRecognition() * -1.5); // Punish them harder than they were helped
+            par.setRecog(par.getRecognition() * -1.5); 
         } else {
-            // Insurgent/New parties get a massive boost
+            
             par.setRecog(0.5); 
         }
     }
-    // Make the supporters of the ruling coalition particularly angry
+   
     for(Party member : rulingCoalition.getMemberList()) {
         for(ideoGroup gro : allGroups) {
             if(gro.proximityWith(member) > 70) {
@@ -695,13 +686,13 @@ public static ideoGroup findClosestGroup(int toFind){
 
 public static void moderateVoters() {
     for (ideoGroup gro : allGroups) {
-        // If satisfaction is high (Economic Boom or good governance)
+        // if satisfaction high 
         if (gro.getSatisfaction() > 70) {
-            int moderates = gro.getSize() / 15; // ~6% move toward center
+            int moderates = gro.getSize() / 15; // move toward center
             gro.updateSize(-moderates);
             
             ideoGroup target;
-            // Move toward the 50 (Center) mark
+            
             if (gro.getIdeology() > 50) {
                 target = findClosestGroup(gro.getIdeology() - 15);
             } else {
@@ -715,13 +706,12 @@ public static void moderateVoters() {
 
 public static void radicalizeVoters() {
     for (ideoGroup gro : allGroups) {
-        // If a group is very unhappy, some members move toward the extremes
+      
         if (gro.getSatisfaction() < 25) {
             int defectors = gro.getSize() / 20; // 5% leave
             gro.updateSize(-defectors);
             
-            // If they are on the Left half, they move further Left.
-            // If on the Right half, they move further Right.
+            
             ideoGroup target = null;
             if (gro.getIdeology() > 50) {
                 target = findClosestGroup(gro.getIdeology() + 15);
@@ -806,18 +796,16 @@ public static final String RESET = "\u001B[0m";
         }
     }
 
-    // Fill remaining seats if election math is slightly off 100
+    
     while (allSeats.size() < 100) allSeats.add("·");
 
-    // Print in a 10x10 block
     for (int i = 0; i < 100; i++) {
         System.out.print(allSeats.get(i) + " ");
-        if ((i + 1) % 10 == 0) System.out.println(); // New row every 10 seats
+        if ((i + 1) % 10 == 0) System.out.println(); 
     }
 
     System.out.println("-------------------------------------");
     
-    // Print Legend
     for (Party par : allParties) {
         if (par.getPercent() > 0) {
             System.out.print(getDynamicColor(par.getIdeology()) + "o " + RESET 
@@ -935,12 +923,12 @@ public static void seeDominant(){
 		    }
 		    System.out.println("\n");*/
 		    
-		    char[] spectrum = new char[21]; // 0 to 100 in blocks of 5
+		    char[] spectrum = new char[21];
     Arrays.fill(spectrum, '-');
     for (Party p : allParties) {
         int index = p.getIdeology() / 5;
-        if (p.getPercent() > 20) spectrum[index] = 'X'; // Major Party
-        else if (p.getPercent() > 5) spectrum[index] = 'o'; // Minor Party
+        if (p.getPercent() > 20) spectrum[index] = 'X'; // maj Party
+        else if (p.getPercent() > 5) spectrum[index] = 'o'; // min Party
     }
     visualizeParliament();
     System.out.println("Spectrum: [R] " + String.valueOf(spectrum) + " [L]");
