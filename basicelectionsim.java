@@ -401,8 +401,9 @@ public class Main
                     
                 }
             }
-            
+            if(maxpar!=null){
             maxpar.setPercent(maxpar.getPercent()+1);
+            }
         }
         
         
@@ -784,8 +785,8 @@ public static void radicalizeVoters() {
     else if (ideo < 65) colorCode = 190; // Lime/Yellow-Green (Center-Left/Green)
     
     // LEFT-WING: Red/Crimson spectrum
-    else if (ideo < 80) colorCode = 203; // Light Red (Social Democrat)
-    else if (ideo < 95) colorCode = 196; // Pure Red (Socialist)
+    //else if (ideo < 80) colorCode = 203; // Light Red (Social Democrat)
+    else if (ideo < 80) colorCode = 196; // Pure Red (Socialist)
     else colorCode = 88;                // Dark Crimson (Communist/Far-Left)
 
     return "\u001B[38;5;" + colorCode + "m";
