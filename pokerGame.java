@@ -28,15 +28,15 @@ public class Main
     public static List<Card> playerHand = new ArrayList<>();
     
     public static boolean onePair(List<Card> hand){
-        boolean isTrue=false;
+        int numofPairs=0;
         for(Card ca : hand){
             for(Card rd: hand){
                 if(ca.Rank()== rd.Rank()){
-                    isTrue=true;
+                    numofPairs++;
                 }
             }
         }
-        return isTrue;
+        return numofPairs==1;
     }
     
     public static boolean twoPair(List<Card> hand){
@@ -175,8 +175,36 @@ public class Main
 		}
 		
 		List<String> Hands = new ArrayList<>();
+		
+		
 		if(onePair(playerHand)){
 		    Hands.add("One Pair");
+		}
+		if(twoPair(playerHand)){
+		    Hands.add("Two Pair");
+		}
+		if(threeOfAKind(playerHand)){
+		    Hands.add("Three of a Kind");
+		}
+		if(straight(playerHand)){
+		    Hands.add("Straight");
+		}
+		if(Flush(playerHand)){
+		    Hands.add("Flush");
+		}
+		if(fullHouse(playerHand)){
+		    Hands.add("Full House");
+		}
+		if(fourOfAKind(playerHand)){
+		    Hands.add("Four of a Kind");
+		}
+		if(straightFlush(playerHand)){
+		    Hands.add("Straight Flush");
+		}
+		
+		System.out.println("\nAvailable Hands:");
+		for(String st : Hands){
+		    System.out.println(st);
 		}
 	}
 }
