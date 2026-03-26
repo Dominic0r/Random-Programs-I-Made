@@ -29,38 +29,38 @@ public class Main
     
     public static boolean onePair(List<Card> hand){
         int numofPairs=0;
-        for(Card ca : hand){
+        Card ca= hand.get(0);
             for(Card rd: hand){
-                if(ca.Rank()== rd.Rank()){
+                if(ca.Rank().equals(rd.Rank())&& rd!=ca ){
                     numofPairs++;
                 }
             }
-        }
+        
         return numofPairs==1;
     }
     
     public static boolean twoPair(List<Card> hand){
         
         int numofPairs =0;
-        for(Card ca: hand){
+        Card ca= hand.get(0);
             for(Card rd: hand){
-                if(ca.Rank()==rd.Rank()){
+                if(ca.Rank().equals(rd.Rank()) && rd!=ca){
                     numofPairs++;
                 }
             }
-        }
+        
         return numofPairs==2;
     }
     
     public static boolean threeOfAKind(List<Card> hand){
         int numofPairs=0;
-        for(Card ca: hand){
+        Card ca= hand.get(0);
             for(Card rd: hand){
-                if(ca.Rank()==rd.Rank()){
+                if(ca.Rank().equals(rd.Rank())&& rd!=ca){
                     numofPairs++;
                 }
             }
-        }
+        
         return numofPairs==3;
     }
     
@@ -76,37 +76,42 @@ public class Main
     
     public static boolean Flush(List<Card> hand){
         boolean sameSuit=true;
-        
-        for(Card ca: hand){
+        int nuofCards = 0;
+        Card ca= hand.get(0);
             for(Card rd: hand){
-                if(ca.Suit() != rd.Suit()){
+                if(!ca.Suit().equals(rd.Suit())){
                     sameSuit=false;
+                }else{
+                    nuofCards++;
                 }
             }
-        }
         
-        return sameSuit;
+        
+        return sameSuit&&nuofCards>=5;
     }
     
     public static boolean fullHouse(List<Card> hand){
         int numOfCards1 = 0;
         int numOfCards2 = 0;
-        
-        for(Card ca: hand){
+        Card ca= hand.get(0);
             for(Card rd: hand){
-                if(ca.Rank()==rd.Rank()){
+                if(ca.Rank().equals(rd.Rank())){
                     numOfCards1++;
                 }
             }
-        }
         
-        for(Card ca: hand){
+        for(Card cd : hand){
+            if(cd !=ca)
+            {
+                ca = cd;
+            }
+        }
             for(Card rd: hand){
-                if(ca.Rank()==rd.Rank()){
+                if(ca.Rank().equals(rd.Rank())){
                     numOfCards2++;
                 }
             }
-        }
+        
         
         boolean valid = false;
         if((numOfCards1==3 && numOfCards2==2)||(numOfCards2==3 && numOfCards1==2) ){
@@ -117,13 +122,13 @@ public class Main
     
     public static boolean fourOfAKind(List<Card> hand){
         int numofPairs=0;
-        for(Card ca: hand){
+        Card ca= hand.get(0);
             for(Card rd: hand){
-                if(ca.Rank()==rd.Rank()){
+                if(ca.Rank().equals(rd.Rank())&& rd!=ca){
                     numofPairs++;
                 }
             }
-        }
+        
         return numofPairs==4;
     }
     
@@ -146,6 +151,7 @@ public class Main
     }
     
     public static List<Card> deck= new ArrayList<>();
+    public static List<Card> community = new ArrayList<>();
     
     public static void setupDeck(){
         String[] suits = {"C","S","H","D"};
@@ -157,10 +163,20 @@ public class Main
         }
     }
     
-    public static void dealPlayerHand(){
+    public static void setupCommunity(){
         Random ra= new Random();
         Card toGet=null;
         for(int i=0; i<5;i++){
+            toGet=deck.get(ra.nextInt(deck.size()));
+            community.add(toGet);
+            deck.remove(toGet);
+        }
+    }
+    
+    public static void dealPlayerHand(){
+        Random ra= new Random();
+        Card toGet=null;
+        for(int i=0; i<2;i++){
             toGet=deck.get(ra.nextInt(deck.size()));
             playerHand.add(toGet);
             deck.remove(toGet);
@@ -169,6 +185,7 @@ public class Main
     
 	public static void main(String[] args) {
 		setupDeck();
+		setupCommunity();
 		dealPlayerHand();
 		for(Card ca: playerHand){
 		    System.out.println(ca);
