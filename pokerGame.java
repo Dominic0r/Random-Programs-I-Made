@@ -95,7 +95,7 @@ public class Main
         int numOfCards2 = 0;
         Card ca= hand.get(0);
             for(Card rd: hand){
-                if(ca.Rank().equals(rd.Rank())){
+                if(ca.Rank().equals(rd.Rank())&&ca!=rd){
                     numOfCards1++;
                 }
             }
@@ -107,7 +107,7 @@ public class Main
             }
         }
             for(Card rd: hand){
-                if(ca.Rank().equals(rd.Rank())){
+                if(ca.Rank().equals(rd.Rank())&&ca!=rd){
                     numOfCards2++;
                 }
             }
@@ -187,35 +187,42 @@ public class Main
 		setupDeck();
 		setupCommunity();
 		dealPlayerHand();
+		System.out.println("Community Cards:");
+		for(Card ca: community){
+		    System.out.println(ca);
+		}
+		System.out.println("Your Cards:");
 		for(Card ca: playerHand){
 		    System.out.println(ca);
 		}
 		
 		List<String> Hands = new ArrayList<>();
+		List<Card> HandCheck = new ArrayList<>();
+		HandCheck.addAll(playerHand);
+		HandCheck.addAll(community);
 		
-		
-		if(onePair(playerHand)){
+		if(onePair(HandCheck)){
 		    Hands.add("One Pair");
 		}
-		if(twoPair(playerHand)){
+		if(twoPair(HandCheck)){
 		    Hands.add("Two Pair");
 		}
-		if(threeOfAKind(playerHand)){
+		if(threeOfAKind(HandCheck)){
 		    Hands.add("Three of a Kind");
 		}
-		if(straight(playerHand)){
+		if(straight(HandCheck)){
 		    Hands.add("Straight");
 		}
-		if(Flush(playerHand)){
+		if(Flush(HandCheck)){
 		    Hands.add("Flush");
 		}
-		if(fullHouse(playerHand)){
+		if(fullHouse(HandCheck)){
 		    Hands.add("Full House");
 		}
-		if(fourOfAKind(playerHand)){
+		if(fourOfAKind(HandCheck)){
 		    Hands.add("Four of a Kind");
 		}
-		if(straightFlush(playerHand)){
+		if(straightFlush(HandCheck)){
 		    Hands.add("Straight Flush");
 		}
 		
