@@ -18,6 +18,11 @@ public class Main
         public String Rank(){
             return rank;
         }
+        
+        @Override
+        public String toString(){
+            return suit+rank;
+        }
     }
     
     public static List<Card> playerHand = new ArrayList<>();
@@ -26,7 +31,7 @@ public class Main
         boolean isTrue=false;
         for(Card ca : hand){
             for(Card rd: hand){
-                if(ca.rank()== rd.rank()){
+                if(ca.Rank()== rd.Rank()){
                     isTrue=true;
                 }
             }
@@ -36,10 +41,10 @@ public class Main
     
     public static boolean twoPair(List<Card> hand){
         
-        numofPairs =0;
+        int numofPairs =0;
         for(Card ca: hand){
             for(Card rd: hand){
-                if(ca.rank()==rd.rank()){
+                if(ca.Rank()==rd.Rank()){
                     numofPairs++;
                 }
             }
@@ -48,10 +53,10 @@ public class Main
     }
     
     public static boolean threeOfAKind(List<Card> hand){
-        numofPairs=0;
+        int numofPairs=0;
         for(Card ca: hand){
             for(Card rd: hand){
-                if(ca.Rank()==rd.rank()){
+                if(ca.Rank()==rd.Rank()){
                     numofPairs++;
                 }
             }
@@ -111,10 +116,10 @@ public class Main
     }
     
     public static boolean fourOfAKind(List<Card> hand){
-        numofPairs=0;
+        int numofPairs=0;
         for(Card ca: hand){
             for(Card rd: hand){
-                if(ca.Rank()==rd.rank()){
+                if(ca.Rank()==rd.Rank()){
                     numofPairs++;
                 }
             }
@@ -152,7 +157,26 @@ public class Main
         }
     }
     
+    public static void dealPlayerHand(){
+        Random ra= new Random();
+        Card toGet=null;
+        for(int i=0; i<5;i++){
+            toGet=deck.get(ra.nextInt(deck.size()));
+            playerHand.add(toGet);
+            deck.remove(toGet);
+        }
+    }
+    
 	public static void main(String[] args) {
+		setupDeck();
+		dealPlayerHand();
+		for(Card ca: playerHand){
+		    System.out.println(ca);
+		}
 		
+		List<String> Hands = new ArrayList<>();
+		if(onePair(playerHand)){
+		    Hands.add("One Pair");
+		}
 	}
 }
