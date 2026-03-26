@@ -198,8 +198,7 @@ public class Main
 		
 		List<String> Hands = new ArrayList<>();
 		List<Card> HandCheck = new ArrayList<>();
-		HandCheck.addAll(playerHand);
-		HandCheck.addAll(community);
+		for(Card ca: playerHand)
 		
 		if(onePair(HandCheck)){
 		    Hands.add("One Pair");
