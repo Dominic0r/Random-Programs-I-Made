@@ -80,10 +80,12 @@ public class Main
         int nuofCards = 0;
         Card ca= hand.get(0);
         List<Card> set = new ArrayList>();
+        
             for(Card rd: hand){
                 if(!ca.Suit().equals(rd.Suit())){
                     sameSuit=false;
                 }else{
+                    set.add()
                     nuofCards++;
                 }
             }
