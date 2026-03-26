@@ -4,61 +4,88 @@ public class Main
     
     public static List<Card> playerHand = new ArrayList<>();
     
+    public static boolean checkCommunity(List<Card> set){
+        boolean getsFromHand=false;
+        for(Card ca: set){
+            if(playerHand.contains(ca)){
+               getsFromHand=true; 
+            }
+        }
+        return getsFromHand;
+    }
+    
     public static boolean onePair(List<Card> hand){
         int numofPairs=0;
-        Card ca= hand.get(0);
+        List<Card> set = new ArrayList>();
+        for(Card ca: hand){
             for(Card rd: hand){
-                if(ca.Rank().equals(rd.Rank())&& rd!=ca ){
+                set.clear();
+                set.add(ca);
+                set.add(rd);
+                if(ca.Rank().equals(rd.Rank())&& rd!=ca && checkCommunity(set)){
                     numofPairs++;
                 }
             }
-        
+        }
         return numofPairs==1;
     }
     
     public static boolean twoPair(List<Card> hand){
         
         int numofPairs =0;
-        Card ca= hand.get(0);
+        List<Card> set = new ArrayList>();
+        for(Card ca: hand){
             for(Card rd: hand){
-                if(ca.Rank().equals(rd.Rank()) && rd!=ca){
+                set.clear();
+                set.add(ca);
+                set.add(rd);
+                if(ca.Rank().equals(rd.Rank()) && rd!=ca && checkCommunity(set)){
                     numofPairs++;
                 }
             }
-        
+        }
         return numofPairs==2;
     }
     
     public static boolean threeOfAKind(List<Card> hand){
         int numofPairs=0;
-        Card ca= hand.get(0);
+        List<Card> set = new ArrayList>();
+        for(Card ca: hand){
+                set.clear();
+                set.add(ca);
+                set.add(rd);
             for(Card rd: hand){
-                if(ca.Rank().equals(rd.Rank())&& rd!=ca){
+                if(ca.Rank().equals(rd.Rank())&& rd!=ca && checkCommunity(set)){
                     numofPairs++;
                 }
             }
-        
+        }
         return numofPairs==3;
     }
     
     public static boolean straight(List<Card> hand){
         String validSequence = "23456789TJQKA";
         String sequence="";
+        List<Card> set = new ArrayList>();
         for(Card ca : hand){
             sequence+= ca.Rank();
+            set.add(ca);
         }
         
-        return validSequence.contains(sequence);
+        return validSequence.contains(sequence) && checkCommunity(set);
     }
     
     public static boolean Flush(List<Card> hand){
         boolean sameSuit=true;
         int nuofCards = 0;
         Card ca= hand.get(0);
+        List<Card> set = new ArrayList>();
+        
             for(Card rd: hand){
                 if(!ca.Suit().equals(rd.Suit())){
                     sameSuit=false;
                 }else{
+                    set.add()
                     nuofCards++;
                 }
             }
@@ -99,13 +126,13 @@ public class Main
     
     public static boolean fourOfAKind(List<Card> hand){
         int numofPairs=0;
-        Card ca= hand.get(0);
+        for(Card ca: hand){
             for(Card rd: hand){
                 if(ca.Rank().equals(rd.Rank())&& rd!=ca){
                     numofPairs++;
                 }
             }
-        
+        }
         return numofPairs==4;
     }
     
@@ -131,7 +158,7 @@ public class Main
     public static List<Card> community = new ArrayList<>();
     
     public static void setupDeck(){
-        String[] suits = {"C","S","H","D"};
+        String[] suits = {"♣","♠","♥","♦"};
         String[] ranks = {"2","3","4","5","6","7","8","9","T","J","Q","K","A"};
         for(int i=0; i<4;i++){
             for(int c=0; c<13;c++){
@@ -178,6 +205,8 @@ public class Main
 		List<Card> HandCheck2 = new ArrayList<>();
 		List<List<Card>>allHands= new ArrayList<>();
 		for(Card ca: playerHand){
+		    HandCheck1.clear();
+		    HandCheck2.clear();
 		    HandCheck1.add(ca);
 		    HandCheck2.add(ca);
 		    int cardsno=0;
@@ -192,8 +221,8 @@ public class Main
 		        cardsno++;
 		        
 		    }
-		    allHands.add(HandCheck1);
-		    allHands.add(HandCheck2);
+		    allHands.add(new ArrayList<Card>(HandCheck1));
+		    allHands.add(new ArrayList<Card>(HandCheck2));
 		}
 		
 		for(List<Card> HandCheck : allHands){
