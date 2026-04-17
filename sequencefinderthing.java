@@ -2,8 +2,8 @@ import java.util.*;
 public class Main
 {
 	public static void main(String[] args) {
-		String sequence = "It is never too late to have a happy childhood";
-		String toFind ="happy";
+		String sequence = "BelieveInYourselfAndAllThatYouAre";
+		String toFind ="All";
 		
 		char[] sequenceArray = sequence.toCharArray();
 		int index = 0;
@@ -22,8 +22,14 @@ public class Main
 		    System.out.println(sequence);
 		    index++;
 		    hasBeenFound = toFind.equals(currentseq);
+		    if(index== sequence.length()-toFind.length()){
+		        break;
+		    }
 		}while(!hasBeenFound);
-		
-		System.out.println("Found at Index "+ index);
+		if(hasBeenFound){
+		    System.out.println("Found at Index "+ index);
+		}else{
+		    System.out.println("Sequence not found");
+		}
 	}
 }
