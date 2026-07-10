@@ -141,7 +141,7 @@ public class Main
         
         
         public boolean coinToss(int morale){
-            tresh = 50 + morale;
+            int tresh = 50 + morale;
             return ra.nextInt(100)< tresh;
         }
     }
