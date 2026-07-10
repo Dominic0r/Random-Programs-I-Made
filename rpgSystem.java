@@ -57,8 +57,8 @@ public class Main
         
         public String getName(){ return name;}
         public String getDesc(){ return description;}
-        public whenEffect applyOn(){ when;}
-        public statusType getType(){ type;}
+        public whenEffect applyOn(){return when;}
+        public statusType getType(){ return type;}
         public effectOn getEffectOn(){ onWhat;}
         public boolean Decays() { return decays;}
         public int getLimit() { return limit;}
@@ -144,6 +144,26 @@ public class Main
             tresh = 50 + morale;
             return ra.nextInt(100)< tresh;
         }
+    }
+    
+    public static class Move{
+        String name;
+        String description;
+        List <Coin> coinSet = new ArrayList<>();
+        
+        public Move(String name, String description){
+            this.name = name;
+            this.description = description;
+        }
+        
+        public String getName(){return name;}
+        public String getDesc(){ return description;}
+        
+        public void addCoin(Coin toAdd){
+            coinSet.add(toAdd);
+        }
+        
+        public List<Coin> getCoinSet(){ return coinSet;}
     }
     
 	public static void main(String[] args) {
