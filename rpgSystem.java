@@ -2,6 +2,9 @@ import java.util.*;
 
 public class Main
 {
+    public static Random ra = new Random();
+    public static Scanner sc = new Scanner(System.in);
+    
     enum whenEffect{
         DURING, // status gives effect during combat
         AFTER, // status gives effect after combat
@@ -19,7 +22,16 @@ public class Main
         MOR, // morale
         SHK, // shock
         STT, // on another stat's count 
-        
+    }
+    
+    enum toWhom{
+        ENM, // applied to enemy | enemy
+        ALY, // applied to allies | ally 
+        SLF, // applied to self | self 
+        ALL, // applied to all | all 
+        TEM, // applied to self and allies | team 
+        SUI, // applied to self and enemies | suicidal 
+        ABM // applied to allies and enemies | all but me 
     }
     
     public static class statusEffect{
@@ -29,6 +41,8 @@ public class Main
         effectOn onWhat;
         boolean decays; // whether or not it decays every turn 
         int limit;
+        toWhom target;
+        
         
         public statusEffect(String name, whenEffect when, statusType type, effectOn onWhat, boolean decays, int limit, String description){
             this.name = name;
@@ -48,10 +62,9 @@ public class Main
         public effectOn getEffectOn(){ onWhat;}
         public boolean Decays() { return decays;}
         public int getLimit() { return limit;}
-        
     }
     
-    public static class appliedEffect{
+    public static class appliedEffect{ // created on unit
         statusEffect effect;
         int potency, // the amount of the effect per stack 
         stack; // the total amount of stack 
@@ -106,7 +119,31 @@ public class Main
     }
     
     public static class Coin{
+        statusEffect effect;
+        int amtPot, // amount of potency to apply
+        amtStack; // amount of stack to apply
+        toWhom target;
+        String description;
         
+        public Coin(statusEffect effect, int amtPot, int amtStack, toWhom target, String description){
+            this.effect = effect;
+            this.amtPot = amtPot;
+            this.amtStack = amtStack;
+            this.target = target;
+            this.description = description;
+        }
+        
+        public statusEffect applies(){ return effect;}
+        public int getAmtPot(){ return amtPot;}
+        public int getAmtStack(){ return amtStack;}
+        public toWhom targets(){ return target;}
+        public String getDesc(){ return description;}
+        
+        
+        public boolean coinToss(int morale){
+            tresh = 50 + morale;
+            return ra.nextInt(100)< tresh;
+        }
     }
     
 	public static void main(String[] args) {
