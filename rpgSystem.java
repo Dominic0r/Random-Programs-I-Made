@@ -119,7 +119,7 @@ public class Main
     }
     
     public static class Coin{
-        statusEffect effect;
+        
         int amtPot, // amount of potency to apply
         amtStack; // amount of stack to apply
         int atkPoints; // attack points
@@ -127,8 +127,9 @@ public class Main
         toWhom target;
         String description;
         
-        public Coin(statusEffect effect, int amtPot, int amtStack, int atkPoints, toWhom target, String description){
-            this.effect = effect;
+        List<statusEffect> effectsToApply = new ArrayList<>();
+        
+        public Coin(int amtPot, int amtStack, int atkPoints, toWhom target, String description){
             this.amtPot = amtPot;
             this.amtStack = amtStack;
             this.target = target;
@@ -136,7 +137,11 @@ public class Main
             this.atkPoints = atkPoints;
         }
         
-        public statusEffect applies(){ return effect;}
+        public addEffect(statusEffect toAdd){
+            effectsToApply.add(toAdd);
+        }
+        
+        public List<statusEffect> applies(){ return effectsToApply;}
         public int getAmtPot(){ return amtPot;}
         public int getAmtStack(){ return amtStack;}
         public toWhom targets(){ return target;}
