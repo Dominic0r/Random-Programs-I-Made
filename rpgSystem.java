@@ -122,15 +122,18 @@ public class Main
         statusEffect effect;
         int amtPot, // amount of potency to apply
         amtStack; // amount of stack to apply
+        int atkPoints; // attack points
+        
         toWhom target;
         String description;
         
-        public Coin(statusEffect effect, int amtPot, int amtStack, toWhom target, String description){
+        public Coin(statusEffect effect, int amtPot, int amtStack, int atkPoints, toWhom target, String description){
             this.effect = effect;
             this.amtPot = amtPot;
             this.amtStack = amtStack;
             this.target = target;
             this.description = description;
+            this.atkPoints = atkPoints;
         }
         
         public statusEffect applies(){ return effect;}
@@ -138,7 +141,7 @@ public class Main
         public int getAmtStack(){ return amtStack;}
         public toWhom targets(){ return target;}
         public String getDesc(){ return description;}
-        
+        public int getAtkPoints() { return atkPoints;}
         
         public boolean coinToss(int morale){
             int tresh = 50 + morale;
@@ -146,7 +149,7 @@ public class Main
         }
     }
     
-    public static class Move{
+    public static class Move{ 
         String name;
         String description;
         List <Coin> coinSet = new ArrayList<>();
@@ -164,7 +167,21 @@ public class Main
         }
         
         public List<Coin> getCoinSet(){ return coinSet;}
+        
     }
+    
+    /*
+    NOTE FOR CLASH FUNCTION 
+    I plan on implementing a separate clash function that will take into account the moves of both sides. here is its process:
+    1: get the number of coins that each move has 
+    2: toss the coins, for every head, add the coin's atkPoints to its respective total atkPoint variables
+    3: determine who has the most atkPoints and set them as Winner
+    4: decrement 1 coin from the loser;
+    5: if both sides still have 1 or more coins left, repeat step 1, if not proceed to step 6
+    6: begin rolling the remaining coins of Winner
+    7: if a coin succesfully rolls, deal its atkPoint and apply the status effect if it has any to its respective targets.
+    
+    */
     
 	public static void main(String[] args) {
 		System.out.println("Hello World");
