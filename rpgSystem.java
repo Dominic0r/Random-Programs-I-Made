@@ -14,7 +14,7 @@ public class Main
     enum statusType{
         DAM, // damage status type 
         HEA,  // heal status type 
-        COU // count status type. used for ammunition and counter status for other statuses
+        COU // count status type. used for ammunition and counter status for other statugses
     }
     
     enum effectOn{
@@ -77,7 +77,7 @@ public class Main
         
         public statusEffect stat(){ return effect;}
         public int getPotency(){ return potency;}
-        public int stack getStack(){ return getStack;}
+        public int stack getStack(){ return stack;}
         
         public void decayStack(){
             if(effect.Decays()){
