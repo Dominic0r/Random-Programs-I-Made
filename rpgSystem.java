@@ -79,7 +79,7 @@ public class Main
         public int getPotency(){ return potency;}
         public int stack getStack(){ return getStack;}
         
-        public int decayStack(){
+        public void decayStack(){
             if(effect.Decays()){
                 stack--;
             }
