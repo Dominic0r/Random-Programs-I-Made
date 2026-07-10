@@ -59,7 +59,7 @@ public class Main
         public String getDesc(){ return description;}
         public whenEffect applyOn(){return when;}
         public statusType getType(){ return type;}
-        public effectOn getEffectOn(){ onWhat;}
+        public effectOn getEffectOn(){ return onWhat;}
         public boolean Decays() { return decays;}
         public int getLimit() { return limit;}
     }
