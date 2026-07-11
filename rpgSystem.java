@@ -158,14 +158,17 @@ public class Main
         String name;
         String description;
         List <Coin> coinSet = new ArrayList<>();
+        int baseatk;
         
-        public Move(String name, String description){
+        public Move(String name, int baseatk, String description){
             this.name = name;
             this.description = description;
+            this.baseatk = baseatk;
         }
         
         public String getName(){return name;}
         public String getDesc(){ return description;}
+        public int getBaseAtk(){ return baseatk;}
         
         public void addCoin(Coin toAdd){
             coinSet.add(toAdd);
