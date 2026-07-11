@@ -14,6 +14,7 @@ public class Main
         private Consumer<Battlefield> onHitReceived;
         private Consumer<Battlefield> onTurnEnd;
         private Consumer<Battlefield> onClash;
+        private Consumer<Battlefield> onHitGive;
         
         public statusEffect(String name, boolean decays, int limit, String description){
             this.name = name;
@@ -43,6 +44,11 @@ public class Main
             return this;
         }
         
+        public StatusEffect setOnHitGive(Consumer<Battlefield> hook) {
+            this.onHitGive = hook;
+            return this;
+        }
+        
         public void triggerTurnStart(Battlefield field) {
             if (onTurnStart != null) onTurnStart.accept(field);
         }
@@ -55,8 +61,12 @@ public class Main
             if (onTurnEnd != null) onTurnEnd.accept(field);
         }
         
-        publci void triggerOnClash(Battlefield field){
+        public void triggerOnClash(Battlefield field){
             if(onClash != null) onClash.accept(field);
+        }
+        
+        public void triggerOnHitGive(Battlefield field){
+            if(onHitGive != null) onHitGive.accept(field);
         }
         
         public String getName(){ return name;}
@@ -217,6 +227,7 @@ public class Main
         public String getName(){return name;}
         public description getDesc(){return desc;}
         public List<Move> getMoveSet(){ return moveSet;}
+        public List<appliedEffect> getEffectList(){ return effectsOnUnit;}
         
         
         public void applyEffect(statusEffect effect, int potency, int stack){
@@ -335,13 +346,27 @@ public class Main
                 currentDefenderPoints += co.getCoinPower();
             }
             
-            if(currentAttackerPoints > currentDefenderPoints){
-                defenderCoinSet.remove(defenderCoinSet.getSize()-1);
-                defenderCoinCount--;
+            if(currentAttackerPoints == currentDefenderPoints){
+                
             }else{
-                attackerCoinSet.remove(attackerCoinSet.getSize()-1);
-                attackerCoinCount--;
+                if(currentAttackerPoints > currentDefenderPoints){
+                    defenderCoinSet.remove(defenderCoinSet.getSize()-1);
+                    defenderCoinCount--;
+                }else{
+                    attackerCoinSet.remove(attackerCoinSet.getSize()-1);
+                    attackerCoinCount--;
+                }
             }
+            
+            
+            for(appliedEffect app : ctx.getAttacker().getEffectList()){
+                app.stat().triggerOnClash();
+            }
+            
+            for(appliedEffect app : ctx.getDefender().getEffectList()){
+                app.stat().triggerOnClash();
+            }
+            
             
             bothStillHaveCoins = (attackerCoinCount> 0) && (defenderCoinCount > 0);
         }while(bothStillHaveCoins);
@@ -359,6 +384,32 @@ public class Main
         }
         
         return new clashResult(winner, loser, remainingCoins);
+    }
+    
+    public void turnStart(Battlefield field){
+        for(Unit un : field.getAllies()){
+            for(appliedEffect app : un.getEffectList()){
+                app.stat().triggerTurnStart();
+            }
+        }
+        for(Unit un : field.getEnemies()){
+            for(appliedEffect app : un.getEffectList()){
+                app.stat().triggerTurnStart();
+            }
+        }
+    }
+    
+    public void turnEnd(Battlefield field){
+        for(Unit un : field.getAllies()){
+            for(appliedEffect app : un.getEffectList()){
+                app.stat().triggerTurnEnd();
+            }
+        }
+        for(Unit un : field.getEnemies()){
+            for(appliedEffect app : un.getEffectList()){
+                app.stat().triggerTurnEnd();
+            }
+        }
     }
     
     
