@@ -310,10 +310,11 @@ public class Main
                         break;
                 }
             }
+            pendingMutations.clear();
         }
         
         public void addNewMut(mutation mut){
-            applyEffect(mut.getEffect(), 1,1,mut.getSource());
+            applyEffect(mut.getEffect(), mut.getAmount(),1,mut.getSource());
         }
         
         public void removeMut(mutation mut){
@@ -506,7 +507,7 @@ public class Main
                 app.stat().triggerOnClash(field, comctx.getDefender());
             }
             
-            
+            checkStacks(field);
             bothStillHaveCoins = (attackerCoinCount> 0) && (defenderCoinCount > 0);
             clashRound++;
         }while(bothStillHaveCoins);
@@ -540,10 +541,10 @@ public class Main
     public static void afterClash(clashResult result, Battlefield field, combatContext comctx){
         System.out.println("\n💥 --- CLASH RESOLUTION --- 💥"); // Added UI
         for(Coin co: result.getCoinSet()){
-            System.out.println(result.getWinner().getName() + " activates: " + co.getDesc()); // Added UI
+            System.out.print(result.getWinner().getName() + " activates: " + co.getDesc()); // Added UI
             
             if(co.getCoinPower(result.getWinner().getMorale()) >0){
-                System.out.print("HEADS!");
+                System.out.print(" - HEADS!");
                 co.triggerOnHit(result);
                 
                 for(appliedEffect app : result.getWinner().getEffectList()){
@@ -554,8 +555,10 @@ public class Main
                     app.stat().triggerOnHitReceived(field, result.getLoser());
                 }
             }else{
-                System.out.print("TAILS!");
+                System.out.println(" - TAILS!");
             }
+            
+            checkStacks(field);
         }
     }
     
@@ -570,7 +573,12 @@ public class Main
         System.out.println("\n[ Enemies ]");
         for(int i = 0; i < field.getEnemies().size(); i++){
             Unit en = field.getEnemies().get(i);
-            System.out.println((i+1) + ". " + en.getName() + " | HP: " + en.getHP() + "/" + en.maxHP);
+            System.out.println((i+1) + ". " + en.getName() + " | HP: " + en.getHP() + "/" + en.maxHP + " | Morale: "+ en.getMorale());
+            if(en.getEffectList().size()>0){
+                for(appliedEffect app: en.getEffectList()){
+                    System.out.println(app.stat().getName()+ " "+ app.getPotency()+" potency, "+ app.getStack()+ " stack");
+                }
+            }
         }
         System.out.println("===============================================\n");
 
@@ -814,6 +822,41 @@ public class Main
     public static List<Unit> allEnemies = new ArrayList<>();
     public static int turnCount = 1;
     
+    public static void checkStacks(Battlefield field){
+        List<appliedEffect> toRemove = new ArrayList<>();
+        for(Unit un: field.getAllies()){
+            
+            for(appliedEffect app : un.getEffectList()){
+                if(app.stackIsEmpty()){
+                    toRemove.add(app);
+                }
+            }
+            
+            un.getEffectList().removeAll(toRemove);
+            toRemove.clear();
+        }
+        
+        for(Unit un: field.getEnemies()){
+            for(appliedEffect app : un.getEffectList()){
+                if(app.stackIsEmpty()){
+                    toRemove.add(app);
+                }
+            }
+            
+            un.getEffectList().removeAll(toRemove);
+            toRemove.clear();
+        }
+        
+        for(appliedEffect app : playerUnit.getEffectList()){
+                if(app.stackIsEmpty()){
+                    toRemove.add(app);
+                }
+            }
+            
+            playerUnit.getEffectList().removeAll(toRemove);
+            toRemove.clear();
+    }
+    
     public static void battleFlow(Battlefield field){
         List<combatContext> attackQueue = new ArrayList<>();
         turnStart(field);
@@ -937,13 +980,19 @@ public class Main
         
         stab.addCoin(new Coin(3, "Slash! - Inflicts 3 bleed potency", rst ->{
             rst.getLoser().takeHPDamage(3);
-            for(appliedEffect app: rst.getLoser().getEffectList()){
-                if(app.stat()==defaultStatusEffects.get(0)){
-                    mutation mut = new mutation(Type.MOD_POTENCY, 3,defaultStatusEffects.get(0), rst.getWinner());
-                    rst.getLoser().queueMutation(mut);
-                }else{
-                    mutation mut = new mutation(Type.ADD, 3, defaultStatusEffects.get(0),rst.getWinner());
+            if(!rst.getLoser().getEffectList().isEmpty()){
+                for(appliedEffect app: rst.getLoser().getEffectList()){
+                    if(app.stat()==defaultStatusEffects.get(0)){
+                        mutation mut = new mutation(Type.MOD_POTENCY, 3,defaultStatusEffects.get(0), rst.getWinner());
+                        rst.getLoser().queueMutation(mut);
+                    }else{
+                        mutation mut = new mutation(Type.ADD, 3, defaultStatusEffects.get(0),rst.getWinner());
+                        rst.getLoser().queueMutation(mut);
+                    }
                 }
+            }else{
+                mutation mut = new mutation(Type.ADD, 3, defaultStatusEffects.get(0),rst.getWinner());
+                        rst.getLoser().queueMutation(mut);
             }
         }));
         playerMoveSet.add(multiPunch);
