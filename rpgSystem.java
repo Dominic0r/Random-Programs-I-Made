@@ -122,35 +122,45 @@ public class Main
         public Unit attacker;
         public Unit defender;
         int totalDamage;
+        List<Unit> allies = new ArrayList<>();
+        List<Unit> enemies = new ArrayList<>();
+        boolean isHead;
         
+        public combatContext (Unit attacker, Unit defender, List<Unit> allies, List<Unit>enemies){
+            this.attacker = attacker;
+            this.defender = defender;
+            this.allies = allies;
+            this.enemies = enemies;
+        }
+        
+        public void clash(){
+            int attackerCoins =0, defenderCoins= attackerCoins;
+        }
     }
     
     public static class Coin{
         
-        
+        private Consumer<combatContext> onHitEffect;
         int atkPoints; // attack points
         
-        toWhom target;
         String description;
         
-        List<statusEffect> effectsToApply = new ArrayList<>();
+        public Coin(int atkPoints, String description){
+            this(atkPoints, description, ctx ->{});
+        }
         
-        public Coin(int amtPot, int amtStack, int atkPoints, toWhom target, String description){
-            this.amtPot = amtPot;
-            this.amtStack = amtStack;
-            this.target = target;
-            this.description = description;
+        public Coin (int atkPoints, String description, Consumer<combatContext> onHitEffect){
             this.atkPoints = atkPoints;
+            this.description = description;
+            this.onHitEffect = onHitEffect;
         }
         
-        public addEffect(statusEffect toAdd){
-            effectsToApply.add(toAdd);
+        public void triggerOnHit(combatContext context){
+            
         }
         
-        public List<statusEffect> applies(){ return effectsToApply;}
-        public int getAmtPot(){ return amtPot;}
-        public int getAmtStack(){ return amtStack;}
-        public toWhom targets(){ return target;}
+        
+        
         public String getDesc(){ return description;}
         public int getAtkPoints() { return atkPoints;}
         
