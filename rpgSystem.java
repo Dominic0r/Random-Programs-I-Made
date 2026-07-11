@@ -133,6 +133,26 @@ public class Main
     }
     
     
+    public static class mutation{
+        enum Type = {ADD, REMOVE, MOD_POTENCY, MOD_STACK};
+        final Type type;
+        final int amount;
+        final statusEffect effect;
+        final Unit source;
+        
+        public mutation(Type type, int amount, statusEffect effect, Unit source){
+            this.type = type;
+            this.amount = amount;
+            this.effect = effect;
+            this.source = source;
+        }
+        
+        public Type getType(){return type;}
+        public int amount(){ return amount;}
+        public statusEffect getEffect(){ return effect;}
+        public Unit getSource(){ return source;}
+        
+    }
     
     public static class Coin{
         
@@ -208,8 +228,13 @@ public class Main
         String name, description;
         
         List<appliedEffect> effectsOnUnit = new ArrayList<>();
+        List<mutation> pendingMutations = new ArrayKList<>();
+        
+        
         
         List<Move> moveSet = new ArrayList<>();
+        
+        
         
         public Unit(int hp, int morale, int speed, String name, String description, List<Move> moveSet){
             this.hp = hp;
@@ -228,6 +253,12 @@ public class Main
         public String getDesc(){return description;}
         public List<Move> getMoveSet(){ return moveSet;}
         public List<appliedEffect> getEffectList(){ return effectsOnUnit;}
+        
+        public void queueMutation(mutation newMut){
+            pendingMutations.add(newMut);
+        }
+        
+        
         
         
         public void applyEffect(statusEffect effect, int potency, int stack, Unit source){
@@ -394,9 +425,9 @@ public class Main
     
     public void afterClash(clashResult result, Battlefield field, combatContext comctx){
         for(Coin co: result.getCoinSet()){
-            
-            if(co.getAtkPoints() >0){
-                co.triggerOnHit(comctx);
+            co.triggerOnHit(comctx);
+            if(co.getCoinPower() >0){
+                
                 
                 for(appliedEffect app : result.getWinner().getEffectList()){
                     app.stat().triggerOnHitGive(field);
