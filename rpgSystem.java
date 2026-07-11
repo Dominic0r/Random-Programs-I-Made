@@ -245,7 +245,8 @@ public class Main
         boolean isStaggered = false;
         
         
-        
+        Move unopposed = new Move("...",0,"...");
+        unopposed.addCoin(new Coin(0,"..."));
         public Unit(int hp, int morale, int speed, int staggerTresh, String name, String description, List<Move> moveSet){
             this.hp = hp;
             this.maxHP = hp;
@@ -266,6 +267,8 @@ public class Main
         public List<Move> getMoveSet(){ return moveSet;}
         public List<appliedEffect> getEffectList(){ return effectsOnUnit;}
         public boolean staggered(){ return isStaggered;}
+        
+        public Move unop(){return unopposed;}
         
         public void checkStagger(){
             if(!isStaggered){
@@ -489,7 +492,8 @@ public class Main
             winnerCoinSet = defenderCoinSet;
         }
         
-        return new clashResult(winner, loser, remainingCoins, winnerCoinSet);
+        clashResult finalResult = new clashResult(winner, loser, remainingCoins, winnerCoinSet);
+        return finalResult;
     }
     
     public void afterClash(clashResult result, Battlefield field, combatContext comctx){
@@ -602,10 +606,10 @@ public class Main
         Move targetMove;
         
         int maxnum=Integer.MIN_VALUE;
-        Move maxMove;
+        Move maxMove=null;
         for(Move mov: targetEnemy.getMoveSet()){
             if(mov.getTotalPoints()> maxnum){
-                maxnum = getTotalPoints();
+                maxnum = mov.getTotalPoints();
                 maxMove = mov;
             }
         }
@@ -617,35 +621,170 @@ public class Main
     }
     //public combatContext (Unit attacker, Move attackerMove, Unit defender, Move defenderMove, Battlefield field){
     
+    public combatContext allyMove(Battlefield field, Unit un, List<combatContext> attackQueue){
+        int maxnum=Integer.MIN_VALUE; // pick their move
+        Move maxMove=null;
+        for(Move mov: un.getMoveSet()){
+            if(mov.getTotalPoints()> maxnum){
+                maxnum = mov.getTotalPoints();
+                maxMove = mov;
+            }
+        }
+        Move aMov = maxMove; 
+        
+        Unit targetUn=null;
+        
+        //pick their target
+        boolean alreadyTargeted = false;
+        for(Unit enun : field.getEnemies()){
+            alreadyTargeted = false;
+            for(combatContext comctx : attackQueue){
+                if(comctx.getDefender() == enun){
+                    alreadyTargeted = true;
+                }
+            }
+            if(!alreadyTargeted){
+                targetUn = enun;
+            }
+        }
+        
+        boolean secondary = false;
+        if(targetUn == null){
+            targetUn = field.getEnemies.get(ra.nextInt(field.getEnemies.size()));
+            secondary = true;
+        }
+        
+        
+        maxnum = Integer.MIN_VALUE;
+        for(Move mov: targetUn.getMoveSet()){
+            if(mov.getTotalPoints()> maxnum){
+                maxnum = mov.getTotalPoints();
+                maxMove = mov;
+            }
+        }
+        Move eMov = maxMove; 
+        if(secondary){
+            eMov = targetUn.unop();
+        }
+        
+        
+        combatContext finalCC = new combatContext(un, aMov, targetUn, eMov, field);
+        return finalCC;
+        
+        
+    }
+    
+    public combatContext enemMove(Battlefield field, Unit un, List<combatContext> attackQueue){
+        int maxnum=Integer.MIN_VALUE; // pick their move
+        Move maxMove=null;
+        for(Move mov: un.getMoveSet()){
+            if(mov.getTotalPoints()> maxnum){
+                maxnum = mov.getTotalPoints();
+                maxMove = mov;
+            }
+        }
+        Move aMov = maxMove; 
+        
+        Unit targetUn=null;
+        
+        //pick their target
+        if(field.getAllies().size() >0){
+            boolean alreadyTargeted = false;
+            for(Unit enun : field.getAllies()){
+                alreadyTargeted = false;
+                for(combatContext comctx : attackQueue){
+                    if(comctx.getDefender() == enun){
+                        alreadyTargeted = true;
+                    }
+                }
+                if(!alreadyTargeted){
+                    targetUn = enun;
+                }
+            }
+            
+            boolean secondary = false;
+            if(targetUn == null){
+                targetUn = field.getAllies.get(ra.nextInt(field.getEnemies.size()));
+                secondary = true;
+            }
+            
+            maxnum = Integer.MIN_VALUE;
+            for(Move mov: targetUn.getMoveSet()){
+                if(mov.getTotalPoints()> maxnum){
+                    maxnum = mov.getTotalPoints();
+                    maxMove = mov;
+                }
+            }
+            Move eMov = maxMove; 
+        }else{
+            targetUn = playerUnit;
+        }
+        if(secondary){
+            eMov = targetUn.unop();
+        }
+        combatContext finalCC = new combatContext(un, aMov, targetUn, eMov, field);
+        return finalCC;
+        
+        
+    }
+    
     //public Battlefield(List<Unit> allies, List<Unit> enemies, int turnCount){
     public void battleFlow(Battlefield field){
         List<combatContext> attackQueue = new ArrayList<>();
         turnStart(field);
-        keepAllAppliedEffectsInBounds();
+        keepAllAppliedEffectsInBounds(field);
         
         
-        
-        combatContext playerMove = playerChoose();// have player and all NPCs pick move and target. generates combatContext 
-        attackQueue.add(playerMove);
-        
+        if(!playerUnit.staggered()){
+            combatContext playerMove = playerChoose(field);// have player and all NPCs pick move and target. generates combatContext 
+            attackQueue.add(playerMove);
+        }
+        if(field.getAllies().size+1 > field.getEnemies().size()){
+            if(field.getAllies().size()>0){
+                for(Unit un: field.getAllies()){
+                    if(!un.staggered()){
+                    attackQueue.add(allyMove(field, un, attackQueue));
+                    }
+                }
+            }
+        }else{
+            if(field.getEnemies().size()>0){
+                for(Unit un: field.getEnemies()){
+                    if(!un.staggered()){
+                    attackQueue.add(allyMove(field, un, attackQueue));
+                    }
+                }
+            }
+        }
         
         for(combatContext cctx : attackQueue){
             clashResult finalResult = clashFunction(field, cctx);
             
-            keepAllAppliedEffectsInBounds();
+            keepAllAppliedEffectsInBounds(field);
             
-            afterClash(finalResult, field, cctx)
+            afterClash(finalResult, field, cctx);
             
-            keepAllAppliedEffectsInBounds();
+            keepAllAppliedEffectsInBounds(field);
         }
         
         turnEnd(field);
         
-        keepAllAppliedEffectsInBounds();
+        keepAllAppliedEffectsInBounds(field);
         
     }
     
-    public static Unit playerUnit;
+    public static void checkAllStagger(Battlefield field){
+        for(Unit un: field.getAllies()){
+            un.checkStagger();
+        }
+        
+        for(Unit un: field.getEnemies()){
+            un.checkStagger();
+        }
+        playerUnit.checkStagger();
+    }
+    
+    public static Unit playerUnit = new playerUnit;
     
 	public static void main(String[] args) {
 		System.out.println("Hello World");
