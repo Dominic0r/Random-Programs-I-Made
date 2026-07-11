@@ -154,6 +154,13 @@ public class Main
             int tresh = 50 + morale;
             return ra.nextInt(100)< tresh;
         }
+        
+        public int getCoinPower(int morale){
+            int tresh = 50+morale;
+            if(ra.nextInt(100)< tresh){
+                return atkPoints;
+            }
+        }
     }
     
     public static class Move{ 
@@ -178,6 +185,10 @@ public class Main
         
         public List<Coin> getCoinSet(){ return coinSet;}
         
+        
+        public List<Coin> getClashCoins(){ // USE THIS FOR BATTLES
+            return new ArrayList<>(this.coinSet);
+        }
     }
     
     public static class Unit{
@@ -254,10 +265,10 @@ public class Main
     }
     
     public static class combatContext{
-        public Unit attacker;
-        public Move attackerMove;
-        public Unit defender;
-        public Move defenderMove;
+        Unit attacker;
+        Move attackerMove;
+        Unit defender;
+        Move defenderMove;
         int totalDamage;
         Battlefield field;
         
@@ -275,12 +286,15 @@ public class Main
         public int totalDamage(){ return totalDamage;}
         public Battlefield field() {return field;}
         
+    }
+    
+    public void clashFunction(){
         
     }
     
+    
     /*
     NOTE FOR CLASH FUNCTION 
-    I plan on implementing a separate clash function that will take into account the moves of both sides. here is its process:
     1: get the number of coins that each move has 
     2: toss the coins, for every head, add the coin's atkPoints to its respective total atkPoint variables
     3: determine who has the most atkPoints and set them as Winner
