@@ -522,7 +522,36 @@ public class Main
         }
     }
     
+    public void playerChoose(Battlefield field){
+        
+    }
     
+    
+    //public Battlefield(List<Unit> allies, List<Unit> enemies, int turnCount){
+    public void battleFlow(Battlefield field){
+        List<combatContext> attackQueue = new ArrayList<>();
+        turnStart(field);
+        keepAllAppliedEffectsInBounds();
+        
+        combatContext currentComCtx = // have player and all NPCs pick move and target. generates combatContext 
+        
+        for(combatContext cctx : attackQueue){
+            clashResult finalResult = clashFunction(field, cctx);
+            
+            keepAllAppliedEffectsInBounds();
+            
+            afterClash(finalResult, field, cctx)
+            
+            keepAllAppliedEffectsInBounds();
+        }
+        
+        turnEnd(field);
+        
+        keepAllAppliedEffectsInBounds();
+        
+    }
+    
+    public static Unit playerUnit;
     
 	public static void main(String[] args) {
 		System.out.println("Hello World");
