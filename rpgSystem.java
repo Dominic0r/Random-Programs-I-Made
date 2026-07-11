@@ -1,5 +1,5 @@
 import java.util.*;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 public class Main
 {
     public static Random ra = new Random();
@@ -10,11 +10,11 @@ public class Main
         boolean decays; // whether or not it decays every turn 
         int limit;
         
-        private Consumer<Battlefield> onTurnStart;
-        private Consumer<Battlefield> onHitReceived;
-        private Consumer<Battlefield> onTurnEnd;
-        private Consumer<Battlefield> onClash;
-        private Consumer<Battlefield> onHitGive;
+        private BiConsumer<Battlefield, Unit> onTurnStart;
+        private BiConsumer<Battlefield, Unit> onHitReceived;
+        private BiConsumer<Battlefield, Unit> onTurnEnd;
+        private BiConsumer<Battlefield, Unit> onClash;
+        private BiConsumer<Battlefield, Unit> onHitGive;
         
         public statusEffect(String name, boolean decays, int limit, String description){
             this.name = name;
@@ -24,17 +24,17 @@ public class Main
             
         }
         
-        public statusEffect setOnTurnStart(Consumer<Battlefield> hook) {
+        public statusEffect setOnTurnStart(BiConsumer<Battlefield> hook) {
             this.onTurnStart = hook;
             return this;
         }
 
-        public statusEffect setOnHitReceived(Consumer<Battlefield> hook) {
+        public statusEffect setOnHitReceived(BiConsumer<Battlefield> hook) {
             this.onHitReceived = hook;
             return this;
         }
     
-        public statusEffect setOnTurnEnd(Consumer<Battlefield> hook) {
+        public statusEffect setOnTurnEnd(BiConsumer<Battlefield> hook) {
             this.onTurnEnd = hook;
             return this;
         }
@@ -245,8 +245,7 @@ public class Main
         boolean isStaggered = false;
         
         
-        Move unopposed = new Move("...",0,"...");
-        unopposed.addCoin(new Coin(0,"..."));
+        Move unopposed;
         public Unit(int hp, int morale, int speed, int staggerTresh, String name, String description, List<Move> moveSet){
             this.hp = hp;
             this.maxHP = hp;
@@ -256,6 +255,8 @@ public class Main
             this.description = description;
             this.moveSet = moveSet;
             this.staggerTresh = staggerTresh;
+            unopposed = new Move("...",0,"...");
+            unopposed.addCoin(new Coin(0,"..."));
         }
         
         public int getHP(){ return hp;}
@@ -650,7 +651,7 @@ public class Main
         
         boolean secondary = false;
         if(targetUn == null){
-            targetUn = field.getEnemies.get(ra.nextInt(field.getEnemies.size()));
+            targetUn = field.getEnemies().get(ra.nextInt(field.getEnemies().size()));
             secondary = true;
         }
         
@@ -684,9 +685,9 @@ public class Main
             }
         }
         Move aMov = maxMove; 
-        
+        Move eMov= null;
         Unit targetUn=null;
-        
+        boolean secondary=false;
         //pick their target
         if(field.getAllies().size() >0){
             boolean alreadyTargeted = false;
@@ -702,9 +703,9 @@ public class Main
                 }
             }
             
-            boolean secondary = false;
+            secondary = false;
             if(targetUn == null){
-                targetUn = field.getAllies.get(ra.nextInt(field.getEnemies.size()));
+                targetUn = field.getAllies().get(ra.nextInt(field.getAllies().size()));
                 secondary = true;
             }
             
@@ -715,7 +716,7 @@ public class Main
                     maxMove = mov;
                 }
             }
-            Move eMov = maxMove; 
+            eMov = maxMove; 
         }else{
             targetUn = playerUnit;
         }
@@ -739,7 +740,7 @@ public class Main
             combatContext playerMove = playerChoose(field);// have player and all NPCs pick move and target. generates combatContext 
             attackQueue.add(playerMove);
         }
-        if(field.getAllies().size+1 > field.getEnemies().size()){
+        if(field.getAllies().size()+1 > field.getEnemies().size()){
             if(field.getAllies().size()>0){
                 for(Unit un: field.getAllies()){
                     if(!un.staggered()){
@@ -783,9 +784,42 @@ public class Main
         }
         playerUnit.checkStagger();
     }
+    //public Unit(int hp, int morale, int speed, int staggerTresh, String name, String description, List<Move> moveSet){
     
-    public static Unit playerUnit = new playerUnit;
+    //public Move(String name, int baseatk, String description){
+    //public Coin (int atkPoints, String description, Consumer<combatContext> onHitEffect){
+    public static Unit playerUnit;
     
+    public static void defPlayerUnit(){
+        List<Move> playerMoveSet = new ArrayList<>();
+        
+        Move multiPunch = new Move("Multi-Punch", 5, "Punches the Enemy 3 times");
+        multiPunch.addCoin(new Coin(2, "Punch!", ctx ->{
+            ctx.getDefender().takeHPDamage(2);
+        }));
+        
+        multiPunch.addCoin(new Coin(1, "Punch Again!", ctx ->{
+            ctx.getDefender().takeHPDamage(1);
+        }));
+        
+        multiPunch.addCoin(new Coin(3, "Upper Cut!", ctx ->{
+            ctx.getDefender().takeHPDamage(3);
+        }));
+        
+        Move roundhouse = new Move("Roundhouse Kick", 10, "Kicks the enemy hard");
+        
+        
+        
+        playerUnit = new Unit(100, 0, 5, 30, "Player", "Description", )
+    }
+    //public statusEffect(String name, boolean decays, int limit, String description){
+    public static List<statusEffect> defaultStatusEffects = new ArrayList<>();
+    public static void defDefaultStats(){
+        statusEffect bleed("Bleed", false, 99, "Take fixed damage every coin toss")
+        .setOnClashEffect(field->{
+            int damage = 
+        })
+    }
 	public static void main(String[] args) {
 		System.out.println("Hello World");
 	}
