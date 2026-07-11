@@ -224,7 +224,7 @@ public class Main
     }
     
     public static class Unit{
-        int maxHP, hp, morale, speed;
+        int maxHP, hp, morale, speed, staggerTresh;
         String name, description;
         
         List<appliedEffect> effectsOnUnit = new ArrayList<>();
@@ -234,9 +234,11 @@ public class Main
         
         List<Move> moveSet = new ArrayList<>();
         
+        boolean isStaggered = false;
         
         
-        public Unit(int hp, int morale, int speed, String name, String description, List<Move> moveSet){
+        
+        public Unit(int hp, int morale, int speed, int staggerTresh, String name, String description, List<Move> moveSet){
             this.hp = hp;
             this.maxHP = hp;
             this.morale = morale;
@@ -244,15 +246,32 @@ public class Main
             this.name = name;
             this.description = description;
             this.moveSet = moveSet;
+            this.staggerTresh = staggerTresh;
         }
         
         public int getHP(){ return hp;}
         public int getMorale(){return morale;}
         public int getSpeed(){return speed;}
+        public int getStaggerTresh(){ return staggerTresh;}
         public String getName(){return name;}
         public String getDesc(){return description;}
         public List<Move> getMoveSet(){ return moveSet;}
         public List<appliedEffect> getEffectList(){ return effectsOnUnit;}
+        public boolean staggered(){ return isStaggered;}
+        
+        public void checkStagger(){
+            if(!isStaggered){
+                if(hp < staggerTresh){
+                    isStaggered = true;
+                }
+            }else{
+                isStaggered = false;
+            }
+        }
+        
+        public void setStaggerOn(){ isStaggered = true;}
+        
+        
         
         public void queueMutation(mutation newMut){
             pendingMutations.add(newMut);
@@ -522,8 +541,10 @@ public class Main
         }
     }
     
-    public void playerChoose(Battlefield field){
-        
+    public combatContext playerChoose(Battlefield field){
+        for(Move mov : playerUnit.getMoveSet()){
+            
+        }
     }
     
     
@@ -533,7 +554,11 @@ public class Main
         turnStart(field);
         keepAllAppliedEffectsInBounds();
         
-        combatContext currentComCtx = // have player and all NPCs pick move and target. generates combatContext 
+        
+        
+        combatContext playerMove = // have player and all NPCs pick move and target. generates combatContext 
+        
+        
         
         for(combatContext cctx : attackQueue){
             clashResult finalResult = clashFunction(field, cctx);
