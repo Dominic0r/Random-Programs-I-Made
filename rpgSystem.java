@@ -311,16 +311,19 @@ public class Main
         Unit winner;
         Unit loser;
         int remainingCoins;
+        List<Coin> winnerCoinSet = new ArrayList<>();
         
-        public clashResult(Unit winner, Unit loser, int remainingCoins){
+        public clashResult(Unit winner, Unit loser, int remainingCoins, List<Coin> winnerCoinSet){
             this.winner = winner;
             this.loser = loser;
             this.remainingCoins = remainingCoins;
+            this.winnerCoinSet = winnerCoinSet;
         }
         
         public Unit getWinner(){ return winner;}
         public Unit getLoser(){ return loser;}
         public int getRemCoins() { return remainingCoins;}
+        public List<Coin> getCoinSet(){ return winnerCoinSet;}
     }
     
     public clashResult clashFunction(Battlefield field, combatContext comctx){
@@ -372,18 +375,33 @@ public class Main
         }while(bothStillHaveCoins);
         Unit winner, loser;
         int remainingCoins;
+        List<Coin> winnerCoinSet = new ArrayList<>();
         
         if(attackerCoinCount >0){
             winner = comctx.getAttacker();
             loser = comctx.getDefender();
             remainingCoins = attackerCoinCount;
+            winnerCoinSet = attackerCoinSet;
         }else{
             winner = comctx.getDefender();
             loser = comctx.getAttacker();
             remainingCoins = defenderCoinCount;
+            winnerCoinSet = defender;
         }
         
-        return new clashResult(winner, loser, remainingCoins);
+        return new clashResult(winner, loser, remainingCoins, winnerCoinSet);
+    }
+    
+    public void afterClash(clashResult result){
+        for(Coin co: result.getCoinSet()){
+            co.triggerOnHit();
+            
+            for(appliedEffect app : result.getWinner().getEffectList()){
+                app.
+            }
+            
+            
+        }
     }
     
     public void turnStart(Battlefield field){
