@@ -148,7 +148,7 @@ public class Main
         }
         
         public Type getType(){return type;}
-        public int amount(){ return amount;}
+        public int getAmount(){ return amount;}
         public statusEffect getEffect(){ return effect;}
         public Unit getSource(){ return source;}
         
@@ -258,13 +258,55 @@ public class Main
             pendingMutations.add(newMut);
         }
         
+        public void applyPendingMutations(){
+            for(mutation mut: pendingMutations){
+                switch(mut.getType()){
+                    case ADD:
+                        break;
+                    case REMOVE:
+                        break;
+                    case MOD_STACK:
+                        break;
+                    case MOD_POTENCY:
+                        break;
+                }
+            }
+        }
         
+        public void addNewMut(mutation mut){
+            applyEffect(mut.getEffect(), 1,1,mut.getSource());
+        }
         
+        public void removeMut(mutation mut){
+            appliedEffect toRemove = null;
+            for(appliedEffect app : effectsOnUnit){
+                if(app.stat() == mut.getEffect()){
+                    toRemove = app;
+                }
+            }
+            effectsOnUnit.remove(toRemove);
+        }
+        
+        public void modifyStack(mutation mut){
+            for(appliedEffect app : effectsOnUnit){
+                if(app.stat() == mut.getEffect()){
+                    app.changeStack(mut.getAmount());
+                }
+            }
+        }
+        
+        public void modifyPotency(mutation mut){
+            for(appliedEffect app : effectsOnUnit){
+                if(app.stat() == mut.getEffect()){
+                    app.changePotency(mut.getAmount());
+                }
+            }
+        }
         
         public void applyEffect(statusEffect effect, int potency, int stack, Unit source){
             boolean isAlreadyApplied = false;
             for(appliedEffect AE : effectsOnUnit){
-                if(AE.stat() == effect && AE.effectSource() == source){
+                if(AE.stat() == effect){
                     isAlreadyApplied = true;
                     AE.changeStack(stack);
                     AE.changePotency(potency);
@@ -462,6 +504,20 @@ public class Main
         for(Unit un : field.getEnemies()){
             for(appliedEffect app : un.getEffectList()){
                 app.stat().triggerTurnEnd(field);
+            }
+        }
+    }
+    
+    public void keepAllAppliedEffectsInBounds(Battlefield field){
+        for(Unit un : field.getAllies()){
+            for(appliedEffect app : un.getEffectList()){
+                app.keepInBounds();
+            }
+        }
+        
+        for(Unit un : field.getEnemies()){
+            for(appliedEffect app : un.getEffectList()){
+                app.keepInBounds();
             }
         }
     }
