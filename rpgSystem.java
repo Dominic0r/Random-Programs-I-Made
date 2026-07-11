@@ -431,7 +431,7 @@ public class Main
         public List<Coin> getCoinSet(){ return winnerCoinSet;}
     }
     
-    public clashResult clashFunction(Battlefield field, combatContext comctx){
+    public static clashResult clashFunction(Battlefield field, combatContext comctx){
         List<Coin> attackerCoinSet = comctx.getAttackerMove().getClashCoins();
         List<Coin> defenderCoinSet = comctx.getDefenderMove().getClashCoins();
         
@@ -498,7 +498,7 @@ public class Main
         return finalResult;
     }
     
-    public void afterClash(clashResult result, Battlefield field, combatContext comctx){
+    public static void afterClash(clashResult result, Battlefield field, combatContext comctx){
         for(Coin co: result.getCoinSet()){
             co.triggerOnHit(comctx);
             if(co.getCoinPower(result.getWinner().getMorale()) >0){
@@ -515,7 +515,7 @@ public class Main
         }
     }
     
-    public void turnStart(Battlefield field){
+    public static void turnStart(Battlefield field){
         for(Unit un : field.getAllies()){
             for(appliedEffect app : un.getEffectList()){
                 app.stat().triggerTurnStart(field, un);
@@ -528,7 +528,7 @@ public class Main
         }
     }
     
-    public void turnEnd(Battlefield field){
+    public static void turnEnd(Battlefield field){
         for(Unit un : field.getAllies()){
             for(appliedEffect app : un.getEffectList()){
                 app.stat().triggerTurnEnd(field, un);
@@ -541,7 +541,7 @@ public class Main
         }
     }
     
-    public void keepAllAppliedEffectsInBounds(Battlefield field){
+    public static void keepAllAppliedEffectsInBounds(Battlefield field){
         for(Unit un : field.getAllies()){
             for(appliedEffect app : un.getEffectList()){
                 app.keepInBounds();
@@ -558,7 +558,7 @@ public class Main
         }
     }
     
-    public combatContext playerChoose(Battlefield field){
+    public static combatContext playerChoose(Battlefield field){
         int counter = 1;
         int coincounter=1;
         System.out.println("Your moves: ");
@@ -626,7 +626,7 @@ public class Main
     }
     //public combatContext (Unit attacker, Move attackerMove, Unit defender, Move defenderMove, Battlefield field){
     
-    public combatContext allyMove(Battlefield field, Unit un, List<combatContext> attackQueue){
+    public static combatContext allyMove(Battlefield field, Unit un, List<combatContext> attackQueue){
         int maxnum=Integer.MIN_VALUE; // pick their move
         Move maxMove=null;
         for(Move mov: un.getMoveSet()){
@@ -679,7 +679,7 @@ public class Main
         
     }
     
-    public combatContext enemMove(Battlefield field, Unit un, List<combatContext> attackQueue){
+    public static combatContext enemMove(Battlefield field, Unit un, List<combatContext> attackQueue){
         int maxnum=Integer.MIN_VALUE; // pick their move
         Move maxMove=null;
         for(Move mov: un.getMoveSet()){
@@ -735,17 +735,17 @@ public class Main
     
     //public Battlefield(List<Unit> allies, List<Unit> enemies, int turnCount){
     public static Battlefield genBatContext(){
-        batContext = new Battlefield(allies, enemies, 1);
+        batContext = new Battlefield(allAllies, allEnemies, 1);
         return batContext;
     }
     
     public static Battlefield batContext = genBatContext();
     
-    public static List<Unit> allies = new ArrayList<>();
-    public static List<Unit> enemies = new ArrayList<>();
+    public static List<Unit> allAllies = new ArrayList<>();
+    public static List<Unit> allEnemies = new ArrayList<>();
     public static int turnCount = 1;
     
-    public void battleFlow(Battlefield field){
+    public static void battleFlow(Battlefield field){
         List<combatContext> attackQueue = new ArrayList<>();
         turnStart(field);
         keepAllAppliedEffectsInBounds(field);
@@ -803,6 +803,27 @@ public class Main
     
     //public Move(String name, int baseatk, String description){
     //public Coin (int atkPoints, String description, Consumer<combatContext> onHitEffect){
+    
+    
+    public static Unit defEnemy;
+    public static void defineDefaultEnemy(){
+        List<Move> defEnemyMoveset = new ArrayList<>();
+        Move punch = new Move("Punch", 1, "Two weak punches");
+        
+        punch.addCoin(new Coin(1, "punch-", ctx ->{
+            ctx.getDefender().takeHPDamage(1);
+        }));
+        punch.addCoin(new Coin(1, "punch again-", ctx ->{
+            ctx.getDefender().takeHPDamage(1);
+        }));
+        
+        defEnemyMoveset.add(punch);
+        
+        defEnemy = new Unit(50, 0, 2, 15, "Enemy", "Default Enemy", defEnemyMoveset);
+        allEnemies.add(defEnemy);
+    }
+    
+    
     public static Unit playerUnit;
     
     public static void defPlayerUnit(){
@@ -848,6 +869,9 @@ public class Main
         
         playerUnit = new Unit(100, 0, 5, 30, "Player", "Description", playerMoveSet);
     }
+    
+    
+    
     //public statusEffect(String name, boolean decays, int limit, String description){
     //public mutation(Type type, int amount, statusEffect effect, Unit source){
     public static List<statusEffect> defaultStatusEffects = new ArrayList<>();
@@ -870,11 +894,17 @@ public class Main
 	public static void main(String[] args) {
 	    defPlayerUnit();
 	    defDefaultStats();
+	    defineDefaultEnemy();
+	    genBatContext();
 		for(Move mov : playerUnit.getMoveSet()){
 		    System.out.println("\n"+mov.getName()+ ": "+ mov.getBaseAtk()+ " (Base) | "+ mov.getTotalPoints()+ " (total)\n"+ mov.getDesc());
 		    for(Coin co: mov.getCoinSet()){
-		        System.out.println(co.getDesc()+" " + co.getAtkPoints());
+		        System.out.println(co.getDesc()+" - " + co.getAtkPoints());
 		    }
 		}
+		
+		battleFlow(batContext);
+		
+		
 	}
 }
