@@ -4,41 +4,9 @@ public class Main
 {
     public static Random ra = new Random();
     public static Scanner sc = new Scanner(System.in);
-    
-    enum whenEffect{
-        DURING, // status gives effect during combat
-        AFTER, // status gives effect after combat
-        ONHIT // status gives effect on hit
-    }
-    
-    enum statusType{
-        DAM, // damage status type 
-        HEA,  // heal status type 
-        COU // count status type. used for ammunition and counter status for other statugses
-    }
-    
-    enum effectOn{
-        HLT, // health 
-        MOR, // morale
-        SHK, // shock
-        STT, // on another stat's count 
-    }
-    
-    enum toWhom{
-        ENM, // applied to enemy | enemy
-        ALY, // applied to allies | ally 
-        SLF, // applied to self | self 
-        ALL, // applied to all | all 
-        TEM, // applied to self and allies | team 
-        SUI, // applied to self and enemies | suicidal 
-        ABM // applied to allies and enemies | all but me 
-    }
-    
     public static class statusEffect{
         String name, description;
-        whenEffect when;
-        statusType type;
-        effectOn onWhat;
+        
         boolean decays; // whether or not it decays every turn 
         int limit;
         
