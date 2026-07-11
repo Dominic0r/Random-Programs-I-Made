@@ -312,7 +312,7 @@ public class Main
         public int getRemCoins() { return remainingCoins;}
     }
     
-    public void clashFunction(Battlefield field, combatContext comctx){
+    public clashResult clashFunction(Battlefield field, combatContext comctx){
         List<Coin> attackerCoinSet = comctx.getAttackerMove().getClashCoins();
         List<Coin> defenderCoinSet = comctx.getDefenderMove().getClashCoins();
         
@@ -345,8 +345,20 @@ public class Main
             
             bothStillHaveCoins = (attackerCoinCount> 0) && (defenderCoinCount > 0);
         }while(bothStillHaveCoins);
+        Unit winner, loser;
+        int remainingCoins;
         
+        if(attackerCoinCount >0){
+            winner = comctx.getAttacker();
+            loser = comctx.getDefender();
+            remainingCoins = attackerCoinCount;
+        }else{
+            winner = comctx.getDefender();
+            loser = comctx.getAttacker();
+            remainingCoins = defenderCoinCount;
+        }
         
+        return new clashResult(winner, loser, remainingCoins);
     }
     
     
