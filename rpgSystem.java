@@ -211,6 +211,14 @@ public class Main
         public String getDesc(){ return description;}
         public int getBaseAtk(){ return baseatk;}
         
+        public int getTotalPoints(){
+            int tot = baseatk;
+            for(Coin co: coinSet){
+                tot+= co.getAtkPoints();
+            }
+            return tot;
+        }
+        
         public void addCoin(Coin toAdd){
             coinSet.add(toAdd);
         }
@@ -542,11 +550,72 @@ public class Main
     }
     
     public combatContext playerChoose(Battlefield field){
+        int counter = 1;
+        int coincounter=1;
+        System.out.println("Your moves: ");
         for(Move mov : playerUnit.getMoveSet()){
-            
+            System.out.println(counter+ ": "+ mov.getName()+ "\n"+mov.getDesc());
+            for(Coin co: mov.getCoinSet()){
+                System.out.println("Coin "+ coincounter+ ": "+ co.getDesc());
+                coincounter++;
+            }
+            counter++;
+            coincounter = 1;
         }
+        
+        boolean validInput = false;
+        int choice;
+        do{
+            choice = Integer.parseInt(sc.nextLine());
+            
+            if(choice > counter){
+                System.out.println("Invalid input");
+                validInput = false;
+            }else{
+                validInput = true;
+            }
+            
+        }while(!validInput);
+        
+        Move plyrMv = playerUnit.getMoveSet().get(choice-1);
+        counter = 1;
+        System.out.println("Choose a target: ");
+        for(Unit un: field.getEnemies()){
+            System.out.println(counter+": "+ un.getName()+ "\n"+un.getDesc());
+            counter++;
+        }
+        
+        do{
+            choice = Integer.parseInt(sc.nextLine());
+            
+            if(choice > counter){
+                System.out.println("Invalid input");
+                validInput = false;
+            }else{
+                validInput = true;
+            }
+            
+        }while(!validInput);
+        
+        Unit targetEnemy = field.getEnemies().get(choice-1);
+        
+        Move targetMove;
+        
+        int maxnum=Integer.MIN_VALUE;
+        Move maxMove;
+        for(Move mov: targetEnemy.getMoveSet()){
+            if(mov.getTotalPoints()> maxnum){
+                maxnum = getTotalPoints();
+                maxMove = mov;
+            }
+        }
+        
+        targetMove = maxMove;
+        combatContext finalCC = new combatContext(playerUnit, plyrMv, targetEnemy, targetMove, field);
+        return finalCC;
+        
     }
-    
+    //public combatContext (Unit attacker, Move attackerMove, Unit defender, Move defenderMove, Battlefield field){
     
     //public Battlefield(List<Unit> allies, List<Unit> enemies, int turnCount){
     public void battleFlow(Battlefield field){
@@ -556,8 +625,8 @@ public class Main
         
         
         
-        combatContext playerMove = // have player and all NPCs pick move and target. generates combatContext 
-        
+        combatContext playerMove = playerChoose();// have player and all NPCs pick move and target. generates combatContext 
+        attackQueue.add(playerMove);
         
         
         for(combatContext cctx : attackQueue){
