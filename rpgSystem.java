@@ -824,7 +824,7 @@ public class Main
             ctx.getDefender().takeHPDamage(3);
             for(appliedEffect app: ctx.getDefender().getEffectList()){
                 if(app.stat()==defaultStatusEffects.get(0)){
-                    mutation mut = new mutation(MOD_POTENCY, 3,defaultStatusEffects.get(bleed), ctx.getAttacker());
+                    mutation mut = new mutation(Type.MOD_POTENCY, 3,defaultStatusEffects.get(0), ctx.getAttacker());
                     ctx.getDefender().queueMutation(mut);
                 }else{
                     
@@ -841,13 +841,14 @@ public class Main
     //public mutation(Type type, int amount, statusEffect effect, Unit source){
     public static List<statusEffect> defaultStatusEffects = new ArrayList<>();
     public static void defDefaultStats(){
-        statusEffect bleed = new statusEffect("Bleed", false, 99, "Take fixed damage every coin toss")
-        .setOnClashEffect(field, un->{
+        statusEffect bleed = new statusEffect("Bleed", false, 99, "Take fixed damage every coin toss");
+        
+        bleed.setOnClash((field, un)->{
             int damagetaken=0;
             for(appliedEffect app : un.getEffectList()){
                 if(app.stat() == bleed){
-                    damage = app.getPotency();
-                    un.takeHPDamage(damage);
+                    damagetaken = app.getPotency();
+                    un.takeHPDamage(damagetaken);
                     app.decrementStack();
                 }
             }
