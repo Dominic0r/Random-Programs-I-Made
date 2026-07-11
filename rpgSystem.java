@@ -734,6 +734,17 @@ public class Main
     }
     
     //public Battlefield(List<Unit> allies, List<Unit> enemies, int turnCount){
+    public static Battlefield genBatContext(){
+        batContext = new Battlefield(allies, enemies, 1);
+        return batContext;
+    }
+    
+    public static Battlefield batContext = genBatContext();
+    
+    public static List<Unit> allies = new ArrayList<>();
+    public static List<Unit> enemies = new ArrayList<>();
+    public static int turnCount = 1;
+    
     public void battleFlow(Battlefield field){
         List<combatContext> attackQueue = new ArrayList<>();
         turnStart(field);
@@ -820,7 +831,7 @@ public class Main
             ctx.getDefender().takeHPDamage(3);
         }));
         
-        stab.addCoin(new Coin(3, "Slash!", ctx ->{
+        stab.addCoin(new Coin(3, "Slash! - Inflicts 3 bleed potency", ctx ->{
             ctx.getDefender().takeHPDamage(3);
             for(appliedEffect app: ctx.getDefender().getEffectList()){
                 if(app.stat()==defaultStatusEffects.get(0)){
@@ -857,6 +868,13 @@ public class Main
         defaultStatusEffects.add(bleed);
     }
 	public static void main(String[] args) {
-		System.out.println("Hello World");
+	    defPlayerUnit();
+	    defDefaultStats();
+		for(Move mov : playerUnit.getMoveSet()){
+		    System.out.println("\n"+mov.getName()+ ": "+ mov.getBaseAtk()+ " (Base) | "+ mov.getTotalPoints()+ " (total)\n"+ mov.getDesc());
+		    for(Coin co: mov.getCoinSet()){
+		        System.out.println(co.getDesc()+" " + co.getAtkPoints());
+		    }
+		}
 	}
 }
