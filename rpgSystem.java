@@ -1,5 +1,5 @@
 import java.util.*;
-
+import java.util.function.Consumer;
 public class Main
 {
     public static Random ra = new Random();
@@ -24,27 +24,27 @@ public class Main
             
         }
         
-        public StatusEffect setOnTurnStart(Consumer<Battlefield> hook) {
+        public statusEffect setOnTurnStart(Consumer<Battlefield> hook) {
             this.onTurnStart = hook;
             return this;
         }
 
-        public StatusEffect setOnHitReceived(Consumer<Battlefield> hook) {
+        public statusEffect setOnHitReceived(Consumer<Battlefield> hook) {
             this.onHitReceived = hook;
             return this;
         }
     
-        public StatusEffect setOnTurnEnd(Consumer<Battlefield> hook) {
+        public statusEffect setOnTurnEnd(Consumer<Battlefield> hook) {
             this.onTurnEnd = hook;
             return this;
         }
         
-        public StatusEffect setOnClash(Consumer<Battlefield> hook) {
+        public statusEffect setOnClash(Consumer<Battlefield> hook) {
             this.onClash = hook;
             return this;
         }
         
-        public StatusEffect setOnHitGive(Consumer<Battlefield> hook) {
+        public statusEffect setOnHitGive(Consumer<Battlefield> hook) {
             this.onHitGive = hook;
             return this;
         }
@@ -90,7 +90,7 @@ public class Main
         
         public statusEffect stat(){ return effect;}
         public int getPotency(){ return potency;}
-        public int stack getStack(){ return stack;}
+        public int getStack(){ return stack;}
         public Unit effectSource(){return appliedBy;}
         
         public void decayStack(){
@@ -211,10 +211,10 @@ public class Main
         
         List<Move> moveSet = new ArrayList<>();
         
-        public Unit(int hp, int morale, int speed, String name, String description, List<Move> moveSet{
+        public Unit(int hp, int morale, int speed, String name, String description, List<Move> moveSet){
             this.hp = hp;
             this.maxHP = hp;
-            this.morale = moralel
+            this.morale = morale;
             this.speed = speed;
             this.name = name;
             this.description = description;
@@ -225,15 +225,15 @@ public class Main
         public int getMorale(){return morale;}
         public int getSpeed(){return speed;}
         public String getName(){return name;}
-        public description getDesc(){return desc;}
+        public String getDesc(){return description;}
         public List<Move> getMoveSet(){ return moveSet;}
         public List<appliedEffect> getEffectList(){ return effectsOnUnit;}
         
         
-        public void applyEffect(statusEffect effect, int potency, int stack){
+        public void applyEffect(statusEffect effect, int potency, int stack, Unit source){
             boolean isAlreadyApplied = false;
             for(appliedEffect AE : effectsOnUnit){
-                if(AE.stat() == effect){
+                if(AE.stat() == effect && AE.effectSource() == source){
                     isAlreadyApplied = true;
                     AE.changeStack(stack);
                     AE.changePotency(potency);
@@ -241,7 +241,7 @@ public class Main
                 }
             }
             if(!isAlreadyApplied){
-            effectsOnUnit.add(new appliedEffect(effect, potency, stack));
+            effectsOnUnit.add(new appliedEffect(effect, potency, stack, source));
             }
         }
         
@@ -342,32 +342,32 @@ public class Main
             currentDefenderPoints = 0;
             
             for(Coin co: attackerCoinSet){
-                currentAttackerPoints += co.getCoinPower();
+                currentAttackerPoints += co.getCoinPower(comctx.getAttacker().getMorale());
             }
             
             for(Coin co: defenderCoinSet){
-                currentDefenderPoints += co.getCoinPower();
+                currentDefenderPoints += co.getCoinPower(comctx.getDefender().getMorale());
             }
             
             if(currentAttackerPoints == currentDefenderPoints){
                 
             }else{
                 if(currentAttackerPoints > currentDefenderPoints){
-                    defenderCoinSet.remove(defenderCoinSet.getSize()-1);
+                    defenderCoinSet.remove(defenderCoinSet.size()-1);
                     defenderCoinCount--;
                 }else{
-                    attackerCoinSet.remove(attackerCoinSet.getSize()-1);
+                    attackerCoinSet.remove(attackerCoinSet.size()-1);
                     attackerCoinCount--;
                 }
             }
             
             
-            for(appliedEffect app : ctx.getAttacker().getEffectList()){
-                app.stat().triggerOnClash();
+            for(appliedEffect app : comctx.getAttacker().getEffectList()){
+                app.stat().triggerOnClash(field);
             }
             
-            for(appliedEffect app : ctx.getDefender().getEffectList()){
-                app.stat().triggerOnClash();
+            for(appliedEffect app : comctx.getDefender().getEffectList()){
+                app.stat().triggerOnClash(field);
             }
             
             
@@ -386,22 +386,25 @@ public class Main
             winner = comctx.getDefender();
             loser = comctx.getAttacker();
             remainingCoins = defenderCoinCount;
-            winnerCoinSet = defender;
+            winnerCoinSet = defenderCoinSet;
         }
         
         return new clashResult(winner, loser, remainingCoins, winnerCoinSet);
     }
     
-    public void afterClash(clashResult result){
+    public void afterClash(clashResult result, Battlefield field, combatContext comctx){
         for(Coin co: result.getCoinSet()){
-            co.triggerOnHit();
             
-            for(appliedEffect app : result.getWinner().getEffectList()){
-                app.stat().triggerOnHitGive();
-            }
-            
-            for(appliedEffect app : result.getLoser().getEffectList()){
-                app.stat().triggerOnHitReceived();
+            if(co.getAtkPoints() >0){
+                co.triggerOnHit(comctx);
+                
+                for(appliedEffect app : result.getWinner().getEffectList()){
+                    app.stat().triggerOnHitGive(field);
+                }
+                
+                for(appliedEffect app : result.getLoser().getEffectList()){
+                    app.stat().triggerOnHitReceived(field);
+                }
             }
         }
     }
@@ -409,12 +412,12 @@ public class Main
     public void turnStart(Battlefield field){
         for(Unit un : field.getAllies()){
             for(appliedEffect app : un.getEffectList()){
-                app.stat().triggerTurnStart();
+                app.stat().triggerTurnStart(field);
             }
         }
         for(Unit un : field.getEnemies()){
             for(appliedEffect app : un.getEffectList()){
-                app.stat().triggerTurnStart();
+                app.stat().triggerTurnStart(field);
             }
         }
     }
@@ -422,32 +425,17 @@ public class Main
     public void turnEnd(Battlefield field){
         for(Unit un : field.getAllies()){
             for(appliedEffect app : un.getEffectList()){
-                app.stat().triggerTurnEnd();
+                app.stat().triggerTurnEnd(field);
             }
         }
         for(Unit un : field.getEnemies()){
             for(appliedEffect app : un.getEffectList()){
-                app.stat().triggerTurnEnd();
+                app.stat().triggerTurnEnd(field);
             }
         }
     }
     
     
-    public void commenceBattle(){
-        
-    }
-    
-    /*
-    NOTE FOR CLASH FUNCTION 
-    1: get the number of coins that each move has 
-    2: toss the coins, for every head, add the coin's atkPoints to its respective total atkPoint variables
-    3: determine who has the most atkPoints and set them as Winner
-    4: decrement 1 coin from the loser;
-    5: if both sides still have 1 or more coins left, repeat step 1, if not proceed to step 6
-    6: begin rolling the remaining coins of Winner
-    7: if a coin succesfully rolls, deal its atkPoint and apply the status effect if it has any to its respective targets.
-    
-    */
     
 	public static void main(String[] args) {
 		System.out.println("Hello World");
