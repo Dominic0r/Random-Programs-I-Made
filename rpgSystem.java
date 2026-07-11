@@ -595,9 +595,9 @@ public class Main
     }
     
     public static void turnEnd(Battlefield field){
-        System.out.println("\n==============================================="); // Added UI
-        System.out.println("                 TURN " + field.getTurnCount() + " END");   // Added UI
-        System.out.println("===============================================\n"); // Added UI
+        System.out.println("\n===============================================");
+        System.out.println("                 TURN " + field.getTurnCount() + " END");   
+        System.out.println("===============================================\n");
         
         for(Unit un : field.getAllies()){
             for(appliedEffect app : un.getEffectList()){
@@ -609,7 +609,7 @@ public class Main
                 app.stat().triggerTurnEnd(field, un);
             }
         }
-        field.turnCount++; // Added this line so the UI turn number increments properly across loops if you expand this
+        field.turnCount++; 
     }
     
     public static void keepAllAppliedEffectsInBounds(Battlefield field){
@@ -642,7 +642,7 @@ public class Main
             counter++;
             coincounter = 1;
         }
-        System.out.print("\nChoose move (number): "); // UI touch
+        System.out.print("\nChoose move (number): ");
         
         boolean validInput = false;
         int choice;
@@ -665,7 +665,7 @@ public class Main
             System.out.println(counter+": "+ un.getName()+ "\n"+un.getDesc());
             counter++;
         }
-        System.out.print("Target (number): "); // UI touch
+        System.out.print("Target (number): "); 
         
         do{
             choice = Integer.parseInt(sc.nextLine());
@@ -694,7 +694,7 @@ public class Main
         
         targetMove = maxMove;
         
-        // Added UI confirmation
+        
         System.out.println("\n>>> You selected " + plyrMv.getName() + " targeting " + targetEnemy.getName() + " <<<");
         
         combatContext finalCC = new combatContext(playerUnit, plyrMv, targetEnemy, targetMove, field);
@@ -879,7 +879,7 @@ public class Main
             if(field.getEnemies().size()>0){
                 for(Unit un: field.getEnemies()){
                     if(!un.staggered()&& attackQueue.get(0).getDefender() != un){
-                    attackQueue.add(enemMove(field, un, attackQueue)); // NOTE: You are currently using allyMove here. I left it alone as requested!
+                    attackQueue.add(enemMove(field, un, attackQueue));
                     }
                 }
             }
@@ -1025,13 +1025,13 @@ public class Main
         defaultStatusEffects.add(bleed);
     }
     public static void main(String[] args) {
-        System.out.println("--- INITIALIZING GAME ---\n"); // Added UI
+        System.out.println("--- INITIALIZING GAME ---\n"); 
         defPlayerUnit();
         defDefaultStats();
         defineDefaultEnemy();
         genBatContext();
         
-        System.out.println("--- YOUR MOVESET ---"); // Added UI
+        System.out.println("--- YOUR MOVESET ---");
         for(Move mov : playerUnit.getMoveSet()){
             System.out.println("\n"+mov.getName()+ ": "+ mov.getBaseAtk()+ " (Base) | "+ mov.getTotalPoints()+ " (total)\n"+ mov.getDesc());
             for(Coin co: mov.getCoinSet()){
@@ -1039,7 +1039,7 @@ public class Main
             }
         }
         
-        // You can wrap this in a while loop if you want endless combat
+        
         while(true){
         battleFlow(batContext);
         
