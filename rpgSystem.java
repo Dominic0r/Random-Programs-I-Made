@@ -190,13 +190,14 @@ public class Main
     }
     
     public static class Unit{
-        int hp, morale, speed;
+        int maxHP, hp, morale, speed;
         String name, description;
         
         List<appliedEffect> effectsOnUnit = new ArrayList<>();
         
         public Unit(int hp, int morale, int speed, String name, String description){
             this.hp = hp;
+            this.maxHP = hp;
             this.morale = moralel
             this.speed = speed;
             this.name = name;
@@ -221,6 +222,26 @@ public class Main
             }
             if(!isAlreadyApplied){
             effectsOnUnit.add(new appliedEffect(effect, potency, stack));
+            }
+        }
+        
+        public void takeHPDamage(int dam){
+            hp -= dam;
+        }
+        public void takeMoraleDamage(int dam){
+            morale -= dam;
+        }
+        
+        public void statLimiter(){
+            if(morale < -45){
+                morale = -45;
+            }
+            if(morale > 45){
+                morale = 45;
+            }
+            
+            if(hp > maxHP){
+                hp = maxHP;
             }
         }
     }
