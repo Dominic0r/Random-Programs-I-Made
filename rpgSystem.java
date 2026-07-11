@@ -118,10 +118,16 @@ public class Main
         
     }
     
+    public static class combatContext{
+        public Unit attacker;
+        public Unit defender;
+        int totalDamage;
+        
+    }
+    
     public static class Coin{
         
-        int amtPot, // amount of potency to apply
-        amtStack; // amount of stack to apply
+        
         int atkPoints; // attack points
         
         toWhom target;
@@ -176,6 +182,31 @@ public class Main
         
         public List<Coin> getCoinSet(){ return coinSet;}
         
+    }
+    
+    public static class Unit{
+        int hp, morale, speed;
+        String name, description;
+        
+        List<appliedEffect> effectsOnUnit = new ArrayList<>();
+        
+        public Unit(int hp, int morale, int speed, String name, String description){
+            this.hp = hp;
+            this.morale = moralel
+            this.speed = speed;
+            this.name = name;
+            this.description = description;
+        }
+        
+        public int getHP(){ return hp;}
+        public int getMorale(){return morale;}
+        public int getSpeed(){return speed;}
+        public String getName(){return name;}
+        public description getDesc(){return desc;}
+        
+        public void applyEffect(statusEffect effect, int potency, int stack){
+            effectsOnUnit.add(new appliedEffect(effect, potency, stack));
+        }
     }
     
     /*
