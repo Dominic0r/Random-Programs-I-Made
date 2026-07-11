@@ -24,49 +24,49 @@ public class Main
             
         }
         
-        public statusEffect setOnTurnStart(BiConsumer<Battlefield> hook) {
+        public statusEffect setOnTurnStart(BiConsumer<Battlefield, Unit> hook) {
             this.onTurnStart = hook;
             return this;
         }
 
-        public statusEffect setOnHitReceived(BiConsumer<Battlefield> hook) {
+        public statusEffect setOnHitReceived(BiConsumer<Battlefield, Unit> hook) {
             this.onHitReceived = hook;
             return this;
         }
     
-        public statusEffect setOnTurnEnd(BiConsumer<Battlefield> hook) {
+        public statusEffect setOnTurnEnd(BiConsumer<Battlefield, Unit> hook) {
             this.onTurnEnd = hook;
             return this;
         }
         
-        public statusEffect setOnClash(Consumer<Battlefield> hook) {
+        public statusEffect setOnClash(BiConsumer<Battlefield, Unit> hook) {
             this.onClash = hook;
             return this;
         }
         
-        public statusEffect setOnHitGive(Consumer<Battlefield> hook) {
+        public statusEffect setOnHitGive(BiConsumer<Battlefield, Unit> hook) {
             this.onHitGive = hook;
             return this;
         }
         
-        public void triggerTurnStart(Battlefield field) {
-            if (onTurnStart != null) onTurnStart.accept(field);
+        public void triggerTurnStart(Battlefield field, Unit un) {
+            if (onTurnStart != null) onTurnStart.accept(field, un);
         }
     
-        public void triggerOnHitReceived(Battlefield field) {
-            if (onHitReceived != null) onHitReceived.accept(field);
+        public void triggerOnHitReceived(Battlefield field, Unit un) {
+            if (onHitReceived != null) onHitReceived.accept(field, un);
         }
     
-        public void triggerTurnEnd(Battlefield field) {
-            if (onTurnEnd != null) onTurnEnd.accept(field);
+        public void triggerTurnEnd(Battlefield field, Unit un) {
+            if (onTurnEnd != null) onTurnEnd.accept(field, un);
         }
         
-        public void triggerOnClash(Battlefield field){
-            if(onClash != null) onClash.accept(field);
+        public void triggerOnClash(Battlefield field, Unit un){
+            if(onClash != null) onClash.accept(field, un);
         }
         
-        public void triggerOnHitGive(Battlefield field){
-            if(onHitGive != null) onHitGive.accept(field);
+        public void triggerOnHitGive(Battlefield field, Unit un){
+            if(onHitGive != null) onHitGive.accept(field, un);
         }
         
         public String getName(){ return name;}
@@ -806,19 +806,48 @@ public class Main
             ctx.getDefender().takeHPDamage(3);
         }));
         
-        Move roundhouse = new Move("Roundhouse Kick", 10, "Kicks the enemy hard");
+        Move roundhouse = new Move("Roundhouse Kick", 3, "Kicks the enemy hard");
+        roundhouse.addCoin(new Coin(10, "Kick!", ctx ->{
+            ctx.getDefender().takeHPDamage(10);
+        }));
         
+        Move stab = new Move("Stab", 4, "Stabs the enemy twice");
+        stab.addCoin(new Coin(3, "Swish!", ctx ->{
+            ctx.getDefender().takeHPDamage(3);
+        }));
         
+        stab.addCoin(new Coin(3, "Slash!", ctx ->{
+            ctx.getDefender().takeHPDamage(3);
+            for(appliedEffect app: ctx.getDefender().getEffectList()){
+                if(ctx.getDefender().stat()==defaultStatusEffects.get(bleed)){
+                    mutation mut = new mutation(MOD_POTENCY, 3,defaultStatusEffects.get(bleed), ctx.getAttacker());
+                    ctx.getDefender().queueMutation(mut);
+                }
+            }
+        }));
+        playerMoveSet.add(multiPunch);
+        playerMoveSet.add(roundhouse);
+        playerMoveSet.add(stab);
         
-        playerUnit = new Unit(100, 0, 5, 30, "Player", "Description", )
+        playerUnit = new Unit(100, 0, 5, 30, "Player", "Description", playerMoveSet);
     }
     //public statusEffect(String name, boolean decays, int limit, String description){
+    //public mutation(Type type, int amount, statusEffect effect, Unit source){
     public static List<statusEffect> defaultStatusEffects = new ArrayList<>();
     public static void defDefaultStats(){
         statusEffect bleed("Bleed", false, 99, "Take fixed damage every coin toss")
-        .setOnClashEffect(field->{
-            int damage = 
-        })
+        .setOnClashEffect(field, un->{
+            int damagetaken=0;
+            for(appliedEffect app : un.getEffectList()){
+                if(app.stat() == bleed){
+                    damage = app.getPotency();
+                    un.takeHPDamage(damage);
+                    app.decrementStack();
+                }
+            }
+        });
+        
+        defaultStatusEffects.add(bleed);
     }
 	public static void main(String[] args) {
 		System.out.println("Hello World");
