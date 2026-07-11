@@ -42,7 +42,9 @@ public class Main
         boolean decays; // whether or not it decays every turn 
         int limit;
         
-        private Consumer<Battlefield
+        private Consumer<Battlefield> onTurnStart;
+        private Consumer<Battlefield> onHitReceived;
+        private Consumer<Battlefield> onTurnEnd;
         
         
         public statusEffect(String name, boolean decays, int limit, String description){
@@ -51,6 +53,33 @@ public class Main
             this.decays = decays;
             this.limit = limit;
             
+        }
+        
+        public StatusEffect setOnTurnStart(Consumer<Battlefield> hook) {
+            this.onTurnStart = hook;
+            return this;
+        }
+
+        public StatusEffect setOnHitReceived(Consumer<Battlefield> hook) {
+            this.onHitReceived = hook;
+            return this;
+        }
+    
+        public StatusEffect setOnTurnEnd(Consumer<Battlefield> hook) {
+            this.onTurnEnd = hook;
+            return this;
+        }
+        
+        public void triggerTurnStart(Battlefield field) {
+            if (onTurnStart != null) onTurnStart.accept(field);
+        }
+    
+        public void triggerOnHitReceived(Battlefield field) {
+            if (onHitReceived != null) onHitReceived.accept(field);
+        }
+    
+        public void triggerTurnEnd(Battlefield field) {
+            if (onTurnEnd != null) onTurnEnd.accept(field);
         }
         
         public String getName(){ return name;}
@@ -159,8 +188,6 @@ public class Main
             }
         }
         
-        
-        
         public String getDesc(){ return description;}
         public int getAtkPoints() { return atkPoints;}
         
@@ -235,6 +262,15 @@ public class Main
         List<Unit> enemies = new ArrayList<>();
         int turnCount;
         
+        public Battlefield(List<Unit> allies, List<Unit> enemies, int turnCount){
+            this.allies = allies;
+            this.enemies = enemies;
+            this.turnCount = turnCount;
+        }
+        
+        public List<Unit> getAllies(){return allies;}
+        public List<Unit> getEnemies(){return enemies;}
+        public int getTurnCount(){return turnCount;}
     }
     
     /*
