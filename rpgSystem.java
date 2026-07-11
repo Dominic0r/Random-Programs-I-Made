@@ -461,7 +461,7 @@ public class Main
         int currentDefenderPoints = 0;
         
         // Added UI for clash initialization
-        System.out.println("\n⚔️ --- CLASH START --- ⚔️");
+        System.out.println("\n--- CLASH START --- ️");
         System.out.println(comctx.getAttacker().getName() + " [" + comctx.getAttackerMove().getName() + "] vs " 
                          + comctx.getDefender().getName() + " [" + comctx.getDefenderMove().getName() + "]");
         
@@ -529,7 +529,7 @@ public class Main
         }
         
         // Added UI for winner
-        System.out.println("\n🏆 " + winner.getName() + " won the clash with " + remainingCoins + " coin(s) remaining!");
+        System.out.println("\n" + winner.getName() + " won the clash with " + remainingCoins + " coin(s) remaining!");
         
         winner.modifyMorale(5);
         loser.modifyMorale(-5);
@@ -539,7 +539,7 @@ public class Main
     }
     
     public static void afterClash(clashResult result, Battlefield field, combatContext comctx){
-        System.out.println("\n💥 --- CLASH RESOLUTION --- 💥"); // Added UI
+        System.out.println("\n --- CLASH RESOLUTION --- "); // Added UI
         for(Coin co: result.getCoinSet()){
             System.out.print(result.getWinner().getName() + " activates: " + co.getDesc()); // Added UI
             
