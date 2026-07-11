@@ -1,5 +1,6 @@
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 public class Main
 {
     public static Random ra = new Random();
@@ -132,9 +133,9 @@ public class Main
         
     }
     
-    
+    public static enum Type {ADD, REMOVE, MOD_POTENCY, MOD_STACK};
     public static class mutation{
-        enum Type {ADD, REMOVE, MOD_POTENCY, MOD_STACK};
+        
         final Type type;
         final int amount;
         final statusEffect effect;
@@ -467,11 +468,11 @@ public class Main
             
             
             for(appliedEffect app : comctx.getAttacker().getEffectList()){
-                app.stat().triggerOnClash(field);
+                app.stat().triggerOnClash(field, comctx.getAttacker());
             }
             
             for(appliedEffect app : comctx.getDefender().getEffectList()){
-                app.stat().triggerOnClash(field);
+                app.stat().triggerOnClash(field, comctx.getDefender());
             }
             
             
@@ -504,11 +505,11 @@ public class Main
                 
                 
                 for(appliedEffect app : result.getWinner().getEffectList()){
-                    app.stat().triggerOnHitGive(field);
+                    app.stat().triggerOnHitGive(field, result.getWinner());
                 }
                 
                 for(appliedEffect app : result.getLoser().getEffectList()){
-                    app.stat().triggerOnHitReceived(field);
+                    app.stat().triggerOnHitReceived(field, result.getLoser());
                 }
             }
         }
@@ -517,12 +518,12 @@ public class Main
     public void turnStart(Battlefield field){
         for(Unit un : field.getAllies()){
             for(appliedEffect app : un.getEffectList()){
-                app.stat().triggerTurnStart(field);
+                app.stat().triggerTurnStart(field, un);
             }
         }
         for(Unit un : field.getEnemies()){
             for(appliedEffect app : un.getEffectList()){
-                app.stat().triggerTurnStart(field);
+                app.stat().triggerTurnStart(field, un);
             }
         }
     }
@@ -530,12 +531,12 @@ public class Main
     public void turnEnd(Battlefield field){
         for(Unit un : field.getAllies()){
             for(appliedEffect app : un.getEffectList()){
-                app.stat().triggerTurnEnd(field);
+                app.stat().triggerTurnEnd(field, un);
             }
         }
         for(Unit un : field.getEnemies()){
             for(appliedEffect app : un.getEffectList()){
-                app.stat().triggerTurnEnd(field);
+                app.stat().triggerTurnEnd(field, un);
             }
         }
     }
@@ -551,6 +552,9 @@ public class Main
             for(appliedEffect app : un.getEffectList()){
                 app.keepInBounds();
             }
+        }
+        for(appliedEffect app: playerUnit.getEffectList()){
+            app.keepInBounds();
         }
     }
     
@@ -819,9 +823,11 @@ public class Main
         stab.addCoin(new Coin(3, "Slash!", ctx ->{
             ctx.getDefender().takeHPDamage(3);
             for(appliedEffect app: ctx.getDefender().getEffectList()){
-                if(ctx.getDefender().stat()==defaultStatusEffects.get(bleed)){
+                if(app.stat()==defaultStatusEffects.get(0)){
                     mutation mut = new mutation(MOD_POTENCY, 3,defaultStatusEffects.get(bleed), ctx.getAttacker());
                     ctx.getDefender().queueMutation(mut);
+                }else{
+                    
                 }
             }
         }));
@@ -835,7 +841,7 @@ public class Main
     //public mutation(Type type, int amount, statusEffect effect, Unit source){
     public static List<statusEffect> defaultStatusEffects = new ArrayList<>();
     public static void defDefaultStats(){
-        statusEffect bleed("Bleed", false, 99, "Take fixed damage every coin toss")
+        statusEffect bleed = new statusEffect("Bleed", false, 99, "Take fixed damage every coin toss")
         .setOnClashEffect(field, un->{
             int damagetaken=0;
             for(appliedEffect app : un.getEffectList()){
