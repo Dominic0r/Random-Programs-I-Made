@@ -41,14 +41,12 @@ public class Main
         effectOn onWhat;
         boolean decays; // whether or not it decays every turn 
         int limit;
-        toWhom target;
+        
+        private Consumer<Battlefield
         
         
-        public statusEffect(String name, whenEffect when, statusType type, effectOn onWhat, boolean decays, int limit, String description){
+        public statusEffect(String name, boolean decays, int limit, String description){
             this.name = name;
-            this.when = when;
-            this.type = type;
-            this.onWhat = onWhat;
             this.description = description;
             this.decays = decays;
             this.limit = limit;
@@ -57,9 +55,6 @@ public class Main
         
         public String getName(){ return name;}
         public String getDesc(){ return description;}
-        public whenEffect applyOn(){return when;}
-        public statusType getType(){ return type;}
-        public effectOn getEffectOn(){ return onWhat;}
         public boolean Decays() { return decays;}
         public int getLimit() { return limit;}
     }
@@ -68,16 +63,19 @@ public class Main
         statusEffect effect;
         int potency, // the amount of the effect per stack 
         stack; // the total amount of stack 
+        Unit appliedBy;
         
-        public appliedEffect(statusEffect effect, int potency, int stack){
+        public appliedEffect(statusEffect effect, int potency, int stack, Unit appliedBy){
             this.effect = effect;
             this.potency = potency;
             this.stack = stack;
+            this.appliedBy = appliedBy;
         }
         
         public statusEffect stat(){ return effect;}
         public int getPotency(){ return potency;}
         public int stack getStack(){ return stack;}
+        public Unit effectSource(){return appliedBy;}
         
         public void decayStack(){
             if(effect.Decays()){
@@ -156,7 +154,9 @@ public class Main
         }
         
         public void triggerOnHit(combatContext context){
-            
+            if(onHitEffect !=null){
+                onHitEffect.accept(context);
+            }
         }
         
         
@@ -215,8 +215,26 @@ public class Main
         public description getDesc(){return desc;}
         
         public void applyEffect(statusEffect effect, int potency, int stack){
+            boolean isAlreadyApplied = false;
+            for(appliedEffect AE : effectsOnUnit){
+                if(AE.stat() == effect){
+                    isAlreadyApplied = true;
+                    AE.changeStack(stack);
+                    AE.changePotency(potency);
+                    
+                }
+            }
+            if(!isAlreadyApplied){
             effectsOnUnit.add(new appliedEffect(effect, potency, stack));
+            }
         }
+    }
+    
+    public static class Battlefield{
+        List<Unit> allies = new ArrayList<>();
+        List<Unit> enemies = new ArrayList<>();
+        int turnCount;
+        
     }
     
     /*
