@@ -134,7 +134,7 @@ public class Main
     
     
     public static class mutation{
-        enum Type = {ADD, REMOVE, MOD_POTENCY, MOD_STACK};
+        enum Type {ADD, REMOVE, MOD_POTENCY, MOD_STACK};
         final Type type;
         final int amount;
         final statusEffect effect;
@@ -228,7 +228,7 @@ public class Main
         String name, description;
         
         List<appliedEffect> effectsOnUnit = new ArrayList<>();
-        List<mutation> pendingMutations = new ArrayKList<>();
+        List<mutation> pendingMutations = new ArrayList<>();
         
         
         
@@ -468,7 +468,7 @@ public class Main
     public void afterClash(clashResult result, Battlefield field, combatContext comctx){
         for(Coin co: result.getCoinSet()){
             co.triggerOnHit(comctx);
-            if(co.getCoinPower() >0){
+            if(co.getCoinPower(result.getWinner().getMorale()) >0){
                 
                 
                 for(appliedEffect app : result.getWinner().getEffectList()){
