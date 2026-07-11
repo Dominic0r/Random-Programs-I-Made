@@ -13,7 +13,7 @@ public class Main
         private Consumer<Battlefield> onTurnStart;
         private Consumer<Battlefield> onHitReceived;
         private Consumer<Battlefield> onTurnEnd;
-        
+        private Consumer<Battlefield> onClash;
         
         public statusEffect(String name, boolean decays, int limit, String description){
             this.name = name;
@@ -38,6 +38,11 @@ public class Main
             return this;
         }
         
+        public StatusEffect setOnClash(Consumer<Battlefield> hook) {
+            this.onClash = hook;
+            return this;
+        }
+        
         public void triggerTurnStart(Battlefield field) {
             if (onTurnStart != null) onTurnStart.accept(field);
         }
@@ -48,6 +53,10 @@ public class Main
     
         public void triggerTurnEnd(Battlefield field) {
             if (onTurnEnd != null) onTurnEnd.accept(field);
+        }
+        
+        publci void triggerOnClash(Battlefield field){
+            if(onClash != null) onClash.accept(field);
         }
         
         public String getName(){ return name;}
@@ -113,25 +122,7 @@ public class Main
         
     }
     
-    public static class combatContext{
-        public Unit attacker;
-        public Unit defender;
-        int totalDamage;
-        List<Unit> allies = new ArrayList<>();
-        List<Unit> enemies = new ArrayList<>();
-        boolean isHead;
-        
-        public combatContext (Unit attacker, Unit defender, List<Unit> allies, List<Unit>enemies){
-            this.attacker = attacker;
-            this.defender = defender;
-            this.allies = allies;
-            this.enemies = enemies;
-        }
-        
-        public void clash(){
-            int attackerCoins =0, defenderCoins= attackerCoins;
-        }
-    }
+    
     
     public static class Coin{
         
@@ -260,6 +251,31 @@ public class Main
         public List<Unit> getAllies(){return allies;}
         public List<Unit> getEnemies(){return enemies;}
         public int getTurnCount(){return turnCount;}
+    }
+    
+    public static class combatContext{
+        public Unit attacker;
+        public Move attackerMove;
+        public Unit defender;
+        public Move defenderMove;
+        int totalDamage;
+        Battlefield field;
+        
+        public combatContext (Unit attacker, Move attackerMove, Unit defender, Move defenderMove, Battlefield field){
+            this.attacker = attacker;
+            this.attackerMove = attackerMove;
+            this.defender = defender;
+            this.defenderMove = defenderMove;
+            this.field = field;
+        }
+        public Unit getAttacker(){ return attacker;}
+        public Move getAttackerMove(){ return attackerMove;}
+        public Unit getDefender(){ return defender;}
+        public Move getDefenderMove(){ return defenderMove;}
+        public int totalDamage(){ return totalDamage;}
+        public Battlefield field() {return field;}
+        
+        
     }
     
     /*
