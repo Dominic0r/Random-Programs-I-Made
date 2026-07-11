@@ -397,10 +397,12 @@ public class Main
             co.triggerOnHit();
             
             for(appliedEffect app : result.getWinner().getEffectList()){
-                app.
+                app.stat().triggerOnHitGive();
             }
             
-            
+            for(appliedEffect app : result.getLoser().getEffectList()){
+                app.stat().triggerOnHitReceived();
+            }
         }
     }
     
@@ -430,6 +432,10 @@ public class Main
         }
     }
     
+    
+    public void commenceBattle(){
+        
+    }
     
     /*
     NOTE FOR CLASH FUNCTION 
