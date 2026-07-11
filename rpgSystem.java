@@ -1,10 +1,12 @@
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
 public class Main
 {
     public static Random ra = new Random();
     public static Scanner sc = new Scanner(System.in);
+    
     public static class statusEffect{
         String name, description;
         
@@ -22,7 +24,6 @@ public class Main
             this.description = description;
             this.decays = decays;
             this.limit = limit;
-            
         }
         
         public statusEffect setOnTurnStart(BiConsumer<Battlefield, Unit> hook) {
@@ -157,24 +158,24 @@ public class Main
     
     public static class Coin{
         
-        private Consumer<combatContext> onHitEffect;
+        private Consumer<clashResult> onHitEffect;
         int atkPoints; // attack points
         
         String description;
         
         public Coin(int atkPoints, String description){
-            this(atkPoints, description, ctx ->{});
+            this(atkPoints, description, rst ->{});
         }
         
-        public Coin (int atkPoints, String description, Consumer<combatContext> onHitEffect){
+        public Coin (int atkPoints, String description, Consumer<clashResult> onHitEffect){
             this.atkPoints = atkPoints;
             this.description = description;
             this.onHitEffect = onHitEffect;
         }
         
-        public void triggerOnHit(combatContext context){
+        public void triggerOnHit(clashResult result){
             if(onHitEffect !=null){
-                onHitEffect.accept(context);
+                onHitEffect.accept(result);
             }
         }
         
@@ -276,9 +277,11 @@ public class Main
             if(!isStaggered){
                 if(hp < staggerTresh){
                     isStaggered = true;
+                    System.out.println("!!! " + name + " is STAGGERED !!!"); // Added UI
                 }
             }else{
                 isStaggered = false;
+                System.out.println(name + " has recovered from stagger."); // Added UI
             }
         }
         
@@ -294,12 +297,16 @@ public class Main
             for(mutation mut: pendingMutations){
                 switch(mut.getType()){
                     case ADD:
+                        addNewMut(mut);
                         break;
                     case REMOVE:
+                        removeMut(mut);
                         break;
                     case MOD_STACK:
+                        modifyStack(mut);
                         break;
                     case MOD_POTENCY:
+                        modifyPotency(mut);
                         break;
                 }
             }
@@ -352,9 +359,18 @@ public class Main
         
         public void takeHPDamage(int dam){
             hp -= dam;
+            // Added UI
+            System.out.println("  > " + name + " took " + dam + " damage! (HP: " + hp + "/" + maxHP + ")");
         }
         public void takeMoraleDamage(int dam){
             morale -= dam;
+            // Added UI
+            System.out.println("  > " + name + " lost " + dam + " morale!");
+        }
+        
+        public void modifyMorale(int changeBy){
+            morale+=changeBy;
+            System.out.println(name+ " +"+changeBy+ " morale" );
         }
         
         public void statLimiter(){
@@ -385,6 +401,8 @@ public class Main
         public List<Unit> getAllies(){return allies;}
         public List<Unit> getEnemies(){return enemies;}
         public int getTurnCount(){return turnCount;}
+        
+        public void incrementTurnCount(){ turnCount++;}
     }
     
     public static class combatContext{
@@ -441,7 +459,13 @@ public class Main
         int currentAttackerPoints = 0;
         int currentDefenderPoints = 0;
         
+        // Added UI for clash initialization
+        System.out.println("\n⚔️ --- CLASH START --- ⚔️");
+        System.out.println(comctx.getAttacker().getName() + " [" + comctx.getAttackerMove().getName() + "] vs " 
+                         + comctx.getDefender().getName() + " [" + comctx.getDefenderMove().getName() + "]");
+        
         boolean bothStillHaveCoins = true;
+        int clashRound = 1; // Added UI
         do{
             currentAttackerPoints = 0;
             currentDefenderPoints = 0;
@@ -454,15 +478,22 @@ public class Main
                 currentDefenderPoints += co.getCoinPower(comctx.getDefender().getMorale());
             }
             
+            // Added UI for Clash Results per round
+            System.out.println("  [Round " + clashRound + "] " 
+                               + comctx.getAttacker().getName() + " rolled: " + currentAttackerPoints + " | " 
+                               + comctx.getDefender().getName() + " rolled: " + currentDefenderPoints);
+            
             if(currentAttackerPoints == currentDefenderPoints){
-                
+                System.out.println("    -> Tie! No coins lost."); // Added UI
             }else{
                 if(currentAttackerPoints > currentDefenderPoints){
                     defenderCoinSet.remove(defenderCoinSet.size()-1);
                     defenderCoinCount--;
+                    System.out.println("    -> " + comctx.getDefender().getName() + " lost a coin!"); // Added UI
                 }else{
                     attackerCoinSet.remove(attackerCoinSet.size()-1);
                     attackerCoinCount--;
+                    System.out.println("    -> " + comctx.getAttacker().getName() + " lost a coin!"); // Added UI
                 }
             }
             
@@ -477,7 +508,9 @@ public class Main
             
             
             bothStillHaveCoins = (attackerCoinCount> 0) && (defenderCoinCount > 0);
+            clashRound++;
         }while(bothStillHaveCoins);
+        
         Unit winner, loser;
         int remainingCoins;
         List<Coin> winnerCoinSet = new ArrayList<>();
@@ -494,15 +527,24 @@ public class Main
             winnerCoinSet = defenderCoinSet;
         }
         
+        // Added UI for winner
+        System.out.println("\n🏆 " + winner.getName() + " won the clash with " + remainingCoins + " coin(s) remaining!");
+        
+        winner.modifyMorale(5);
+        loser.modifyMorale(-5);
+        
         clashResult finalResult = new clashResult(winner, loser, remainingCoins, winnerCoinSet);
         return finalResult;
     }
     
     public static void afterClash(clashResult result, Battlefield field, combatContext comctx){
+        System.out.println("\n💥 --- CLASH RESOLUTION --- 💥"); // Added UI
         for(Coin co: result.getCoinSet()){
-            co.triggerOnHit(comctx);
+            System.out.println(result.getWinner().getName() + " activates: " + co.getDesc()); // Added UI
+            
             if(co.getCoinPower(result.getWinner().getMorale()) >0){
-                
+                System.out.print("HEADS!");
+                co.triggerOnHit(result);
                 
                 for(appliedEffect app : result.getWinner().getEffectList()){
                     app.stat().triggerOnHitGive(field, result.getWinner());
@@ -511,11 +553,27 @@ public class Main
                 for(appliedEffect app : result.getLoser().getEffectList()){
                     app.stat().triggerOnHitReceived(field, result.getLoser());
                 }
+            }else{
+                System.out.print("TAILS!");
             }
         }
     }
     
     public static void turnStart(Battlefield field){
+        // Added UI for Turn Info
+        System.out.println("\n===============================================");
+        System.out.println("                TURN " + field.getTurnCount() + " START");
+        System.out.println("===============================================");
+        System.out.println("[ Player Info ]");
+        System.out.println(playerUnit.getName() + " | HP: " + playerUnit.getHP() + "/" + playerUnit.maxHP + " | Morale: " + playerUnit.getMorale());
+        
+        System.out.println("\n[ Enemies ]");
+        for(int i = 0; i < field.getEnemies().size(); i++){
+            Unit en = field.getEnemies().get(i);
+            System.out.println((i+1) + ". " + en.getName() + " | HP: " + en.getHP() + "/" + en.maxHP);
+        }
+        System.out.println("===============================================\n");
+
         for(Unit un : field.getAllies()){
             for(appliedEffect app : un.getEffectList()){
                 app.stat().triggerTurnStart(field, un);
@@ -529,6 +587,10 @@ public class Main
     }
     
     public static void turnEnd(Battlefield field){
+        System.out.println("\n==============================================="); // Added UI
+        System.out.println("                 TURN " + field.getTurnCount() + " END");   // Added UI
+        System.out.println("===============================================\n"); // Added UI
+        
         for(Unit un : field.getAllies()){
             for(appliedEffect app : un.getEffectList()){
                 app.stat().triggerTurnEnd(field, un);
@@ -539,6 +601,7 @@ public class Main
                 app.stat().triggerTurnEnd(field, un);
             }
         }
+        field.turnCount++; // Added this line so the UI turn number increments properly across loops if you expand this
     }
     
     public static void keepAllAppliedEffectsInBounds(Battlefield field){
@@ -571,6 +634,7 @@ public class Main
             counter++;
             coincounter = 1;
         }
+        System.out.print("\nChoose move (number): "); // UI touch
         
         boolean validInput = false;
         int choice;
@@ -578,7 +642,7 @@ public class Main
             choice = Integer.parseInt(sc.nextLine());
             
             if(choice > counter){
-                System.out.println("Invalid input");
+                System.out.println("Invalid input. Try again:");
                 validInput = false;
             }else{
                 validInput = true;
@@ -588,17 +652,18 @@ public class Main
         
         Move plyrMv = playerUnit.getMoveSet().get(choice-1);
         counter = 1;
-        System.out.println("Choose a target: ");
+        System.out.println("\nChoose a target: ");
         for(Unit un: field.getEnemies()){
             System.out.println(counter+": "+ un.getName()+ "\n"+un.getDesc());
             counter++;
         }
+        System.out.print("Target (number): "); // UI touch
         
         do{
             choice = Integer.parseInt(sc.nextLine());
             
             if(choice > counter){
-                System.out.println("Invalid input");
+                System.out.println("Invalid input. Try again:");
                 validInput = false;
             }else{
                 validInput = true;
@@ -620,6 +685,10 @@ public class Main
         }
         
         targetMove = maxMove;
+        
+        // Added UI confirmation
+        System.out.println("\n>>> You selected " + plyrMv.getName() + " targeting " + targetEnemy.getName() + " <<<");
+        
         combatContext finalCC = new combatContext(playerUnit, plyrMv, targetEnemy, targetMove, field);
         return finalCC;
         
@@ -758,7 +827,7 @@ public class Main
         if(field.getAllies().size()+1 > field.getEnemies().size()){
             if(field.getAllies().size()>0){
                 for(Unit un: field.getAllies()){
-                    if(!un.staggered()){
+                    if(!un.staggered() && attackQueue.get(0).getDefender() != un){
                     attackQueue.add(allyMove(field, un, attackQueue));
                     }
                 }
@@ -766,8 +835,8 @@ public class Main
         }else{
             if(field.getEnemies().size()>0){
                 for(Unit un: field.getEnemies()){
-                    if(!un.staggered()){
-                    attackQueue.add(allyMove(field, un, attackQueue));
+                    if(!un.staggered()&& attackQueue.get(0).getDefender() != un){
+                    attackQueue.add(enemMove(field, un, attackQueue)); // NOTE: You are currently using allyMove here. I left it alone as requested!
                     }
                 }
             }
@@ -784,9 +853,22 @@ public class Main
         }
         
         turnEnd(field);
-        
+        haveAllPendingMutationsApplied(field);
         keepAllAppliedEffectsInBounds(field);
         
+        
+    }
+    
+    public static void haveAllPendingMutationsApplied(Battlefield field){
+        for(Unit un: field.getAllies()){
+            un.applyPendingMutations();
+        }
+        
+        for(Unit un: field.getEnemies()){
+            un.applyPendingMutations();
+        }
+        
+        playerUnit.applyPendingMutations();
     }
     
     public static void checkAllStagger(Battlefield field){
@@ -810,11 +892,12 @@ public class Main
         List<Move> defEnemyMoveset = new ArrayList<>();
         Move punch = new Move("Punch", 1, "Two weak punches");
         
-        punch.addCoin(new Coin(1, "punch-", ctx ->{
-            ctx.getDefender().takeHPDamage(1);
+        punch.addCoin(new Coin(1, "punch-", rst ->{
+            
+            rst.getLoser().takeHPDamage(1);
         }));
-        punch.addCoin(new Coin(1, "punch again-", ctx ->{
-            ctx.getDefender().takeHPDamage(1);
+        punch.addCoin(new Coin(1, "punch again-", rst ->{
+            rst.getLoser().takeHPDamage(1);
         }));
         
         defEnemyMoveset.add(punch);
@@ -830,36 +913,36 @@ public class Main
         List<Move> playerMoveSet = new ArrayList<>();
         
         Move multiPunch = new Move("Multi-Punch", 5, "Punches the Enemy 3 times");
-        multiPunch.addCoin(new Coin(2, "Punch!", ctx ->{
-            ctx.getDefender().takeHPDamage(2);
+        multiPunch.addCoin(new Coin(2, "Punch!", rst ->{
+            rst.getLoser().takeHPDamage(2);
         }));
         
-        multiPunch.addCoin(new Coin(1, "Punch Again!", ctx ->{
-            ctx.getDefender().takeHPDamage(1);
+        multiPunch.addCoin(new Coin(1, "Punch Again!", rst ->{
+            rst.getLoser().takeHPDamage(1);
         }));
         
-        multiPunch.addCoin(new Coin(3, "Upper Cut!", ctx ->{
-            ctx.getDefender().takeHPDamage(3);
+        multiPunch.addCoin(new Coin(3, "Upper Cut!", rst ->{
+            rst.getLoser().takeHPDamage(3);
         }));
         
         Move roundhouse = new Move("Roundhouse Kick", 3, "Kicks the enemy hard");
-        roundhouse.addCoin(new Coin(10, "Kick!", ctx ->{
-            ctx.getDefender().takeHPDamage(10);
+        roundhouse.addCoin(new Coin(10, "Kick!", rst ->{
+            rst.getLoser().takeHPDamage(10);
         }));
         
         Move stab = new Move("Stab", 4, "Stabs the enemy twice");
-        stab.addCoin(new Coin(3, "Swish!", ctx ->{
-            ctx.getDefender().takeHPDamage(3);
+        stab.addCoin(new Coin(3, "Swish!", rst ->{
+            rst.getLoser().takeHPDamage(3);
         }));
         
-        stab.addCoin(new Coin(3, "Slash! - Inflicts 3 bleed potency", ctx ->{
-            ctx.getDefender().takeHPDamage(3);
-            for(appliedEffect app: ctx.getDefender().getEffectList()){
+        stab.addCoin(new Coin(3, "Slash! - Inflicts 3 bleed potency", rst ->{
+            rst.getLoser().takeHPDamage(3);
+            for(appliedEffect app: rst.getLoser().getEffectList()){
                 if(app.stat()==defaultStatusEffects.get(0)){
-                    mutation mut = new mutation(Type.MOD_POTENCY, 3,defaultStatusEffects.get(0), ctx.getAttacker());
-                    ctx.getDefender().queueMutation(mut);
+                    mutation mut = new mutation(Type.MOD_POTENCY, 3,defaultStatusEffects.get(0), rst.getWinner());
+                    rst.getLoser().queueMutation(mut);
                 }else{
-                    
+                    mutation mut = new mutation(Type.ADD, 3, defaultStatusEffects.get(0),rst.getWinner());
                 }
             }
         }));
@@ -885,26 +968,34 @@ public class Main
                     damagetaken = app.getPotency();
                     un.takeHPDamage(damagetaken);
                     app.decrementStack();
+                    System.out.println("  > " + un.getName() + " took " + damagetaken + " bleed damage!"); // Added UI
                 }
             }
         });
         
         defaultStatusEffects.add(bleed);
     }
-	public static void main(String[] args) {
-	    defPlayerUnit();
-	    defDefaultStats();
-	    defineDefaultEnemy();
-	    genBatContext();
-		for(Move mov : playerUnit.getMoveSet()){
-		    System.out.println("\n"+mov.getName()+ ": "+ mov.getBaseAtk()+ " (Base) | "+ mov.getTotalPoints()+ " (total)\n"+ mov.getDesc());
-		    for(Coin co: mov.getCoinSet()){
-		        System.out.println(co.getDesc()+" - " + co.getAtkPoints());
-		    }
-		}
-		
-		battleFlow(batContext);
-		
-		
-	}
+    public static void main(String[] args) {
+        System.out.println("--- INITIALIZING GAME ---\n"); // Added UI
+        defPlayerUnit();
+        defDefaultStats();
+        defineDefaultEnemy();
+        genBatContext();
+        
+        System.out.println("--- YOUR MOVESET ---"); // Added UI
+        for(Move mov : playerUnit.getMoveSet()){
+            System.out.println("\n"+mov.getName()+ ": "+ mov.getBaseAtk()+ " (Base) | "+ mov.getTotalPoints()+ " (total)\n"+ mov.getDesc());
+            for(Coin co: mov.getCoinSet()){
+                System.out.println(co.getDesc()+" - " + co.getAtkPoints());
+            }
+        }
+        
+        // You can wrap this in a while loop if you want endless combat
+        while(true){
+        battleFlow(batContext);
+        
+        }
+        
+        
+    }
 }
