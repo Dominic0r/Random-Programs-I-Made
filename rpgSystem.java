@@ -159,6 +159,8 @@ public class Main
             int tresh = 50+morale;
             if(ra.nextInt(100)< tresh){
                 return atkPoints;
+            }else{
+                return 0;
             }
         }
     }
@@ -197,13 +199,16 @@ public class Main
         
         List<appliedEffect> effectsOnUnit = new ArrayList<>();
         
-        public Unit(int hp, int morale, int speed, String name, String description){
+        List<Move> moveSet = new ArrayList<>();
+        
+        public Unit(int hp, int morale, int speed, String name, String description, List<Move> moveSet{
             this.hp = hp;
             this.maxHP = hp;
             this.morale = moralel
             this.speed = speed;
             this.name = name;
             this.description = description;
+            this.moveSet = moveSet;
         }
         
         public int getHP(){ return hp;}
@@ -211,6 +216,8 @@ public class Main
         public int getSpeed(){return speed;}
         public String getName(){return name;}
         public description getDesc(){return desc;}
+        public List<Move> getMoveSet(){ return moveSet;}
+        
         
         public void applyEffect(statusEffect effect, int potency, int stack){
             boolean isAlreadyApplied = false;
@@ -288,7 +295,57 @@ public class Main
         
     }
     
-    public void clashFunction(){
+    
+    public static class clashResult{
+        Unit winner;
+        Unit loser;
+        int remainingCoins;
+        
+        public clashResult(Unit winner, Unit loser, int remainingCoins){
+            this.winner = winner;
+            this.loser = loser;
+            this.remainingCoins = remainingCoins;
+        }
+        
+        public Unit getWinner(){ return winner;}
+        public Unit getLoser(){ return loser;}
+        public int getRemCoins() { return remainingCoins;}
+    }
+    
+    public void clashFunction(Battlefield field, combatContext comctx){
+        List<Coin> attackerCoinSet = comctx.getAttackerMove().getClashCoins();
+        List<Coin> defenderCoinSet = comctx.getDefenderMove().getClashCoins();
+        
+        int attackerCoinCount = attackerCoinSet.size();
+        int defenderCoinCount = defenderCoinSet.size();
+        
+        int currentAttackerPoints = 0;
+        int currentDefenderPoints = 0;
+        
+        boolean bothStillHaveCoins = true;
+        do{
+            currentAttackerPoints = 0;
+            currentDefenderPoints = 0;
+            
+            for(Coin co: attackerCoinSet){
+                currentAttackerPoints += co.getCoinPower();
+            }
+            
+            for(Coin co: defenderCoinSet){
+                currentDefenderPoints += co.getCoinPower();
+            }
+            
+            if(currentAttackerPoints > currentDefenderPoints){
+                defenderCoinSet.remove(defenderCoinSet.getSize()-1);
+                defenderCoinCount--;
+            }else{
+                attackerCoinSet.remove(attackerCoinSet.getSize()-1);
+                attackerCoinCount--;
+            }
+            
+            bothStillHaveCoins = (attackerCoinCount> 0) && (defenderCoinCount > 0);
+        }while(bothStillHaveCoins);
+        
         
     }
     
