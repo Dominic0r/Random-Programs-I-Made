@@ -580,6 +580,20 @@ public class Main
                 }
             }
         }
+        
+        if(!allAllies.isEmpty()){
+            System.out.println("\n[ Allies ]");
+            for(int i = 0; i < field.getAllies().size(); i++){
+                Unit en = field.getAllies().get(i);
+                System.out.println((i+1) + ". " + en.getName() + " | HP: " + en.getHP() + "/" + en.maxHP + " | Morale: "+ en.getMorale());
+                if(en.getEffectList().size()>0){
+                    for(appliedEffect app: en.getEffectList()){
+                        System.out.println(app.stat().getName()+ " "+ app.getPotency()+" potency, "+ app.getStack()+ " stack");
+                    }
+                }
+            }
+        }
+        
         System.out.println("===============================================\n");
 
         for(Unit un : field.getAllies()){
@@ -929,6 +943,25 @@ public class Main
     //public Move(String name, int baseatk, String description){
     //public Coin (int atkPoints, String description, Consumer<combatContext> onHitEffect){
     
+    public static Unit defAlly;
+    public static void defineDefaultAlly(){
+        List<Move> defEnemyMoveset = new ArrayList<>();
+        Move punch = new Move("Punch", 1, "Two weak punches");
+        
+        punch.addCoin(new Coin(1, "punch-", rst ->{
+            
+            rst.getLoser().takeHPDamage(1);
+        }));
+        punch.addCoin(new Coin(1, "punch again-", rst ->{
+            rst.getLoser().takeHPDamage(1);
+        }));
+        
+        defEnemyMoveset.add(punch);
+        
+        defAlly = new Unit(50, 0, 2, 15, "Ally", "Default Ally", defEnemyMoveset);
+        allAllies.add(defAlly);
+    }
+    
     
     public static Unit defEnemy;
     public static void defineDefaultEnemy(){
@@ -1029,6 +1062,7 @@ public class Main
         defPlayerUnit();
         defDefaultStats();
         defineDefaultEnemy();
+        defineDefaultAlly();
         genBatContext();
         
         System.out.println("--- YOUR MOVESET ---");
