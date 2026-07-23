@@ -65,6 +65,40 @@ public class Main
             
             return opin;
         }
+
+		public void decayAllAdditionals(){
+			List<Person> toRemove = new ArrayList<>();
+
+    for (Person per : additionalRelations.keySet()) {
+        int val = additionalRelations.get(per);
+
+        if (val > 0) {
+            int decay = Math.max(val / 10, 1); 
+            val -= decay;
+            if (val <= 0) {
+                toRemove.add(per);
+            } else {
+                additionalRelations.put(per, val);
+            }
+        } 
+        
+        else if (val < 0) {
+            int decay = Math.max(Math.abs(val) / 10, 1); 
+            val += decay;
+            if (val >= 0) {
+                toRemove.add(per);
+            } else {
+                additionalRelations.put(per, val);
+            }
+        } 
+        else {
+            toRemove.add(per);
+        }
+    }
+
+    for (Person per : toRemove) {
+        additionalRelations.remove(per);
+    }
     }
     
     public static class Faction{
