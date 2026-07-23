@@ -45,10 +45,10 @@ public class Main
             int opin = 0;
             int pragmaPoint = ((100-pragmatism)/10);
             
-            opin = Math.abs(per.getIdeology()-this.ideology)* (3+pragmaPoint);
+            opin = (100-Math.abs(per.getIdeology()-this.ideology))* (3+pragmaPoint);
             totwei += 3+pragmaPoint;
             
-            opin += Math.abs(per.getPersonality- this.personality) * (1+pragmaPoint);
+            opin += (100-Math.abs(per.getPersonality()- this.personality)) * (1+pragmaPoint);
             totwei += 1+pragmaPoint;
             
             opin = opin/totwei;
