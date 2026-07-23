@@ -60,7 +60,7 @@ public class Main
             opin += per.geAge()-this.age;
             
             if(additionalRelations.keySet().contains(per)){
-                opin += additionalRelations.get(opin);
+                opin += additionalRelations.get(per);
             }
             
             return opin;
